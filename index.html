@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product settings — Demo</title>
+  <style>
+    :root {
+      font-family: Inter, Arial, sans-serif;
+      color: #141414;
+      background: #f5f4f4;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { margin: 0; min-width: 760px; }
+
+    button, input, select { font: inherit; }
+
+    .topbar {
+      position: absolute;
+      z-index: 3;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 84px;
+      display: grid;
+      grid-template-columns: minmax(202px, 1fr) minmax(0, 560px) minmax(202px, 1fr);
+      align-items: center;
+      gap: 24px;
+      padding: 0 42px;
+      background: white;
+      border-bottom: 1px solid #e2e0e0;
+    }
+
+    .brand { font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 560px;
+      flex: 1;
+      border-radius: 28px;
+      background: #f4f2f2;
+      padding: 14px 22px;
+      color: #686868;
+    }
+    .search svg { flex-shrink: 0; }
+
+    .user { margin-left: auto; line-height: 1.35; }
+    .user img { display: block; width: 290px; height: 60px; }
+    .user small { display: block; color: #555; }
+
+    .layout { display: flex; min-height: 100vh; padding-top: 84px; --sidebar-width: 296px; }
+    body { --sidebar-width: 296px; }
+
+    aside {
+      position: fixed;
+      z-index: 4;
+      top: var(--sidebar-top, 84px);
+      bottom: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      padding: 40px 16px 24px;
+      background: white;
+      border-right: 1px solid #e2e0e0;
+      transition: width 260ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .nav-item { padding: 14px 18px; color: #555; }
+    .nav-item svg { flex-shrink: 0; }
+    .nav-label { white-space: nowrap; overflow: hidden; }
+    .sidebar-toggle svg { transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
+    .sidebar-toggle {
+      position: absolute;
+      top: 14px;
+      right: -14px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid #dedcdc;
+      border-radius: 50%;
+      background: white;
+      color: #555;
+      cursor: pointer;
+    }
+    .sidebar-toggle:focus-visible { outline: 2px solid #3944c4; outline-offset: 3px; }
+    body.sidebar-collapsed { --sidebar-width: 88px; }
+    .sidebar-collapsed .layout { --sidebar-width: 88px; }
+    .sidebar-collapsed .nav-label, .sidebar-collapsed .nav-help { display: none; }
+    .sidebar-collapsed .nav-item { justify-content: center; padding: 14px 0; }
+    .sidebar-collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+    .nav-divider { height: 1px; margin: 16px 12px 24px; background: #e2e0e0; }
+    .nav-item[aria-disabled="true"] { color: #c4c4c4; cursor: not-allowed; }
+    .nav-item[aria-disabled="true"] path { fill: currentColor; }
+    .nav-help { margin: 12px 18px 0; color: #555; font-size: 13px; line-height: 1.4; }
+    .nav-item.active { color: #3944c4; background: #f4f4ff; border-radius: 28px; }
+
+    main { flex: 1; min-width: 0; margin-left: var(--sidebar-width); padding: 32px 40px 108px; }
+    main { transition: margin-left 260ms cubic-bezier(.22, 1, .36, 1); }
+    h1 { margin: 0 0 22px; font-size: 26px; }
+
+    .year-bar {
+      position: sticky;
+      z-index: 1;
+      top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: -32px -40px 32px;
+      min-height: 80px;
+      padding: 20px 40px;
+      background: white;
+      border-bottom: 1px solid #e1dfdf;
+    }
+
+    .year-label { color: #666; margin-right: 10px; }
+
+    .year {
+      border: 1px solid #a7a5a5;
+      background: white;
+      border-radius: 22px;
+      padding: 8px 18px;
+      cursor: pointer;
+    }
+
+    .year[aria-pressed="true"], .primary {
+      color: white;
+      background: #3944c4;
+      border-color: #3944c4;
+    }
+
+    .card {
+      margin-bottom: 20px;
+      padding: 26px 30px 30px;
+      background: white;
+      border: 1px solid #e1dfdf;
+      border-radius: 10px;
+    }
+
+    .card-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e3e1e1;
+    }
+
+    h2 { margin: 0; font-size: 21px; font-weight: 600; }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #a85b00;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status.complete { color: #008665; }
+    .status-icon { font-size: 21px; }
+
+    .field { width: min(100%, 600px); margin-top: 24px; }
+    label { display: block; margin-bottom: 8px; color: #646464; }
+
+    select, input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #aaa;
+      border-radius: 2px;
+      padding: 0 14px;
+      background: white;
+    }
+
+    input[aria-invalid="true"] { border: 1.5px solid #c33b35; }
+
+    .error { margin: 7px 0 0; color: #b3312c; font-size: 14px; }
+    .hint { margin: 8px 0 0; color: #3944c4; }
+
+    .section-note {
+      margin: 18px 0;
+      padding: 13px 16px;
+      color: #704300;
+      background: #fff8e9;
+      border-left: 3px solid #dc941b;
+      line-height: 1.45;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { padding: 16px 10px 12px; color: #666; font-weight: 500; }
+    td { padding: 12px 10px; border-top: 1px solid #e4e2e2; vertical-align: middle; }
+    tbody tr:nth-child(odd) { background: #f7f6f6; }
+    th:first-child, td:first-child { padding-left: 16px; }
+    .share-input { width: 112px; height: 42px; }
+    .spec-name { min-width: 270px; line-height: 1.35; }
+    .details { color: #3944c4; white-space: nowrap; }
+
+    .footer {
+      position: fixed;
+      z-index: 1;
+      bottom: 0;
+      left: var(--sidebar-width);
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      min-height: 88px;
+      padding: 16px 40px;
+      background: white;
+      border-top: 1px solid #dedcdc;
+      transition: left 260ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .footer-message { margin-right: auto; color: #a85b00; }
+    .action { min-height: 46px; padding: 0 22px; border: 1px solid #aaa; border-radius: 24px; background: white; cursor: pointer; }
+    .action.primary { color: white; background: #3944c4; border-color: #3944c4; font-weight: 600; }
+    .action.primary:disabled { opacity: .55; cursor: not-allowed; }
+
+    [hidden] { display: none !important; }
+    #settings-year-slot { display: contents; }
+    .nav-item[data-page] { cursor: pointer; text-decoration: none; }
+    .nav-item[data-page] path { fill: currentColor; }
+    #settings-nav { margin-top: auto; }
+    .product-heading {
+      position: sticky;
+      z-index: 3;
+      top: 0;
+      height: calc(188px - 92px * var(--compact-progress, 0));
+      margin: -32px -40px 28px;
+      background: white;
+      border-bottom: 1px solid #e1dfdf;
+    }
+    .product-heading > img {
+      position: absolute;
+      top: calc(24px - 6px * var(--compact-progress, 0));
+      left: 32px;
+      width: calc(132px - 72px * var(--compact-progress, 0));
+      height: calc(132px - 72px * var(--compact-progress, 0));
+      object-fit: cover;
+    }
+    .product-info h1 {
+      position: absolute;
+      top: calc(30px + 3px * var(--compact-progress, 0));
+      left: calc(188px - 72px * var(--compact-progress, 0));
+      margin: 0;
+      font-size: calc(26px - 4px * var(--compact-progress, 0));
+      max-width: calc(100% - 310px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .product-info .product-meta {
+      position: absolute;
+      top: 88px;
+      left: 188px;
+      right: 60px;
+      max-height: calc(45px * (1 - var(--compact-progress, 0)));
+      overflow: hidden;
+    }
+    .models-view .year-bar {
+      position: absolute;
+      top: 126px;
+      left: 188px;
+      margin: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      gap: 10px;
+      white-space: nowrap;
+      opacity: calc(1 - var(--compact-progress, 0));
+    }
+    .models-view .year-label {
+      margin-right: 10px;
+    }
+    .models-view .year[aria-pressed="false"] {
+      width: 70px;
+      padding-left: 0;
+      padding-right: 0;
+      overflow: hidden;
+      border-width: 1px;
+    }
+    .compact-year {
+      position: absolute;
+      top: 29px;
+      right: 32px;
+      padding: 8px 18px;
+      border: 1px solid #3944c4;
+      border-radius: 22px;
+      background: #3944c4;
+      color: white;
+      opacity: var(--compact-progress, 0);
+      pointer-events: none;
+    }
+    .product-heading .favorite { position: absolute; top: 24px; right: 32px; }
+    .product-scrolled .product-heading .favorite { visibility: hidden; }
+    .product-meta { display: flex; flex-wrap: wrap; gap: 16px 28px; font-size: 12px; }
+    .product-meta span { color: #616161; }
+    .product-meta strong { margin-left: 8px; color: #101010; font-weight: 400; }
+    .favorite { border: 0; background: none; color: #3944c4; font-size: 26px; cursor: pointer; }
+    .favorite svg { display: block; }
+    .favorite[aria-pressed="false"] path { fill: none; stroke: #3643BA; stroke-width: 1.5; }
+    .models-title { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+    .models-title h2 { font-size: 23px; }
+    .calculation { display: flex; align-items: center; gap: 14px; color: #616161; font-size: 12px; }
+    .compact { min-height: 34px; padding: 0 16px; font-size: 13px; white-space: nowrap; }
+    .bom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .bom-action { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; border: 1px solid #e1dfdf; border-radius: 8px; background: white; color: #616161; font-size: 13px; line-height: 1.5; }
+    .bom-action a { color: #3944c4; text-decoration: none; }
+    .bom-picker { width: 150px; height: 34px; font-size: 13px; }
+    .bom-action button:disabled { color: #aaa; border-color: #ddd; cursor: not-allowed; }
+    .models-table-card { border: 1px solid #e1dfdf; border-radius: 8px; overflow: hidden; background: white; }
+    .models-table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; }
+    .models-table-toolbar h3 { margin: 0; font-size: 16px; color: #272a3b; }
+    .model-search { width: 280px; height: 34px; border: 0; border-radius: 24px; background: #f5f4f5; font-size: 13px; }
+    .models-table { min-width: 1080px; font-size: 12px; table-layout: fixed; }
+    .models-table th { background: #f5f4f5; font-size: 12px; }
+    .models-table td { height: 84px; background: white; padding: 12px 10px; }
+    .models-table th:first-child, .models-table td:first-child { width: 36px; padding: 10px; }
+    .models-table input[type="checkbox"] { width: 18px; height: 18px; margin: 0; padding: 0; accent-color: #3944c4; }
+    .model-name { display: block; color: #616161; font-size: 12px; margin-top: 3px; }
+    .model-selected { display: block; margin-top: 7px; color: #616161; }
+    .model-selected::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #008665; margin-right: 7px; }
+    .model-tag { display: inline-block; padding: 3px 5px; background: #f5f4f5; }
+    .model-tag.validated { background: #008665; color: white; }
+    .model-tag.evaluated { background: #8d98a6; color: white; }
+    .model-caption { display: block; color: #616161; margin-top: 4px; line-height: 1.35; }
+    .bom-method { color: #3944c4; }
+    .empty-bom { color: #aaa; }
+    .model-levers { text-decoration: underline; line-height: 1.4; }
+    .models-notice { color: #008665; margin: 0 0 18px; font-size: 14px; }
+    @media (max-width: 1100px) {
+      .bom-actions { grid-template-columns: 1fr; }
+      .product-meta { gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      aside, main, .footer, .sidebar-toggle svg { transition: none; }
+    }
+
+    @media (max-width: 900px) {
+      body, .layout { --sidebar-width: 200px; }
+      main { padding: 24px 20px 108px; }
+      .year-bar { margin: -24px -20px 32px; padding: 20px; }
+      .card { padding: 22px 18px; }
+      .footer-message { font-size: 13px; }
+      .topbar { padding: 0 22px; gap: 20px; }
+      .product-heading { margin: -24px -20px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">PRODUCT DEMO</div>
+    <div class="search">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M10.2969 3.44922C6.61109 3.44922 3.54688 6.51343 3.54688 10.1992C3.54688 13.885 6.61109 16.9492 10.2969 16.9492C13.9827 16.9492 17.0469 13.885 17.0469 10.1992C17.0469 6.51343 13.9827 3.44922 10.2969 3.44922ZM2.04688 10.1992C2.04688 5.68501 5.78266 1.94922 10.2969 1.94922C14.8111 1.94922 18.5469 5.68501 18.5469 10.1992C18.5469 14.7134 14.8111 18.4492 10.2969 18.4492C5.78266 18.4492 2.04688 14.7134 2.04688 10.1992ZM18.0272 16.9689L21.9272 20.8689L20.8665 21.9295L16.9665 18.0295L18.0272 16.9689Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
+      </svg>
+      <span>Search a model code, a conception code...</span>
+    </div>
+    <div class="user">Demo user<small>Product team</small></div>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" aria-label="Main navigation">
+      <button class="sidebar-toggle" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar" title="Collapse sidebar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <a href="#all-model-code" class="nav-item" data-page="all-model-code" style="display: flex; align-items: center; gap: 8px;" title="All Model Code">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M3 5.44922H5.5V6.94922H3V5.44922ZM21 6.94922H7.5V5.44922H21V6.94922ZM5.5 12.7492H3V11.2492H5.5V12.7492ZM7.5 11.2492H21V12.7492H7.5V11.2492ZM3 17.0492H5.5V18.5492H3V17.0492ZM21 18.5492H7.5V17.0492H21V18.5492Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
+        </svg>
+        <span class="nav-label">All Model Code</span>
+      </a>
+      <div class="nav-divider" role="separator"></div>
+      <div class="nav-item" role="link" aria-disabled="true" aria-describedby="model-code-help" style="display: flex; align-items: center; gap: 8px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4.60221 4.60611C4.58679 4.62153 4.54688 4.67122 4.54688 4.80078V19.2008C4.54688 19.3303 4.58679 19.38 4.60221 19.3955C4.61762 19.4109 4.66731 19.4508 4.79688 19.4508H19.1969C19.3221 19.4508 19.3962 19.4122 19.4432 19.3715C19.485 19.3353 19.5231 19.2812 19.5469 19.2092V4.80078C19.5469 4.67122 19.507 4.62153 19.4915 4.60611C19.4761 4.5907 19.4264 4.55078 19.2969 4.55078H15.2469V12.3086L11.9969 11.0086L8.74687 12.3086V4.55078H4.79688C4.66731 4.55078 4.61762 4.5907 4.60221 4.60611ZM10.2469 4.55078V10.093L11.9969 9.39301L13.7469 10.093V4.55078H10.2469ZM3.54155 3.54545C3.87613 3.21087 4.32644 3.05078 4.79688 3.05078H19.2969C19.7673 3.05078 20.2176 3.21087 20.5522 3.54545C20.8868 3.88004 21.0469 4.33035 21.0469 4.80078V19.375L21.0323 19.4479C20.8693 20.2631 20.1892 20.9508 19.1969 20.9508H4.79688C4.32644 20.9508 3.87613 20.7907 3.54154 20.4561C3.20696 20.1215 3.04688 19.6712 3.04688 19.2008V4.80078C3.04688 4.33035 3.20696 3.88004 3.54155 3.54545Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
+        </svg>
+        <span class="nav-label">Model Code</span>
+      </div>
+      <p class="nav-help" id="model-code-help">Select a Model Code to view its user journeys.</p>
+      <a href="#settings" id="settings-nav" class="nav-item active" data-page="settings" aria-current="page" style="display: flex; align-items: center; gap: 8px;" title="Settings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M9.86182 3.28771C10.546 3.05965 11.3269 2.94922 11.999 2.94922C12.6664 2.94922 13.4197 3.059 14.0223 3.15942L14.649 3.26387V4.09922C14.649 5.085 15.5132 5.94922 16.499 5.94922C16.9111 5.94922 17.2279 5.86507 17.449 5.69922L17.9694 5.30894L18.4293 5.76889C19.4238 6.76335 20.1833 8.07299 20.6158 9.47865L20.8027 10.0859L20.2344 10.37C19.6832 10.6456 19.249 11.2892 19.249 11.9992C19.249 12.7093 19.6832 13.3528 20.2344 13.6284L20.8027 13.9125L20.6158 14.5198C20.1833 15.9255 19.4238 17.2351 18.4293 18.2295L18.0471 18.6118L17.5636 18.37C17.1891 18.1828 16.8185 18.0492 16.499 18.0492C15.4319 18.0492 14.649 18.8945 14.649 19.8992V20.7346L14.0223 20.839C13.4197 20.9394 12.6664 21.0492 11.999 21.0492C11.3316 21.0492 10.5782 20.9394 9.97569 20.839L9.34899 20.7346V19.8992C9.34899 18.9134 8.48478 18.0492 7.49899 18.0492C7.08685 18.0492 6.77013 18.1334 6.54899 18.2992L6.02862 18.6895L5.56866 18.2295C4.5742 17.2351 3.81467 15.9255 3.38216 14.5198L3.19531 13.9125L3.76358 13.6284C4.3148 13.3528 4.74899 12.7093 4.74899 11.9992C4.74899 11.2892 4.3148 10.6456 3.76358 10.37L3.19531 10.0859L3.38216 9.47865C3.81159 8.08301 4.46285 6.88491 5.44152 5.7975L5.90032 5.28772L6.44899 5.69922C6.73204 5.9115 7.07665 6.04922 7.49899 6.04922C8.56605 6.04922 9.34899 5.20399 9.34899 4.19921V3.45865L9.86182 3.28771ZM10.8279 4.57736C10.6452 6.20732 9.29475 7.54922 7.49899 7.54922C7.00428 7.54922 6.55904 7.44307 6.16745 7.26601C5.66706 7.91157 5.28637 8.60756 4.99534 9.38999C5.74524 9.99459 6.24899 10.953 6.24899 11.9992C6.24899 13.0441 5.74658 14.0013 4.99832 14.606C5.30708 15.4075 5.73862 16.1464 6.25729 16.7629C6.67418 16.6005 7.10772 16.5492 7.49899 16.5492C9.16166 16.5492 10.5905 17.8391 10.8176 19.4512C11.2299 19.5083 11.6403 19.5492 11.999 19.5492C12.3572 19.5492 12.7669 19.5084 13.1786 19.4514C13.3914 17.8531 14.7289 16.5492 16.499 16.5492C16.9385 16.5492 17.3567 16.6603 17.7123 16.7964C18.2436 16.1732 18.6853 15.4221 18.9997 14.606C18.2514 14.0013 17.749 13.0441 17.749 11.9992C17.749 10.9544 18.2514 9.99713 18.9997 9.39239C18.6909 8.59092 18.2594 7.85206 17.7407 7.23556C17.3238 7.3979 16.8903 7.44922 16.499 7.44922C14.8363 7.44922 13.4075 6.15929 13.1804 4.54728C12.7681 4.49014 12.3577 4.44922 11.999 4.44922C11.631 4.44922 11.2187 4.49275 10.8279 4.57736ZM11.999 10.3492C10.9722 10.3492 10.249 11.0532 10.249 11.9992C10.249 12.985 11.0132 13.7492 11.999 13.7492C12.9655 13.7492 13.749 12.9045 13.749 11.9992C13.749 11.1332 13.0048 10.3492 11.999 10.3492ZM8.74899 11.9992C8.74899 10.1452 10.2257 8.84922 11.999 8.84922C13.7931 8.84922 15.249 10.2652 15.249 11.9992C15.249 13.6939 13.8324 15.2492 11.999 15.2492C10.1848 15.2492 8.74899 13.8134 8.74899 11.9992Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
+        </svg>
+        <span class="nav-label">Settings</span>
+      </a>
+    </aside>
+
+    <main>
+      <section id="models-view" hidden>
+        <div class="product-heading">
+          <span class="compact-year" aria-hidden="true">2026</span>
+          <img src="product-placeholder.svg" alt="Illustrative demo product">
+          <div class="product-info">
+            <h1>100001 - DEMO SHORTS</h1>
+            <div class="product-meta">
+              <span>Product Nature<strong>10000 - Demo category</strong></span>
+              <span>Industrial Process<strong>01 - Demo process</strong></span>
+              <span>Last modification<strong>DEMO USER &nbsp; 23/10/2026</strong></span>
+            </div>
+            <div id="models-year-slot"></div>
+          </div>
+          <button type="button" class="favorite" aria-label="Remove from favorites" aria-pressed="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M17.5287 3.78507C14.8846 2.94376 12.8984 4.74269 12.1539 5.58653L12.0437 5.69674L11.952 5.5898L11.9316 5.56943C11.1116 4.74937 9.23723 3.06312 6.51199 3.77405L6.48782 3.78036L6.46413 3.78825C5.0435 4.2618 3.41418 5.66059 3.06154 7.87613C2.69342 9.97946 3.35275 14.4308 11.5697 20.2131L12.0013 20.5169L12.4329 20.2131C20.6499 14.4308 21.3092 9.97937 20.9411 7.87607C20.5884 5.66056 18.9591 4.26172 17.5385 3.78819L17.5287 3.78507Z" fill="#3643BA"/>
+            </svg>
+          </button>
+        </div>
+        <div class="models-title">
+          <h2>All Model Code</h2>
+          <div class="calculation"><span id="last-calculation">Last calculation: 12/05/24 - 12:24</span><button type="button" class="action primary compact" id="recalculate">Recalculate</button></div>
+        </div>
+        <p class="models-notice" id="models-notice" role="status" hidden></p>
+        <div class="bom-actions">
+          <div class="bom-action">
+            <div>Apply the reference BOM to all model code<br><a href="#reference-bom" id="reference-bom">SS26 BOM 004 : 100001 - DEMO PRODUCT</a></div>
+            <button type="button" class="action compact" id="apply-all">Apply all</button>
+          </div>
+          <div class="bom-action">
+            <div>Apply the BOM to all model code selected<br><span id="selected-count">0 model code selected</span></div>
+            <select class="bom-picker" id="bom-picker" aria-label="Select BOM" disabled><option value="">Select BOM</option><option value="reference">BOM 004</option></select>
+            <button type="button" class="action compact" id="apply-selected" disabled>Apply</button>
+          </div>
+        </div>
+        <div class="models-table-card">
+          <div class="models-table-toolbar"><h3 id="model-count">11 Model Codes</h3><input type="search" class="model-search" id="model-search" placeholder="Search model code" aria-label="Search model code"></div>
+          <div class="table-wrap">
+            <table class="models-table">
+              <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:220px"><col style="width:110px"><col style="width:92px"><col style="width:230px"></colgroup>
+              <thead><tr>
+                <th><input type="checkbox" id="select-all-models" aria-label="Select all visible model codes"></th>
+                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>Design For Circularity</th><th>Design Levers</th><th>Last<br>Modification</th><th>BOM selected</th>
+              </tr></thead>
+              <tbody id="models-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <div id="settings-year-slot">
+      <div class="year-bar" aria-label="Select year">
+        <span class="year-label">Select year:</span>
+        <button class="year" aria-pressed="true">2026</button>
+        <button class="year" aria-pressed="false">2027</button>
+        <button class="year" aria-pressed="false">2028</button>
+        <button class="year" aria-pressed="false">2029</button>
+      </div>
+      </div>
+      <div id="settings-view">
+      <h1>Settings</h1>
+
+      <section class="card" id="functional-card">
+        <div class="card-heading">
+          <h2>Functional unit</h2>
+          <div class="status" id="functional-status"><span class="status-icon">!</span><span>Incomplete · 1 field</span></div>
+        </div>
+        <div class="field">
+          <label for="functional-unit">Functional unit selected</label>
+          <select id="functional-unit">
+            <option>BOTTOM SHORT WOMAN</option>
+            <option>TOP T-SHIRT WOMAN</option>
+            <option>JACKET WOMAN</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="reference">Reference</label>
+          <input id="reference" aria-invalid="true" placeholder="Enter a reference">
+          <p class="error" id="reference-error">Enter a reference to complete the functional unit.</p>
+        </div>
+        <p class="hint">You can use this file to calculate the reference factor&nbsp; ›</p>
+      </section>
+
+      <section class="card" id="sharing-card">
+        <div class="card-heading">
+          <h2>Specification sharing</h2>
+          <div class="status" id="sharing-status"><span class="status-icon">!</span><span>Incomplete · 2 fields</span></div>
+        </div>
+        <p class="section-note" id="sharing-error">The total assigned sharing must equal 100%.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>No.</th><th>Year</th><th>Sharing</th><th>Name</th><th>Sourcing</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>01</td><td>2026</td>
+                <td><input class="share-input" aria-label="Specification 1 sharing percentage" aria-invalid="true" inputmode="decimal" placeholder="Enter %"></td>
+                <td class="spec-name">SS27 - 100001 - DEMO SPECIFICATION (Supplier A) | EDS</td>
+                <td>Supplier A</td><td class="details">More details⌄</td>
+              </tr>
+              <tr>
+                <td>02</td><td>2026</td>
+                <td><input class="share-input" aria-label="Specification 2 sharing percentage" inputmode="decimal" placeholder="Enter %"></td>
+                <td class="spec-name">SS26 - 100001 - DEMO SPECIFICATION (Supplier B) | EDS</td>
+                <td>Supplier B</td><td class="details">More details⌄</td>
+              </tr>
+              <tr>
+                <td>03</td><td>2026</td>
+                <td><input class="share-input" aria-label="Specification 3 sharing percentage" inputmode="decimal" placeholder="Enter %"></td>
+                <td class="spec-name">Specification 018 (copy of SS26 - DEMO SPECIFICATION) | EDS</td>
+                <td>Supplier C</td><td class="details">More details⌄</td>
+              </tr>
+              <tr>
+                <td>04</td><td>2026</td>
+                <td><input class="share-input" aria-label="Specification 4 sharing percentage" aria-invalid="true" inputmode="decimal" placeholder="Enter %"></td>
+                <td class="spec-name">Specification 019 (copy of SS27 - DEMO SPECIFICATION) | EDS</td>
+                <td>Supplier D</td><td class="details">More details⌄</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-message" id="footer-message">Complete the highlighted fields before saving.</span>
+    <button class="action">Cancel</button>
+    <button class="action primary" id="save-button">Save Changes</button>
+  </footer>
+
+  <script>
+    function updateSidebarTop() {
+      document.body.style.setProperty("--sidebar-top", `${Math.max(0, 84 - window.scrollY)}px`);
+      document.body.classList.toggle("product-scrolled", window.scrollY >= 84);
+      const progress = Math.min(1, Math.max(0, (window.scrollY - 24) / 140));
+      document.body.style.setProperty("--compact-progress", progress);
+      const yearBar = document.querySelector(".year-bar");
+      if (yearBar) yearBar.inert = document.body.classList.contains("models-view") && progress === 1;
+    }
+    window.addEventListener("scroll", updateSidebarTop, { passive: true });
+    window.addEventListener("resize", updateSidebarTop);
+    updateSidebarTop();
+
+    const sidebarToggle = document.querySelector(".sidebar-toggle");
+    sidebarToggle.addEventListener("click", () => {
+      const collapsed = document.body.classList.toggle("sidebar-collapsed");
+      sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+      sidebarToggle.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+      sidebarToggle.title = collapsed ? "Expand sidebar" : "Collapse sidebar";
+    });
+    const years = [...document.querySelectorAll(".year")];
+    const reference = document.querySelector("#reference");
+    const shares = [...document.querySelectorAll(".share-input")];
+    const saveButton = document.querySelector("#save-button");
+    const sharingError = document.querySelector("#sharing-error");
+    const sharingByYear = {
+      2026: ["100%", "", "", ""],
+    };
+
+    function currentYear() {
+      return years.find((button) => button.getAttribute("aria-pressed") === "true").textContent;
+    }
+
+    function saveCurrentSharing() {
+      sharingByYear[currentYear()] = shares.map((input) => input.value);
+    }
+
+    shares.forEach((input, index) => {
+      input.value = sharingByYear["2026"][index];
+    });
+    reference.value = "1";
+
+    years.forEach((button) => {
+      button.addEventListener("click", () => {
+        saveCurrentSharing();
+        years.forEach((year) => year.setAttribute("aria-pressed", String(year === button)));
+        const valuesForYear = sharingByYear[button.textContent] || [];
+        shares.forEach((input, index) => {
+          input.value = valuesForYear[index] || "";
+        });
+        document.querySelectorAll("#sharing-card tbody tr").forEach((row) => row.cells[1].textContent = button.textContent);
+        document.querySelectorAll(".spec-name").forEach((cell) => {
+          cell.textContent = cell.textContent.replace(/SS\d{2}/g, `SS${button.textContent.slice(-2)}`);
+        });
+        updateValidation();
+        renderModels();
+      });
+    });
+
+    function updateValidation() {
+      const missingReference = !reference.value.trim();
+      const values = shares.map((input) => Number(input.value.replace("%", "").trim()));
+      const total = values.reduce((sum, value) => sum + (Number.isFinite(value) ? value : 0), 0);
+      const sharingComplete = total === 100;
+
+      reference.setAttribute("aria-invalid", String(missingReference));
+      document.querySelector("#reference-error").hidden = !missingReference;
+      setStatus("#functional-status", missingReference, "1 field");
+      shares.forEach((input) => input.setAttribute("aria-invalid", String(!sharingComplete && Boolean(input.value.trim()))));
+      setStatus("#sharing-status", !sharingComplete, "total must equal 100%");
+      sharingError.hidden = sharingComplete;
+      saveButton.disabled = missingReference || !sharingComplete;
+      document.querySelector("#footer-message").hidden = !saveButton.disabled;
+    }
+
+    function setStatus(selector, incomplete, message) {
+      const status = document.querySelector(selector);
+      status.classList.toggle("complete", !incomplete);
+      status.querySelector(".status-icon").textContent = incomplete ? "!" : "✓";
+      status.querySelector("span:last-child").textContent = incomplete ? `Incomplete · ${message}` : "Complete";
+    }
+
+    reference.addEventListener("input", updateValidation);
+    shares.forEach((input) => input.addEventListener("input", () => {
+      saveCurrentSharing();
+      updateValidation();
+    }));
+      const modelStates = ["Validated", "Evaluated", "Not evaluated", "Validated", "Validated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Evaluated"];
+      const modelColors = ["#55c8d0", "#acb0ce", "#1a4553", "#83a197", "#bcefe1", "#35495d", "#ffffff", "#d9ee7a", "#55c8d0", "#6666a6", "#acb0ce"];
+      const models = modelStates.map((status, index) => ({
+        id: index, status, code: "2000001", name: "DEMO SHORTS — BLUE",
+        selected: false, bom: index !== 7 && index !== 8,
+        method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO",
+      }));
+      const modelsBody = document.querySelector("#models-body");
+      const modelSearch = document.querySelector("#model-search");
+      const selectAllModels = document.querySelector("#select-all-models");
+      const bomPicker = document.querySelector("#bom-picker");
+      const applySelected = document.querySelector("#apply-selected");
+      function visibleModels() {
+        const query = modelSearch.value.trim().toLowerCase();
+        return models.filter((model) => `${model.code} ${model.name}`.toLowerCase().includes(query));
+      }
+      function renderModels() {
+        const visible = visibleModels();
+        const season = `SS${currentYear().slice(-2)}`;
+        document.querySelector(".compact-year").textContent = currentYear();
+        document.querySelector("#reference-bom").textContent = `${season} BOM 004 : 100001 - DEMO PRODUCT`;
+        modelsBody.innerHTML = visible.map((model) => {
+          const statusClass = model.status === "Validated" ? "validated" : model.status === "Evaluated" ? "evaluated" : "";
+          const hasLevers = model.status !== "Not evaluated";
+          return `<tr>
+            <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
+            <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
+            <td>4.65</td><td>${model.bom ? "80 %" : "--"}</td><td>${model.bom ? "23 %" : "--"}</td>
+            <td><span class="model-tag ${statusClass}">${model.status}</span>${model.status === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
+            <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
+            <td>DEMO USER<span class="model-caption">17/03/27</span></td>
+            <td>${model.bom ? `<span class="bom-method">${model.method}</span><span class="model-caption">${season} BOM 004 : 100001 - DEMO PRODUCT</span>` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
+          </tr>`;
+        }).join("");
+        if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="9">No model codes match your search.</td></tr>';
+        document.querySelector("#model-count").textContent = `${visible.length} Model Codes`;
+        const selectedCount = models.filter((model) => model.selected).length;
+        document.querySelector("#selected-count").textContent = `${selectedCount} model code selected`;
+        bomPicker.disabled = selectedCount === 0;
+        applySelected.disabled = selectedCount === 0 || !bomPicker.value;
+        selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
+        selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
+      }
+      modelsBody.addEventListener("change", (event) => {
+        const input = event.target.closest("[data-model-id]");
+        if (!input) return;
+        models[Number(input.dataset.modelId)].selected = input.checked;
+        renderModels();
+      });
+      selectAllModels.addEventListener("change", () => {
+        visibleModels().forEach((model) => model.selected = selectAllModels.checked);
+        renderModels();
+      });
+      modelSearch.addEventListener("input", renderModels);
+      bomPicker.addEventListener("change", renderModels);
+      function showModelsNotice(message) {
+        const notice = document.querySelector("#models-notice");
+        notice.textContent = message;
+        notice.hidden = false;
+      }
+      function applyBom(selectedOnly) {
+        models.filter((model) => !selectedOnly || model.selected).forEach((model) => {
+          model.bom = true;
+          model.method = "MANUAL";
+        });
+        renderModels();
+        showModelsNotice("Preview: reference BOM applied to the selected scope.");
+      }
+      document.querySelector("#apply-all").addEventListener("click", () => applyBom(false));
+      applySelected.addEventListener("click", () => applyBom(true));
+      document.querySelector("#reference-bom").addEventListener("click", (event) => {
+        event.preventDefault();
+        showModelsNotice("Reference BOM 004 — 100001 - DEMO PRODUCT.");
+      });
+      document.querySelector("#recalculate").addEventListener("click", () => {
+        showModelsNotice("Preview only: calculation is not connected to a backend.");
+      });
+      document.querySelector(".favorite").addEventListener("click", (event) => {
+        const button = event.currentTarget;
+        const selected = button.getAttribute("aria-pressed") !== "true";
+        button.setAttribute("aria-pressed", String(selected));
+        button.setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
+      });
+      function navigateView() {
+        const modelsVisible = location.hash === "#all-model-code";
+        document.querySelector("#models-view").hidden = !modelsVisible;
+        document.querySelector("#settings-view").hidden = modelsVisible;
+        document.querySelector(".footer").hidden = modelsVisible;
+        document.body.classList.toggle("models-view", modelsVisible);
+        document.querySelector(modelsVisible ? "#models-year-slot" : "#settings-year-slot").append(document.querySelector(".year-bar"));
+        document.querySelectorAll("[data-page]").forEach((item) => {
+          const active = item.dataset.page === (modelsVisible ? "all-model-code" : "settings");
+          item.classList.toggle("active", active);
+          if (active) item.setAttribute("aria-current", "page");
+          else item.removeAttribute("aria-current");
+        });
+        window.scrollTo(0, 0);
+      }
+      window.addEventListener("hashchange", navigateView);
+      renderModels();
+      navigateView();
+      updateValidation();
+    saveButton.addEventListener("click", () => {
+      if (saveButton.disabled) {
+        document.querySelector("#functional-card").scrollIntoView({ behavior: "smooth" });
+        (reference.value.trim() ? shares.find((input) => !input.value.trim()) : reference).focus();
+      }
+    });
+
+    updateValidation();
+  </script>
+</body>
+</html>
