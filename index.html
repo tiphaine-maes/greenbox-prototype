@@ -6,7 +6,11 @@
   <title>Greenbox — Settings preview</title>
   <style>
     :root {
-      font-family: Inter, Arial, sans-serif;
+      font-family: "Decathlon VF", Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
+      letter-spacing: 0;
       color: #141414;
       background: #f5f4f4;
       font-synthesis: none;
@@ -356,6 +360,33 @@
       .topbar { padding: 0 22px; gap: 20px; }
       .product-heading { margin: -24px -20px 24px; }
     }
+    /* Vitamin Play typography: text uses optical size 16, titles use display size 32. */
+    body { font-optical-sizing: auto; font-variation-settings: "opsz" 16; }
+    h1, h2 { font-weight: 600; font-variation-settings: "opsz" 32; }
+    h1, .product-info h1 { font-size: 32px; line-height: 1.188; }
+    h2, .models-title h2 { font-size: 22px; line-height: 1.182; }
+    .product-info h1 { font-size: calc(32px - 10px * var(--compact-progress, 0)); }
+    .models-table-toolbar h3 { font-size: 16px; line-height: 1.5; font-weight: 600; }
+    .status { font-size: 16px; line-height: 1.5; font-weight: 600; }
+    .nav-help, .error, .bom-action, .models-notice {
+      font-size: 14px;
+      line-height: 1.429;
+      font-weight: 500;
+    }
+    .product-meta, .calculation, .models-table, .models-table th, .model-name,
+    .model-caption, .model-selected {
+      font-size: 12px;
+      line-height: 1.333;
+      font-weight: 500;
+    }
+    .details, .hint { font-weight: 500; line-height: 1.5; }
+    .action, .action.primary, .year {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.7;
+    }
+    .action.compact { font-size: 12px; line-height: 1.3; }
+    .model-search, .bom-picker { font-size: 14px; line-height: 1.429; }
   </style>
 </head>
 <body>
