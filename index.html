@@ -397,7 +397,8 @@
     }
     .action.compact { font-size: 12px; line-height: 1.3; }
     .model-search, .bom-picker { font-size: 14px; line-height: 1.429; }
-    .year-label, .product-meta > span, .nav-help, .search > span {
+    .year-label, .product-meta > span, .nav-help, .search > span,
+    #last-calculation, .bom-description {
       font-size: var(--vp-core-font-size-100, 0.75rem);
       font-style: normal;
       font-weight: 500;
@@ -486,11 +487,11 @@
         <p class="models-notice" id="models-notice" role="status" hidden></p>
         <div class="bom-actions">
           <div class="bom-action">
-            <div>Apply the reference BOM to all model code<br><a href="#reference-bom" id="reference-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a></div>
+            <div><span class="bom-description">Apply the reference BOM to all model code</span><br><a href="#reference-bom" id="reference-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a></div>
             <button type="button" class="action compact" id="apply-all">Apply all</button>
           </div>
           <div class="bom-action">
-            <div>Apply the BOM to all model code selected<br><span id="selected-count">0 model code selected</span></div>
+            <div><span class="bom-description">Apply the same BOM to all model code selected</span><br><span id="selected-count">0 model code selected</span></div>
             <select class="bom-picker" id="bom-picker" aria-label="Select BOM" disabled><option value="">Select BOM</option><option value="reference">BOM 004</option></select>
             <button type="button" class="action compact" id="apply-selected" disabled>Apply</button>
           </div>
