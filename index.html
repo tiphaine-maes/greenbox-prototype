@@ -304,9 +304,6 @@
       margin-right: 10px;
     }
     .models-view .year[aria-pressed="false"] {
-      width: 70px;
-      padding-left: 0;
-      padding-right: 0;
       overflow: hidden;
       border-width: 1px;
     }
@@ -454,6 +451,15 @@
     }
     .year[aria-pressed="true"] { background: #3944c4; border-color: #3944c4; color: white; }
     #apply-selected:disabled { border-color: #ddd; color: #aaa; }
+    #bom-picker {
+      display: flex;
+      padding: var(--vp-semantic-spacing-4xs, 2px);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--vp-semantic-spacing-4xs, 2px);
+      flex: 1 0 0;
+    }
+    #bom-picker:disabled { opacity: 0.38; }
   </style>
 </head>
 <body>
@@ -798,7 +804,7 @@
       function applyBom(selectedOnly) {
         models.filter((model) => !selectedOnly || model.selected).forEach((model) => {
           model.bom = true;
-          model.method = "MANUAL";
+          model.method = selectedOnly ? "MANUAL" : "AUTO";
         });
         renderModels();
         showModelsNotice("Preview: reference BOM applied to the selected scope.");
