@@ -715,6 +715,7 @@
         button.setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
       });
       function navigateView() {
+        if (!location.hash) history.replaceState(null, "", "#all-model-code");
         const modelsVisible = location.hash === "#all-model-code";
         document.querySelector("#models-view").hidden = !modelsVisible;
         document.querySelector("#settings-view").hidden = modelsVisible;
