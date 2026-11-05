@@ -419,6 +419,13 @@
       line-height: 150%;
       color: #616161;
     }
+    .status > span:last-child {
+      font-size: var(--vp-core-font-size-200, 1rem);
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      color: #000000;
+    }
     body, body * { font-weight: 400 !important; }
   </style>
 </head>
@@ -677,7 +684,7 @@
       document.querySelector("#reference-error").hidden = !missingReference;
       setStatus("#functional-status", missingReference, "1 field");
       shares.forEach((input) => input.setAttribute("aria-invalid", String(!sharingComplete && Boolean(input.value.trim()))));
-      setStatus("#sharing-status", !sharingComplete, "total must equal 100%");
+      setStatus("#sharing-status", !sharingComplete);
       sharingError.hidden = sharingComplete;
       saveButton.disabled = missingReference || !sharingComplete;
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
@@ -687,7 +694,7 @@
       const status = document.querySelector(selector);
       status.classList.toggle("complete", !incomplete);
       status.querySelector(".status-icon").textContent = incomplete ? "!" : "✓";
-      status.querySelector("span:last-child").textContent = incomplete ? `Incomplete · ${message}` : "Complete";
+      status.querySelector("span:last-child").textContent = incomplete ? (message ? `Incomplete · ${message}` : "Incomplete") : "Complete";
     }
 
     reference.addEventListener("input", updateValidation);
