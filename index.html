@@ -439,6 +439,21 @@
       font-weight: 600 !important;
       line-height: 118.18%;
     }
+    .year, #recalculate, #apply-all, #apply-selected {
+      border-radius: var(--vp-web-component-button-border-radius-rounded-top-left, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-top-right, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-bottom-right, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-bottom-left, 62.4375rem);
+      border: 1px solid var(--vp-web-component-button-color-secondary-regular-border, #949494);
+      background: var(--vp-web-component-button-color-secondary-regular-container-default, #FFF);
+      color: #101010;
+      display: flex;
+      height: 2rem;
+      min-height: 2rem;
+      padding: var(--vp-web-component-button-spacing-small-padding-block-start, 0.5rem) var(--vp-web-component-button-spacing-small-padding-inline-end, 1rem) var(--vp-web-component-button-spacing-small-padding-block-end, 0.5rem) var(--vp-web-component-button-spacing-small-padding-inline-start, 1rem);
+      justify-content: center;
+      align-items: center;
+      gap: var(--vp-web-component-button-spacing-small-gap, 0.25rem);
+    }
+    .year[aria-pressed="true"] { background: #3944c4; border-color: #3944c4; color: white; }
+    #apply-selected:disabled { border-color: #ddd; color: #aaa; }
   </style>
 </head>
 <body>
