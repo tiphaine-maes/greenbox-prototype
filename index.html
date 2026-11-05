@@ -187,7 +187,7 @@
     }
 
     .status.complete { color: #008665; }
-    .status-icon { font-size: 21px; }
+    .status-icon { display: block; width: 24px; height: 24px; flex-shrink: 0; }
 
     .field { width: min(100%, 600px); margin-top: 24px; }
     label { display: block; margin-bottom: 8px; color: #646464; }
@@ -693,7 +693,13 @@
     function setStatus(selector, incomplete, message) {
       const status = document.querySelector(selector);
       status.classList.toggle("complete", !incomplete);
-      status.querySelector(".status-icon").textContent = incomplete ? "!" : "✓";
+      const icon = document.createElement("img");
+      icon.className = "status-icon";
+      icon.src = incomplete ? "status-incomplete.svg" : "status-complete.svg";
+      icon.alt = "";
+      icon.width = 24;
+      icon.height = 24;
+      status.querySelector(".status-icon").replaceWith(icon);
       status.querySelector("span:last-child").textContent = incomplete ? (message ? `Incomplete · ${message}` : "Incomplete") : "Complete";
     }
 
