@@ -81,7 +81,14 @@
 
     .nav-item { padding: 14px 18px; color: #555; }
     .nav-item svg { flex-shrink: 0; }
-    .nav-label { white-space: nowrap; overflow: hidden; }
+    .nav-label {
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: var(--vp-core-font-size-200, 1rem);
+      font-style: normal;
+      font-weight: 500;
+      line-height: 150%;
+    }
     .sidebar-toggle svg { transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
     .sidebar-toggle {
       position: absolute;
