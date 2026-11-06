@@ -1249,7 +1249,7 @@
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
-        ].map((lever) => `<tr><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td><span class="impact-caption">${design ? `TMAES26<br>${design.modified}` : "--"}</span></td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : "--"}</td></tr>`).join("");
+        ].map((lever) => `<tr><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
         updateBomOptions(selector, year);
