@@ -1054,7 +1054,7 @@
         bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { id: "004", method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
         calculationDates: new Map([[2026, "12/05/26 - 12:24"]]),
-        designLeversByYear: new Map([[2026, { minimalWaste: true, efficiency: null, modified: "17/03/27", minimalWasteCommunicated: true }]]),
+        designLeversByYear: new Map(),
       }));
       const modelsBody = document.querySelector("#models-body");
       const modelSearch = document.querySelector("#model-search");
@@ -1248,9 +1248,9 @@
         const year = Number(currentYear());
         const design = detailModel.designLeversByYear.get(year);
         document.querySelector("#design-levers-body").innerHTML = [
-          { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "--", communicated: design?.minimalWasteCommunicated },
-          { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "--", communicated: false },
-        ].map((lever) => `<tr><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td><span class="impact-caption">${design ? `TMAES26<br>${design.modified}` : "--"}</span></td><td>${lever.value !== "--" ? `<span class="circularity-validity">Valid from ${year}</span>` : "--"}</td></tr>`).join("");
+          { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
+          { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
+        ].map((lever) => `<tr><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td><span class="impact-caption">${design ? `TMAES26<br>${design.modified}` : "--"}</span></td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : "--"}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
         updateBomOptions(selector, year);
@@ -1477,7 +1477,7 @@
         designEditTarget = { model: detailModel, year };
         const values = detailModel.designLeversByYear.get(year);
         designForm.reset();
-        designForm.querySelector(`[name="minimal-waste"][value="${values?.minimalWaste === false ? "no" : "yes"}"]`).checked = true;
+        if (values) designForm.querySelector(`[name="minimal-waste"][value="${values.minimalWaste ? "yes" : "no"}"]`).checked = true;
         efficiencyInput.value = values?.efficiency ?? "";
         designSheet.showModal();
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) designSheet.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
