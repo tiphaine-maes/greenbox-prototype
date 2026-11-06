@@ -802,7 +802,7 @@
             </table></div>
           </section>
           <section class="levers-card" aria-labelledby="design-levers-title">
-            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>2 Levers</span></h3><button type="button" class="action compact design-actions" id="edit-design-levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Add / Modify actions</button></div>
+            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>2 Levers</span></h3><button type="button" class="action compact design-actions" id="edit-design-levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Update design levers</button></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:54%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Value</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
@@ -1258,7 +1258,7 @@
           design?.efficiency == null && "Efficiency",
         ].filter(Boolean);
         document.querySelector("#design-levers-warning").hidden = missingDesignLevers.length === 0;
-        document.querySelector("#design-levers-warning-message").textContent = `Complete ${missingDesignLevers.join(" and ")} using Add / Modify actions.`;
+        document.querySelector("#design-levers-warning-message").textContent = `Complete ${missingDesignLevers.join(" and ")} using Update design levers.`;
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
