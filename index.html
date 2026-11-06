@@ -1298,8 +1298,11 @@
         { name: "Durability", grade: "", state: "Not evaluated", communicated: false, icon: '<path d="M20.4062 7.27109C18.74 4.27049 15.5423 2.23438 11.8605 2.23438C6.46598 2.23438 2.09639 6.60396 2.09639 11.9985C2.09639 17.393 6.46598 21.7625 11.8605 21.7625C17.255 21.7625 21.6246 17.393 21.6246 11.9985H20.1246C20.1246 16.5645 16.4265 20.2625 11.8605 20.2625C7.29441 20.2625 3.59639 16.5645 3.59639 11.9985C3.59639 7.43239 7.29441 3.73438 11.8605 3.73438C15.0628 3.73438 17.8364 5.5549 19.2119 8.21747H16.6492V9.71747H21.9062V4.46043H20.4062V7.27109ZM11.1105 11.6878V7.49142H12.6105V12.3091L9.01052 15.9091L7.94986 14.8484L11.1105 11.6878Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA" stroke="none"/>' },
       ];
       function renderCircularity(year) {
+        const yearLevers = circularityLevers.map((lever) => year >= 2027
+          ? { ...lever, grade: "", state: "Not evaluated", color: undefined, communicated: false }
+          : lever);
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
-        document.querySelector("#circularity-content").innerHTML = circularityLevers.map((lever) => `
+        document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${lever.grade ? "" : " not-evaluated"}" aria-label="${lever.name}: ${lever.grade ? `${lever.grade}, ` : ""}${lever.state}">
             <header class="circularity-card-header"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</header>
             <div class="circularity-result">
@@ -1312,7 +1315,7 @@
             </div>` : ""}
             <div class="circularity-assessment">${lever.grade ? `<p>Excellent niveau de réparabilité.</p><dl><div><dt>Profondeur de réparabilité</dt><dd aria-label="3 sur 3">★★★</dd></div><div><dt>Efficacité réparation</dt><dd aria-label="3 sur 3">★★★</dd></div></dl>` : ""}</div>
           </article>`).join("");
-        document.querySelector("#circularity-levers-body").innerHTML = circularityLevers.map((lever) => `<tr><td>${lever.name}</td><td><span class="model-tag ${lever.state === "Validated" ? "validated" : lever.grade ? "evaluated" : ""}">${lever.state}</span></td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
+        document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td><span class="model-tag ${lever.state === "Validated" ? "validated" : lever.grade ? "evaluated" : ""}">${lever.state}</span></td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
       function renderDetail() {
         if (!detailModel) return;
@@ -1343,8 +1346,10 @@
           badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
         });
         const status = document.querySelector("#detail-circularity");
-        status.textContent = detailModel.status;
-        status.className = `model-tag ${detailModel.status === "Validated" ? "validated" : detailModel.status === "Evaluated" ? "evaluated" : ""}`;
+        const circularityStatus = year >= 2027 ? "Not evaluated" : detailModel.status;
+        status.textContent = circularityStatus;
+        status.className = `model-tag ${circularityStatus === "Validated" ? "validated" : circularityStatus === "Evaluated" ? "evaluated" : ""}`;
+        status.closest(".synthesis-card").querySelector(".valid-from").hidden = year >= 2027;
       }
       function openModel(id) {
         detailModel = models.find((model) => model.id === id);
@@ -1369,13 +1374,14 @@
         document.querySelector("#apply-all").disabled = !hasReferenceBom;
         modelsBody.innerHTML = visible.map((model) => {
           const bom = model.bomByYear.get(Number(currentYear()));
-          const statusClass = model.status === "Validated" ? "validated" : model.status === "Evaluated" ? "evaluated" : "";
+          const circularityStatus = year >= 2027 ? "Not evaluated" : model.status;
+          const statusClass = circularityStatus === "Validated" ? "validated" : circularityStatus === "Evaluated" ? "evaluated" : "";
           const hasLevers = model.status !== "Not evaluated";
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td>4.65</td><td>${bom ? "80 %" : "--"}</td><td>${bom ? "23 %" : "--"}</td>
-            <td><span class="model-tag ${statusClass}">${model.status}</span>${model.status === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
+            <td><span class="model-tag ${statusClass}">${circularityStatus}</span>${circularityStatus === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
             <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
             <td>${bom ? `<span class="model-caption">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
