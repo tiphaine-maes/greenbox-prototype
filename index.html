@@ -1644,7 +1644,6 @@
       }
       window.addEventListener("hashchange", navigateView);
       document.querySelector("#design-levers-title").prepend(document.querySelector("#design-levers-warning svg").cloneNode(true));
-      document.querySelector("#levers-content").before(document.querySelector("#design-levers-warning"));
       [bomPicker, document.querySelector("#detail-bom-select")].forEach(setupBomDropdown);
       renderModels();
       renderImpact();
