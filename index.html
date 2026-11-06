@@ -398,11 +398,15 @@
     .model-nav-heading { display: flex; align-items: center; gap: 8px; }
     .model-nav-heading #model-code-nav { flex: 1; min-width: 0; }
     .model-nav-heading .nav-label { white-space: normal; }
-    .model-nav-heading.selected #model-code-nav { color: #3643BA; background: none; }
+    .model-nav-heading.selected #model-code-nav { color: #616161; background: none; }
+    .synthesis-view .model-nav-heading.selected #model-code-nav { color: #3643BA; }
     .model-clear { flex-shrink: 0; border: 0; background: none; color: #3643BA; cursor: pointer; padding: 8px; }
+    body:not(.synthesis-view) .model-clear { color: #616161; }
     .sidebar-collapsed .model-clear { display: none; }
     .model-subnav .nav-item { display: flex; align-items: center; gap: 12px; width: 100%; border: 0; background: none; text-align: left; cursor: pointer; }
     .model-subnav .nav-item.active { background: #f4f4ff; }
+    body:not(.synthesis-view) #synthesis-nav { color: #616161; }
+    body:not(.synthesis-view) #synthesis-nav path { fill: #616161; }
     .model-subnav .synthesis-icon { background: none; width: 24px; height: 24px; color: inherit; }
     .model-subnav .nav-label { white-space: normal; }
     .model-subnav .nav-item { font-family: inherit; }
@@ -1028,9 +1032,6 @@
       document.querySelector("#clear-model").addEventListener("click", () => {
         detailModel = null;
         updateModelNavigation();
-        document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible);
-        if (detailVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
-        else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
         if (location.hash === "#all-model-code") navigateView();
       });
       document.querySelectorAll("[data-model-section]").forEach((button) => button.addEventListener("click", () => {
@@ -1130,6 +1131,9 @@
         document.querySelector(".footer").hidden = modelsVisible || detailVisible;
         document.body.classList.toggle("models-view", modelsVisible || detailVisible);
         document.body.classList.toggle("synthesis-view", detailVisible);
+        document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible);
+        if (detailVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
+        else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
         document.querySelector(modelsVisible || detailVisible ? "#models-year-slot" : "#settings-year-slot").append(document.querySelector(".year-bar"));
         updateModelNavigation();
         if (detailModel) {
