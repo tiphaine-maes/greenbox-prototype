@@ -479,7 +479,6 @@
     .model-tag.validated { background: #008665; color: white; }
     .model-tag.evaluated { background: #8d98a6; color: white; }
     .model-caption { display: block; color: #616161; margin-top: 4px; line-height: 1.35; }
-    .bom-method { color: #3944c4; }
     .empty-bom { color: #aaa; }
     .model-levers { text-decoration: underline; line-height: 1.4; }
     .models-notice { color: #008665; margin: 0 0 18px; font-size: 14px; }
@@ -1138,7 +1137,7 @@
             <td><span class="model-tag ${statusClass}">${model.status}</span>${model.status === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
             <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
-            <td>${bom ? `<span class="bom-method">${bom.method}</span><span class="model-caption">${season} BOM 004 : 351243 - SHORT RUN 500 W DRY</span>${hasReferenceBom && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
+            <td>${bom ? `<span class="model-caption">${season} BOM 004 : 351243 - SHORT RUN 500 W DRY</span>${hasReferenceBom && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
           </tr>`;
         }).join("");
         if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="9">No model codes match your search.</td></tr>';
