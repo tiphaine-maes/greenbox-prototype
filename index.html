@@ -399,6 +399,20 @@
     .levers-card-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 24px; }
     .levers-card-heading h3 { padding: 0; }
     .design-actions { display: inline-flex; align-items: center; gap: 6px; background: #3643BA; border-color: #3643BA; color: white; }
+    .design-sheet { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(600px, 100%); max-width: 100%; height: 100dvh; max-height: 100dvh; padding: 0; border: 0; background: white; color: #101010; }
+    .design-sheet::backdrop { background: rgb(0 0 0 / 55%); }
+    .design-sheet form { display: flex; flex-direction: column; height: 100%; }
+    .design-sheet-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; }
+    .design-sheet-header h2 { font-size: 22px; font-weight: 600 !important; }
+    .design-sheet-close { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; }
+    .design-sheet-fields { flex: 1; overflow-y: auto; padding: 20px 24px; }
+    .design-sheet fieldset { margin: 0 0 32px; padding: 0; border: 0; }
+    .design-sheet legend, .design-sheet-fields > label { margin-bottom: 16px; color: #101010; font-size: 14px; }
+    .design-sheet-radios { display: flex; gap: 24px; margin-top: 16px; }
+    .design-sheet-radios label { display: flex; align-items: center; gap: 12px; margin: 0; color: #101010; }
+    .design-sheet-radios input { width: 20px; height: 20px; margin: 0; accent-color: #3643BA; }
+    .design-sheet-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 20px 24px; border-top: 1px solid #E1E0DF; }
+    body:has(.design-sheet[open]) { overflow: hidden; }
     .levers-table { min-width: 1160px; table-layout: fixed; font-size: 14px; }
     .levers-table th { background: #f5f4f5; font-size: 12px; border-top: 1px solid #E1E0DF; padding: 16px 10px; }
     .levers-table td { background: white; padding: 16px 10px; }
@@ -781,11 +795,11 @@
             </table></div>
           </section>
           <section class="levers-card" aria-labelledby="design-levers-title">
-            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>1 Lever</span></h3><button type="button" class="action compact design-actions" data-detail-preview="Add / Modify actions"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Add / Modify actions</button></div>
+            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>2 Levers</span></h3><button type="button" class="action compact design-actions" id="edit-design-levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Add / Modify actions</button></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:54%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Value</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
-              <tbody><tr><td>Minimal Waste Design</td><td class="lever-percent">Yes</td><td><span class="communication-tag">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="circularity-validity">Valid from 2026</span></td></tr></tbody>
+              <tbody id="design-levers-body"></tbody>
             </table></div>
           </section>
         </div>
@@ -886,6 +900,18 @@
     <button class="action primary" id="save-button">Save Changes</button>
   </footer>
 
+  <dialog class="design-sheet" id="design-levers-sheet" aria-labelledby="design-sheet-title">
+    <form id="design-levers-form">
+      <header class="design-sheet-header"><h2 id="design-sheet-title">Update Design Levers</h2><button type="button" class="design-sheet-close" id="close-design-sheet" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101010" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+      <div class="design-sheet-fields">
+        <fieldset><legend>Minimal Waste Design</legend><div class="design-sheet-radios"><label><input type="radio" name="minimal-waste" value="yes" required>Yes</label><label><input type="radio" name="minimal-waste" value="no">No</label></div></fieldset>
+        <label for="design-efficiency">Efficiency (%)</label>
+        <input type="number" id="design-efficiency" min="0" max="100" step="any" placeholder="Enter a percentage %" aria-describedby="design-efficiency-hint">
+        <p class="hint" id="design-efficiency-hint">Enter a value between 0 and 100.</p>
+      </div>
+      <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-design-sheet">Cancel</button><button type="submit" class="action primary">Save</button></footer>
+    </form>
+  </dialog>
   <script>
     function updateSidebarTop() {
       document.body.style.setProperty("--sidebar-top", `${Math.max(0, 84 - window.scrollY)}px`);
@@ -1028,6 +1054,7 @@
         bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { id: "004", method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
         calculationDates: new Map([[2026, "12/05/26 - 12:24"]]),
+        designLeversByYear: new Map([[2026, { minimalWaste: true, efficiency: null, modified: "17/03/27", minimalWasteCommunicated: true }]]),
       }));
       const modelsBody = document.querySelector("#models-body");
       const modelSearch = document.querySelector("#model-search");
@@ -1219,6 +1246,11 @@
         if (!detailModel) return;
         document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         const year = Number(currentYear());
+        const design = detailModel.designLeversByYear.get(year);
+        document.querySelector("#design-levers-body").innerHTML = [
+          { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "--", communicated: design?.minimalWasteCommunicated },
+          { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "--", communicated: false },
+        ].map((lever) => `<tr><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td><span class="impact-caption">${design ? `TMAES26<br>${design.modified}` : "--"}</span></td><td>${lever.value !== "--" ? `<span class="circularity-validity">Valid from ${year}</span>` : "--"}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
         updateBomOptions(selector, year);
@@ -1415,6 +1447,65 @@
       document.querySelector("#impact-more").addEventListener("click", () => {
         impactExpanded = !impactExpanded;
         renderImpact();
+      });
+      const designSheet = document.querySelector("#design-levers-sheet");
+      const designForm = document.querySelector("#design-levers-form");
+      const efficiencyInput = document.querySelector("#design-efficiency");
+      let designEditTarget = null;
+      let sheetAnimation = null;
+      function closeDesignSheet() {
+        if (!designSheet.open || sheetAnimation) return;
+        const finish = () => {
+          designSheet.close();
+          designEditTarget = null;
+          sheetAnimation = null;
+          document.querySelector("#edit-design-levers").focus({ preventScroll: true });
+        };
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) finish();
+        else {
+          sheetAnimation = designSheet.animate([{ transform: "translateX(0)" }, { transform: "translateX(100%)" }], { duration: 220, easing: "ease-in", fill: "forwards" });
+          sheetAnimation.onfinish = () => {
+            const animation = sheetAnimation;
+            finish();
+            animation.cancel();
+          };
+        }
+      }
+      document.querySelector("#edit-design-levers").addEventListener("click", () => {
+        if (!detailModel) return;
+        const year = Number(currentYear());
+        designEditTarget = { model: detailModel, year };
+        const values = detailModel.designLeversByYear.get(year);
+        designForm.reset();
+        designForm.querySelector(`[name="minimal-waste"][value="${values?.minimalWaste === false ? "no" : "yes"}"]`).checked = true;
+        efficiencyInput.value = values?.efficiency ?? "";
+        designSheet.showModal();
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) designSheet.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
+      });
+      ["#close-design-sheet", "#cancel-design-sheet"].forEach((selector) => document.querySelector(selector).addEventListener("click", closeDesignSheet));
+      designSheet.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        closeDesignSheet();
+      });
+      designSheet.addEventListener("click", (event) => {
+        if (event.target !== designSheet) return;
+        const bounds = designSheet.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right) closeDesignSheet();
+      });
+      designForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!designEditTarget || sheetAnimation || !designForm.reportValidity()) return;
+        const { model, year } = designEditTarget;
+        const previous = model.designLeversByYear.get(year);
+        const minimalWaste = designForm.querySelector('[name="minimal-waste"]:checked').value === "yes";
+        model.designLeversByYear.set(year, {
+          minimalWaste,
+          minimalWasteCommunicated: previous?.minimalWaste === minimalWaste && previous.minimalWasteCommunicated,
+          efficiency: efficiencyInput.value === "" ? null : efficiencyInput.valueAsNumber,
+          modified: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" }),
+        });
+        renderDetail();
+        closeDesignSheet();
       });
       modelsBody.addEventListener("change", (event) => {
         const input = event.target.closest("[data-model-id]");
