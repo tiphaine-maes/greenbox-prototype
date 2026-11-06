@@ -390,7 +390,6 @@
     .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
     .valid-from { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
     .valid-from.stale { color: #bf4500; background: #ffe6d8; }
-    .master-bom { background: #ead6ff; padding: 2px 4px; font-size: 12px; white-space: nowrap; }
     .synthesis-impact { margin-bottom: 20px; }
     .impact-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; }
     .impact-summary strong { color: #3643BA; font-size: 36px; }
@@ -438,7 +437,6 @@
     .model-subnav .nav-label { white-space: normal; }
     .model-subnav .nav-item { font-family: inherit; }
     #synthesis-title { font-size: 22px; font-weight: 600 !important; outline: none; }
-    #detail-bom-picker { flex: 1; min-width: 120px; border-radius: 0; }
     @media (max-width: 1100px) {
       .synthesis-cards, .synthesis-bottom { grid-template-columns: 1fr; }
       .lifecycle-breakdown { flex-direction: column; }
@@ -689,10 +687,6 @@
           <div class="calculation"><span>Last calculation: 12/05/24 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
         </div>
         <p class="models-notice" id="detail-notice" role="status" hidden></p>
-        <div class="bom-actions">
-          <div class="bom-action"><div><span class="bom-description">BOM selected :</span><br><a href="#model-code" id="detail-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a></div><span class="master-bom">Master BOM</span></div>
-          <div class="bom-action"><label for="detail-bom-picker">Select another BOM :</label><select id="detail-bom-picker" class="bom-picker"><option value="">Select BOM</option><option value="reference">BOM 004</option></select><button type="button" class="action compact" id="detail-apply" disabled>Apply</button></div>
-        </div>
         <div class="synthesis-cards">
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><span class="valid-from">Valid from 2026</span></article>
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>0%</strong></div><progress value="0" max="100" aria-label="Preferred process: 0 percent"></progress><span class="valid-from">Valid from 2026</span></article>
@@ -903,8 +897,6 @@
           cell.textContent = cell.textContent.replace(/SS\d{2}/g, `SS${button.textContent.slice(-2)}`);
         });
         updateValidation();
-        document.querySelector("#detail-bom-picker").value = "";
-        document.querySelector("#detail-apply").disabled = true;
         renderModels();
       });
     });
@@ -1067,8 +1059,6 @@
           badge.textContent = `Valid from ${validYear}`;
           badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
         });
-        document.querySelector("#detail-bom").textContent = bom ? `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY` : "No BOM selected for the model code";
-        document.querySelector(".master-bom").hidden = !bom;
         const status = document.querySelector("#detail-circularity");
         status.textContent = detailModel.status;
         status.className = `model-tag ${detailModel.status === "Validated" ? "validated" : detailModel.status === "Evaluated" ? "evaluated" : ""}`;
@@ -1220,20 +1210,6 @@
         models.filter((model) => model.bomByYear.has(Number(currentYear()))).forEach((model) => model.calculatedYears.add(Number(currentYear())));
         renderDetail();
       });
-      document.querySelector("#detail-bom-picker").addEventListener("change", (event) => {
-        document.querySelector("#detail-apply").disabled = !event.target.value;
-      });
-      document.querySelector("#detail-apply").addEventListener("click", () => {
-        if (!detailModel || !document.querySelector("#detail-bom-picker").value) return;
-        detailModel.bomByYear.set(Number(currentYear()), { method: "MANUAL" });
-        detailModel.calculatedYears.delete(Number(currentYear()));
-        renderModels();
-        showDetailNotice("Preview: BOM 004 applied to this model code.");
-      });
-      document.querySelector("#detail-bom").addEventListener("click", (event) => {
-        event.preventDefault();
-        showDetailNotice("Preview only: the BOM detail page is not available.");
-      });
       document.querySelectorAll("[data-detail-preview]").forEach((button) => button.addEventListener("click", () => showDetailNotice(`Preview only: ${button.dataset.detailPreview} is not connected to a backend.`)));
       document.querySelector("#impact-indicator").addEventListener("change", renderImpact);
       document.querySelector("#impact-more").addEventListener("click", () => {
@@ -1316,8 +1292,6 @@
         document.querySelector("#levers-content").hidden = !leversVisible;
         document.querySelector("#synthesis-title").textContent = leversVisible ? "Levers" : "Synthesis";
         document.querySelector("#detail-notice").hidden = true;
-        document.querySelector("#detail-bom-picker").value = "";
-        document.querySelector("#detail-apply").disabled = true;
         document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible && !leversVisible);
         if (detailVisible && !leversVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
         else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
