@@ -994,7 +994,7 @@
       const models = modelNames.map(([code, name], index) => ({
         id: index, status: modelStates[index], code, name,
         selected: false,
-        bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
+        bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { id: "004", method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
         calculationDates: new Map([[2026, "12/05/26 - 12:24"]]),
       }));
@@ -1084,17 +1084,31 @@
         document.querySelector("#impact-more").textContent = impactExpanded ? "See less ⌃" : "See more ⌄";
         document.querySelector("#impact-more").setAttribute("aria-expanded", String(impactExpanded));
       }
-      const referenceBomYears = new Set([2026, 2027]);
+      const bomsByYear = new Map([
+        [2026, ["001", "002", "003", "004"]],
+        [2027, ["001", "002"]],
+        [2028, ["001"]],
+        [2029, ["001"]],
+      ]);
+      const referenceBoms = new Map([[2026, "004"], [2027, "002"]]);
+      function bomLabel(year, id) {
+        return `SS${String(year).slice(-2)} BOM ${id} : 351243 - SHORT RUN 500 W DRY`;
+      }
+      function updateBomOptions(selector, year) {
+        if (selector.dataset.year === String(year)) return;
+        selector.innerHTML = '<option value="">Select BOM</option>' + bomsByYear.get(year).map((id) => `<option value="${id}">${bomLabel(year, id)}</option>`).join("");
+        selector.dataset.year = String(year);
+      }
       function renderDetail() {
         if (!detailModel) return;
         document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         const year = Number(currentYear());
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
-        selector.querySelector('[value="reference"]').textContent = `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY`;
-        selector.value = bom ? "reference" : "";
+        updateBomOptions(selector, year);
+        selector.value = bom ? bom.id : "";
         document.querySelector("#detail-bom-label").textContent = selector.selectedOptions[0].textContent;
-        document.querySelector("#detail-reference-bom-tag").hidden = !bom || bom.method === "MANUAL" || !referenceBomYears.has(year);
+        document.querySelector("#detail-reference-bom-tag").hidden = !bom || bom.method === "MANUAL" || bom.id !== referenceBoms.get(year);
         const lastCalculation = detailModel.calculationDates.get(year);
         document.querySelector("#detail-last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
         document.querySelector("#detail-recalculate").title = bom ? "Recalculate using the latest BOM data, including changes made in other tools" : "Select a BOM to recalculate";
@@ -1120,10 +1134,11 @@
       }
       function renderModels() {
         const visible = visibleModels();
-        const season = `SS${currentYear().slice(-2)}`;
+        const year = Number(currentYear());
+        updateBomOptions(bomPicker, year);
         document.querySelector(".compact-year").textContent = currentYear();
-        document.querySelector("#reference-bom").textContent = `${season} BOM 004 : 351243 - SHORT RUN 500 W DRY`;
-        const hasReferenceBom = referenceBomYears.has(Number(currentYear()));
+        const hasReferenceBom = referenceBoms.has(year);
+        document.querySelector("#reference-bom").textContent = hasReferenceBom ? bomLabel(year, referenceBoms.get(year)) : "";
         document.querySelector("#reference-bom").hidden = !hasReferenceBom;
         document.querySelector("#reference-bom-tag").hidden = !hasReferenceBom;
         document.querySelector("#apply-all").disabled = !hasReferenceBom;
@@ -1138,7 +1153,7 @@
             <td><span class="model-tag ${statusClass}">${model.status}</span>${model.status === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
             <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
-            <td>${bom ? `<span class="model-caption">${season} BOM 004 : 351243 - SHORT RUN 500 W DRY</span>${hasReferenceBom && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
+            <td>${bom ? `<span class="model-caption">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
           </tr>`;
         }).join("");
         if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="9">No model codes match your search.</td></tr>';
@@ -1258,7 +1273,7 @@
       document.querySelector("#detail-bom-select").addEventListener("change", (event) => {
         if (!detailModel) return;
         const year = Number(currentYear());
-        if (event.target.value) detailModel.bomByYear.set(year, { method: "MANUAL" });
+        if (event.target.value) detailModel.bomByYear.set(year, { id: event.target.value, method: "MANUAL" });
         else detailModel.bomByYear.delete(year);
         detailModel.calculatedYears.delete(year);
         detailModel.calculationDates.delete(year);
@@ -1303,20 +1318,23 @@
         notice.hidden = false;
       }
       function applyBom(selectedOnly) {
-        if (!selectedOnly && !referenceBomYears.has(Number(currentYear()))) return;
+        const year = Number(currentYear());
+        const id = selectedOnly ? bomPicker.value : referenceBoms.get(year);
+        if (!id) return;
         models.filter((model) => !selectedOnly || model.selected).forEach((model) => {
-          model.bomByYear.set(Number(currentYear()), { method: selectedOnly ? "MANUAL" : "AUTO" });
+          model.bomByYear.set(year, { id, method: selectedOnly ? "MANUAL" : "AUTO" });
           model.calculatedYears.delete(Number(currentYear()));
           model.calculationDates.delete(Number(currentYear()));
         });
         renderModels();
-        showModelsNotice("Preview: reference BOM applied to the selected scope.");
+        showModelsNotice(`Preview: ${bomLabel(year, id)} applied to the selected scope.`);
       }
       document.querySelector("#apply-all").addEventListener("click", () => applyBom(false));
       applySelected.addEventListener("click", () => applyBom(true));
       document.querySelector("#reference-bom").addEventListener("click", (event) => {
         event.preventDefault();
-        showModelsNotice("Reference BOM 004 — 351243 - SHORT RUN 500 W DRY.");
+        const year = Number(currentYear());
+        showModelsNotice(`Reference BOM: ${bomLabel(year, referenceBoms.get(year))}.`);
       });
       document.querySelector(".favorite").addEventListener("click", (event) => {
         const button = event.currentTarget;
