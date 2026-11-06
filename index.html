@@ -1033,7 +1033,7 @@
     settingsWarning.hidden = true;
     settingsWarning.setAttribute("role", "status");
     settingsWarning.innerHTML = `${warningSvg}<div><strong id="settings-warning-title"></strong><p id="settings-warning-details"></p></div><button type="button" class="action compact" id="go-to-settings">Go to settings</button>`;
-    document.querySelector("#settings-view h1").after(settingsWarning);
+    document.querySelector("#models-view > .models-title").after(settingsWarning);
     const settingsNavWarning = document.createElement("span");
     settingsNavWarning.className = "settings-nav-warning";
     settingsNavWarning.setAttribute("aria-hidden", "true");
@@ -1131,7 +1131,7 @@
       settingsNavWarning.hidden = !saveButton.disabled;
       document.querySelector("#settings-nav").setAttribute("aria-label", saveButton.disabled ? `Settings: incomplete for ${currentYear()}` : "Settings");
       document.querySelector("#settings-nav").title = saveButton.disabled ? `Settings incomplete for ${currentYear()}` : "Settings";
-      settingsWarning.hidden = !saveButton.disabled;
+      settingsWarning.hidden = !saveButton.disabled || location.hash !== "#all-model-code";
       const inSettings = location.hash === "#settings";
       document.querySelector("#settings-warning-title").textContent = `${inSettings ? "Settings incomplete for" : "Complete your settings for"} ${currentYear()}`;
       document.querySelector("#settings-warning-details").textContent = [
@@ -1787,7 +1787,6 @@
           else item.removeAttribute("aria-current");
         });
         renderDetail();
-        document.querySelector(detailVisible ? "#model-detail-view > .models-title" : modelsVisible ? "#models-view > .models-title" : "#settings-view h1").after(settingsWarning);
         updateValidation();
         window.scrollTo(0, 0);
         updateSidebarTop();
