@@ -330,6 +330,14 @@
     .models-title { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
     .models-title h2 { font-size: 23px; }
     .calculation { display: flex; align-items: center; gap: 14px; color: #616161; font-size: 12px; }
+    .detail-calculation-bar { display: flex; align-items: end; gap: 24px; padding: 16px 20px; margin-bottom: 20px; background: white; border: 1px solid #E1E0DF; border-radius: 8px; }
+    .detail-bom-field { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; color: #616161; font-size: 12px; }
+    #detail-bom-select { width: 100%; height: 36px; padding: 6px 32px 6px 12px; font-size: 14px; color: #101010; }
+    .detail-calculation-bar .calculation { padding-bottom: 2px; flex-shrink: 0; }
+    @media (max-width: 1100px) {
+      .detail-calculation-bar { flex-direction: column; align-items: stretch; gap: 16px; }
+      .detail-calculation-bar .calculation { justify-content: space-between; flex-wrap: wrap; }
+    }
     .compact { min-height: 34px; padding: 0 16px; font-size: 13px; white-space: nowrap; }
     .bom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
     .bom-action { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; border: 1px solid #e1dfdf; border-radius: 8px; background: white; color: #616161; font-size: 13px; line-height: 1.5; }
@@ -684,7 +692,12 @@
         <div id="detail-heading-slot"></div>
         <div class="models-title">
           <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
-          <div class="calculation"><span>Last calculation: 12/05/24 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
+        </div>
+        <div class="detail-calculation-bar" role="group" aria-label="BOM and calculation">
+          <label class="detail-bom-field" for="detail-bom-select">BOM selected
+            <select id="detail-bom-select" aria-describedby="detail-last-calculation"><option value="">Select BOM</option><option value="reference">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</option></select>
+          </label>
+          <div class="calculation"><span id="detail-last-calculation">Last calculation: 12/05/26 - 12:24</span><button type="button" class="action compact" id="detail-recalculate" disabled>Recalculate</button></div>
         </div>
         <p class="models-notice" id="detail-notice" role="status" hidden></p>
         <div class="synthesis-cards">
@@ -962,6 +975,7 @@
         selected: false,
         bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
+        calculationDates: new Map([[2026, "12/05/26 - 12:24"]]),
       }));
       const modelsBody = document.querySelector("#models-body");
       const modelSearch = document.querySelector("#model-search");
@@ -1053,7 +1067,13 @@
         if (!detailModel) return;
         const year = Number(currentYear());
         const bom = detailModel.bomByYear.get(year);
+        const selector = document.querySelector("#detail-bom-select");
+        selector.querySelector('[value="reference"]').textContent = `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY`;
+        selector.value = bom ? "reference" : "";
         document.querySelector("#detail-recalculate").disabled = !bom;
+        const lastCalculation = detailModel.calculationDates.get(year);
+        document.querySelector("#detail-last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
+        document.querySelector("#detail-recalculate").title = bom ? "" : "Select a BOM to recalculate";
         const validYear = Math.max(2026, ...[...detailModel.calculatedYears].filter((calculatedYear) => calculatedYear <= year));
         document.querySelectorAll("#model-detail-view .valid-from").forEach((badge) => {
           badge.textContent = `Valid from ${validYear}`;
@@ -1201,13 +1221,28 @@
         notice.hidden = false;
       }
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
+      function markCalculated(model) {
+        const year = Number(currentYear());
+        model.calculatedYears.add(year);
+        const now = new Date();
+        model.calculationDates.set(year, `${now.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" })} - ${now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`);
+      }
+      document.querySelector("#detail-bom-select").addEventListener("change", (event) => {
+        if (!detailModel) return;
+        const year = Number(currentYear());
+        if (event.target.value) detailModel.bomByYear.set(year, { method: "MANUAL" });
+        else detailModel.bomByYear.delete(year);
+        detailModel.calculatedYears.delete(year);
+        detailModel.calculationDates.delete(year);
+        renderModels();
+      });
       document.querySelector("#detail-recalculate").addEventListener("click", () => {
         if (!detailModel || !detailModel.bomByYear.has(Number(currentYear()))) return;
-        detailModel.calculatedYears.add(Number(currentYear()));
+        markCalculated(detailModel);
         renderDetail();
       });
       document.querySelector("#recalculate").addEventListener("click", () => {
-        models.filter((model) => model.bomByYear.has(Number(currentYear()))).forEach((model) => model.calculatedYears.add(Number(currentYear())));
+        models.filter((model) => model.bomByYear.has(Number(currentYear()))).forEach(markCalculated);
         renderDetail();
       });
       document.querySelectorAll("[data-detail-preview]").forEach((button) => button.addEventListener("click", () => showDetailNotice(`Preview only: ${button.dataset.detailPreview} is not connected to a backend.`)));
@@ -1237,6 +1272,7 @@
         models.filter((model) => !selectedOnly || model.selected).forEach((model) => {
           model.bomByYear.set(Number(currentYear()), { method: selectedOnly ? "MANUAL" : "AUTO" });
           model.calculatedYears.delete(Number(currentYear()));
+          model.calculationDates.delete(Number(currentYear()));
         });
         renderModels();
         showModelsNotice("Preview: reference BOM applied to the selected scope.");
