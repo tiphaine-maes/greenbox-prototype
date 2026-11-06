@@ -1106,7 +1106,7 @@
         updateBomOptions(selector, year);
         selector.value = bom ? bom.id : "";
         document.querySelector("#detail-bom-label").textContent = selector.selectedOptions[0].textContent;
-        document.querySelector("#detail-reference-bom-tag").hidden = !bom || bom.method === "MANUAL" || bom.id !== referenceBoms.get(year);
+        document.querySelector("#detail-reference-bom-tag").hidden = !bom || bom.id !== referenceBoms.get(year);
         const lastCalculation = detailModel.calculationDates.get(year);
         document.querySelector("#detail-last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
         document.querySelector("#detail-recalculate").title = bom ? "Recalculate using the latest BOM data, including changes made in other tools" : "Select a BOM to recalculate";
