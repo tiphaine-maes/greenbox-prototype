@@ -1190,6 +1190,12 @@
         button.setAttribute("aria-pressed", String(selected));
         button.setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
       });
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let previousViewHash = null;
+      let pageAnimations = [];
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) pageAnimations.forEach((animation) => animation.cancel());
+      });
       function navigateView() {
         if (!location.hash) history.replaceState(null, "", "#all-model-code");
         const detailMatch = location.hash.match(/^#model-code\/(\d+)(\/levers)?$/);
@@ -1242,6 +1248,18 @@
         window.scrollTo(0, 0);
         updateSidebarTop();
         if (detailVisible) document.querySelector("#synthesis-title").focus({ preventScroll: true });
+        pageAnimations.forEach((animation) => animation.cancel());
+        pageAnimations = [];
+        if (previousViewHash !== null && previousViewHash !== location.hash && !reducedMotion.matches) {
+          const view = document.querySelector(detailVisible ? "#model-detail-view" : modelsVisible ? "#models-view" : "#settings-view");
+          pageAnimations = [...view.children]
+            .filter((element) => !element.hidden && element !== productHeading && element.id !== "detail-heading-slot")
+            .map((element) => element.animate(
+              [{ opacity: 0.2 }, { opacity: 1 }],
+              { duration: 240, easing: "cubic-bezier(.22, 1, .36, 1)" }
+            ));
+        }
+        previousViewHash = location.hash;
       }
       window.addEventListener("hashchange", navigateView);
       renderModels();
