@@ -342,11 +342,67 @@
     .models-table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; }
     .models-table-toolbar h3 { margin: 0; font-size: 16px; color: #272a3b; }
     .model-search { width: 280px; height: 34px; border: 0; border-radius: 24px; background: #f5f4f5; font-size: 13px; }
-    .models-table { min-width: 1080px; font-size: 12px; table-layout: fixed; }
+    .models-table { min-width: 1164px; font-size: 12px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
     .models-table th { background: #f5f4f5; font-size: 12px; }
     .models-table th { position: sticky; top: 96px; z-index: 2; border-bottom: 1px solid #E1E0DF; box-shadow: inset 0 -1px #E1E0DF; }
     .horizontal-scroll .models-table th { position: relative; top: var(--table-header-offset, 0px); }
     .models-table td { height: 84px; background: white; padding: 12px 10px; }
+    .models-table tbody tr:has([data-model-id]) { cursor: pointer; }
+    .models-table tbody tr:has([data-model-id]):hover td { background: rgba(54, 67, 186, 0.05); }
+    .models-table tbody tr:has([data-model-id]):focus-visible td { background: rgba(54, 67, 186, 0.05); }
+    .models-table tbody tr:focus-visible { outline: 2px solid #3643BA; outline-offset: -2px; }
+    .synthesis-view .product-heading > img { display: none; }
+    .synthesis-view .product-info h1 { left: 32px; }
+    .synthesis-view .product-info .product-meta, .synthesis-view .year-bar { left: 32px; }
+    .synthesis-view .product-heading { height: calc(188px - 92px * var(--compact-progress, 0)); }
+    .synthesis-view .product-info h1::after { content: "Valid from 2027"; display: inline-block; margin-left: 16px; padding: 2px 4px; background: #d4f5eb; color: #017f5c; font-size: 12px; font-weight: 400; line-height: 16px; vertical-align: middle; }
+    .synthesis-view.product-scrolled .product-info h1::after { display: none; }
+    .synthesis-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
+    .synthesis-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; padding: 24px; min-width: 0; }
+    .synthesis-card h3 { margin: 0 0 20px; color: #272a3b; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+    .synthesis-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: #efeffb; color: #3643BA; flex-shrink: 0; }
+    .synthesis-metric { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .synthesis-metric > span:not(.synthesis-icon) { font-size: 14px; }
+    .synthesis-metric strong { margin-left: auto; color: #3643BA; font-size: 24px; }
+    .synthesis-card progress { display: block; width: 100%; height: 6px; margin: 10px 0 18px; border: 0; border-radius: 8px; overflow: hidden; background: #e1e3fc; }
+    .synthesis-card progress::-webkit-progress-bar { background: #e1e3fc; }
+    .synthesis-card progress::-webkit-progress-value { background: #3643BA; }
+    .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
+    .valid-from { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
+    .master-bom { background: #ead6ff; padding: 2px 4px; font-size: 12px; white-space: nowrap; }
+    .synthesis-impact { margin-bottom: 20px; }
+    .impact-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; }
+    .impact-summary strong { color: #3643BA; font-size: 36px; }
+    .impact-caption { display: block; font-size: 12px; color: #616161; }
+    .impact-position { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 8px 16px 24px; border-bottom: 1px solid #E1E0DF; font-size: 12px; }
+    .impact-position strong { color: #3643BA; font-size: 20px; margin: 0 10px; }
+    .median-warning { color: #bf4500; background: #ffe6d8; padding: 3px 4px; }
+    .lifecycle-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin: 20px 16px; }
+    .lifecycle-bar span { flex-basis: var(--phase-width); background: var(--phase-color); }
+    .lifecycle-breakdown { display: flex; justify-content: space-between; gap: 24px; margin: 0 16px 24px; }
+    .lifecycle-legend { display: flex; flex-wrap: wrap; gap: 20px; }
+    .lifecycle-legend span { font-size: 12px; color: #616161; }
+    .lifecycle-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--phase-color); margin-right: 6px; border-radius: 2px; }
+    .lifecycle-legend strong { display: block; margin-top: 10px; color: #272a3b; font-size: 14px; }
+    .indicator-control { min-width: 240px; font-size: 12px; color: #616161; }
+    .indicator-control select { margin-top: 8px; width: 100%; height: 32px; padding: 4px 8px; border-radius: 0; }
+    .impact-table { font-size: 14px; }
+    .impact-table th { font-size: 12px; font-weight: 400; }
+    .impact-table tbody tr { background: white; }
+    .impact-table tbody tr.active-indicator { background: rgba(54, 67, 186, 0.05); }
+    .impact-table td { padding: 12px 10px; }
+    .synthesis-bottom { display: grid; grid-template-columns: minmax(0, 2.6fr) minmax(250px, 1fr); gap: 12px; }
+    .synthesis-bottom table { font-size: 12px; }
+    .synthesis-bottom tbody tr { background: white; }
+    .document-item { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid #e8e8f4; font-size: 14px; }
+    .synthesis-card .center-action { margin: 24px auto 0; display: flex; }
+    .synthesis-subnav { margin: 8px 0; display: flex; color: #3643BA; text-decoration: none; }
+    #synthesis-title { font-size: 22px; font-weight: 600 !important; outline: none; }
+    #detail-bom-picker { flex: 1; min-width: 120px; border-radius: 0; }
+    @media (max-width: 1100px) {
+      .synthesis-cards, .synthesis-bottom { grid-template-columns: 1fr; }
+      .lifecycle-breakdown { flex-direction: column; }
+    }
     .models-table th:first-child, .models-table td:first-child { width: 36px; padding: 10px; }
     .models-table input[type="checkbox"] { width: 18px; height: 18px; margin: 0; padding: 0; accent-color: #3944c4; }
     .model-name { display: block; color: #616161; font-size: 12px; margin-top: 3px; }
@@ -505,13 +561,14 @@
         <span class="nav-label">All Model Code</span>
       </a>
       <div class="nav-divider" role="separator"></div>
-      <div class="nav-item" role="link" aria-disabled="true" aria-describedby="model-code-help" style="display: flex; align-items: center; gap: 8px;">
+      <a id="model-code-nav" class="nav-item" aria-disabled="true" aria-describedby="model-code-help" data-page="model-code" style="display: flex; align-items: center; gap: 8px;" title="Model Code">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M4.60221 4.60611C4.58679 4.62153 4.54688 4.67122 4.54688 4.80078V19.2008C4.54688 19.3303 4.58679 19.38 4.60221 19.3955C4.61762 19.4109 4.66731 19.4508 4.79688 19.4508H19.1969C19.3221 19.4508 19.3962 19.4122 19.4432 19.3715C19.485 19.3353 19.5231 19.2812 19.5469 19.2092V4.80078C19.5469 4.67122 19.507 4.62153 19.4915 4.60611C19.4761 4.5907 19.4264 4.55078 19.2969 4.55078H15.2469V12.3086L11.9969 11.0086L8.74687 12.3086V4.55078H4.79688C4.66731 4.55078 4.61762 4.5907 4.60221 4.60611ZM10.2469 4.55078V10.093L11.9969 9.39301L13.7469 10.093V4.55078H10.2469ZM3.54155 3.54545C3.87613 3.21087 4.32644 3.05078 4.79688 3.05078H19.2969C19.7673 3.05078 20.2176 3.21087 20.5522 3.54545C20.8868 3.88004 21.0469 4.33035 21.0469 4.80078V19.375L21.0323 19.4479C20.8693 20.2631 20.1892 20.9508 19.1969 20.9508H4.79688C4.32644 20.9508 3.87613 20.7907 3.54154 20.4561C3.20696 20.1215 3.04688 19.6712 3.04688 19.2008V4.80078C3.04688 4.33035 3.20696 3.88004 3.54155 3.54545Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
         </svg>
         <span class="nav-label">Model Code</span>
-      </div>
+      </a>
       <p class="nav-help" id="model-code-help">Select a Model Code to view its user journeys.</p>
+      <a href="#model-code" class="nav-item synthesis-subnav" id="synthesis-nav" hidden style="align-items: center; gap: 8px;" title="Synthesis"><span class="synthesis-icon" aria-hidden="true">&#10023;</span><span class="nav-label">Synthesis</span></a>
       <a href="#settings" id="settings-nav" class="nav-item active" data-page="settings" aria-current="page" style="display: flex; align-items: center; gap: 8px;" title="Settings">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M9.86182 3.28771C10.546 3.05965 11.3269 2.94922 11.999 2.94922C12.6664 2.94922 13.4197 3.059 14.0223 3.15942L14.649 3.26387V4.09922C14.649 5.085 15.5132 5.94922 16.499 5.94922C16.9111 5.94922 17.2279 5.86507 17.449 5.69922L17.9694 5.30894L18.4293 5.76889C19.4238 6.76335 20.1833 8.07299 20.6158 9.47865L20.8027 10.0859L20.2344 10.37C19.6832 10.6456 19.249 11.2892 19.249 11.9992C19.249 12.7093 19.6832 13.3528 20.2344 13.6284L20.8027 13.9125L20.6158 14.5198C20.1833 15.9255 19.4238 17.2351 18.4293 18.2295L18.0471 18.6118L17.5636 18.37C17.1891 18.1828 16.8185 18.0492 16.499 18.0492C15.4319 18.0492 14.649 18.8945 14.649 19.8992V20.7346L14.0223 20.839C13.4197 20.9394 12.6664 21.0492 11.999 21.0492C11.3316 21.0492 10.5782 20.9394 9.97569 20.839L9.34899 20.7346V19.8992C9.34899 18.9134 8.48478 18.0492 7.49899 18.0492C7.08685 18.0492 6.77013 18.1334 6.54899 18.2992L6.02862 18.6895L5.56866 18.2295C4.5742 17.2351 3.81467 15.9255 3.38216 14.5198L3.19531 13.9125L3.76358 13.6284C4.3148 13.3528 4.74899 12.7093 4.74899 11.9992C4.74899 11.2892 4.3148 10.6456 3.76358 10.37L3.19531 10.0859L3.38216 9.47865C3.81159 8.08301 4.46285 6.88491 5.44152 5.7975L5.90032 5.28772L6.44899 5.69922C6.73204 5.9115 7.07665 6.04922 7.49899 6.04922C8.56605 6.04922 9.34899 5.20399 9.34899 4.19921V3.45865L9.86182 3.28771ZM10.8279 4.57736C10.6452 6.20732 9.29475 7.54922 7.49899 7.54922C7.00428 7.54922 6.55904 7.44307 6.16745 7.26601C5.66706 7.91157 5.28637 8.60756 4.99534 9.38999C5.74524 9.99459 6.24899 10.953 6.24899 11.9992C6.24899 13.0441 5.74658 14.0013 4.99832 14.606C5.30708 15.4075 5.73862 16.1464 6.25729 16.7629C6.67418 16.6005 7.10772 16.5492 7.49899 16.5492C9.16166 16.5492 10.5905 17.8391 10.8176 19.4512C11.2299 19.5083 11.6403 19.5492 11.999 19.5492C12.3572 19.5492 12.7669 19.5084 13.1786 19.4514C13.3914 17.8531 14.7289 16.5492 16.499 16.5492C16.9385 16.5492 17.3567 16.6603 17.7123 16.7964C18.2436 16.1732 18.6853 15.4221 18.9997 14.606C18.2514 14.0013 17.749 13.0441 17.749 11.9992C17.749 10.9544 18.2514 9.99713 18.9997 9.39239C18.6909 8.59092 18.2594 7.85206 17.7407 7.23556C17.3238 7.3979 16.8903 7.44922 16.499 7.44922C14.8363 7.44922 13.4075 6.15929 13.1804 4.54728C12.7681 4.49014 12.3577 4.44922 11.999 4.44922C11.631 4.44922 11.2187 4.49275 10.8279 4.57736ZM11.999 10.3492C10.9722 10.3492 10.249 11.0532 10.249 11.9992C10.249 12.985 11.0132 13.7492 11.999 13.7492C12.9655 13.7492 13.749 12.9045 13.749 11.9992C13.749 11.1332 13.0048 10.3492 11.999 10.3492ZM8.74899 11.9992C8.74899 10.1452 10.2257 8.84922 11.999 8.84922C13.7931 8.84922 15.249 10.2652 15.249 11.9992C15.249 13.6939 13.8324 15.2492 11.999 15.2492C10.1848 15.2492 8.74899 13.8134 8.74899 11.9992Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
@@ -568,6 +625,37 @@
               <tbody id="models-body"></tbody>
             </table>
           </div>
+        </div>
+      </section>
+      <section id="model-detail-view" hidden aria-labelledby="synthesis-title">
+        <div id="detail-heading-slot"></div>
+        <div class="models-title">
+          <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
+          <div class="calculation"><span>Last calculation: 12/05/24 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
+        </div>
+        <p class="impact-caption" id="detail-model-label"></p>
+        <p class="models-notice" id="detail-notice" role="status" hidden></p>
+        <div class="bom-actions">
+          <div class="bom-action"><div><span class="bom-description">BOM selected :</span><br><a href="#model-code" id="detail-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a></div><span class="master-bom">Master BOM</span></div>
+          <div class="bom-action"><label for="detail-bom-picker">Select another BOM :</label><select id="detail-bom-picker" class="bom-picker"><option value="">Select BOM</option><option value="reference">BOM 004</option></select><button type="button" class="action compact" id="detail-apply" disabled>Apply</button></div>
+        </div>
+        <div class="synthesis-cards">
+          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>68%</strong></div><progress value="68" max="100" aria-label="Preferred material: 68 percent"></progress><span class="valid-from">Valid from 2026</span></article>
+          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>42%</strong></div><progress value="42" max="100" aria-label="Preferred process: 42 percent"></progress><span class="valid-from">Valid from 2026</span></article>
+          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9881;</span><span>Design For Circularity</span><span class="model-tag validated" id="detail-circularity" style="margin-left:auto">Validated</span></div><span class="valid-from">Valid from 2026</span></article>
+        </div>
+        <article class="synthesis-card synthesis-impact">
+          <h3><span class="synthesis-icon" aria-hidden="true">&#9678;</span>Environmental Impact</h3>
+          <div class="impact-summary"><div><span id="impact-indicator-title">CO2 · Climate change</span><span class="impact-caption" id="impact-indicator-unit">kg CO2 eq.</span></div><strong id="impact-indicator-value">16,9</strong></div>
+          <div class="impact-position" id="climate-position"><span>Positionnement dans la famille de produit</span><span>Shorts running · médiane <strong>15,5</strong><span class="median-warning">+ 9% vs médiane</span></span></div>
+          <div class="lifecycle-bar" id="lifecycle-bar" aria-hidden="true"></div>
+          <div class="lifecycle-breakdown"><div class="lifecycle-legend" id="lifecycle-legend"></div><label class="indicator-control">Change the indicator<select id="impact-indicator"><option value="climate">Climate change (kg CO2 eq.)</option><option value="score">Score (µ Point)</option><option value="fresh">Fresh eutroph. (g P eq.)</option><option value="marine">Marine eutroph. (g N eq.)</option><option value="resource">Resources depletion (g Sa eq.)</option><option value="fossil">Fossils resources (MJ)</option><option value="particulate">Particulate matter (Disease Incidence)</option></select></label></div>
+          <div class="table-wrap"><table class="impact-table"><thead><tr><th>Lifecycle phase</th><th>Material and<br>production</th><th>Manufacturing</th><th>Packaging</th><th>Distribution</th><th>Use</th><th>End of life</th><th>Total</th></tr></thead><tbody id="impact-body"></tbody></table></div>
+          <button type="button" class="action compact center-action" id="impact-more" aria-expanded="false">See more &#8964;</button>
+        </article>
+        <div class="synthesis-bottom">
+          <article class="synthesis-card"><h3><span class="synthesis-icon" aria-hidden="true">&#9743;</span>Communication</h3><div class="table-wrap"><table><thead><tr><th>Lever Name</th><th>Status</th><th>Legal Phrase / Communication Text</th><th>Blocked countries</th></tr></thead><tbody><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr></tbody></table></div><button class="action compact center-action" type="button" data-detail-preview="Communication">Toute la communication</button></article>
+          <article class="synthesis-card"><h3><span class="synthesis-icon" aria-hidden="true">&#128206;</span>Documents</h3><div class="document-item"><span class="synthesis-icon" aria-hidden="true">&#9783;</span><div>Document name<span class="impact-caption">Type</span></div></div><div class="document-item"><span class="synthesis-icon" aria-hidden="true">&#9783;</span><div>Document name<span class="impact-caption">Type</span></div></div><button class="action compact center-action" type="button" data-detail-preview="Documents">Tous les documents</button></article>
         </div>
       </section>
       <div id="settings-year-slot">
@@ -779,6 +867,64 @@
       const selectAllModels = document.querySelector("#select-all-models");
       const bomPicker = document.querySelector("#bom-picker");
       const applySelected = document.querySelector("#apply-selected");
+      const productHeading = document.querySelector(".product-heading");
+      const modelCodeNav = document.querySelector("#model-code-nav");
+      let detailModel = null;
+      let impactExpanded = false;
+      const phases = ["Material & production", "Manufacturing", "Packaging", "Distribution", "Use", "End of life"];
+      const phaseColors = ["#e1e3ff", "#3643BA", "#9da4ff", "#d4f5eb", "#4cddbc", "#017f5c"];
+      const detailIcons = {
+        "☘": '<path d="M7 17V9a5 5 0 0 1 5-5h6v5a5 5 0 0 1-5 5H7m0 0 7-7"/>',
+        "⚙": '<path d="m14 5 3-3a6 6 0 0 0-7 8L3 17a2.8 2.8 0 0 0 4 4l7-7a6 6 0 0 0 8-7l-3 3-5-1z"/>',
+        "◎": '<circle cx="12" cy="12" r="9"/><path d="m6 5 3 3-1 4 4 1 1 7m4-16-2 5 5 3"/>',
+        "☎": '<path d="M3 4h18v13H10l-5 4v-4H3z"/><path d="M7 10h1m4 0h1m4 0h1"/>',
+        "📎": '<path d="M9 16V6a3 3 0 0 1 6 0v11a5 5 0 0 1-10 0V7m7-1v11a1 1 0 0 1-2 0V8"/>',
+        "☷": '<path d="M6 3h8l4 4v14H6zM14 3v5h4"/>',
+        "✧": '<path d="m12 3 3 6 6 3-6 3-3 6-3-6-6-3 6-3z"/>',
+      };
+      document.querySelectorAll(".synthesis-icon").forEach((icon) => {
+        const path = detailIcons[icon.textContent];
+        if (path) icon.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+      });
+      const indicators = [
+        { id: "score", name: "Score", unit: "µ Point", values: [1733.899, 101.401, 114.835, 130.694, 13.017, -37.772], total: 948.907 },
+        { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [14.034, 0.700, 0.684, 1.132, 0.109, 0.250], total: 16.909 },
+        { id: "fresh", name: "Fresh eutroph.", unit: "g P eq.", values: [1.143, 0.059, 0.037, 0.003, 0.022, -0.420], total: 1.222 },
+        { id: "marine", name: "Marine eutroph.", unit: "g N eq.", values: [26.400, 1.559, 2.934, 3.595, 0.299, -0.779], total: 34.008 },
+        { id: "resource", name: "Resources deplet.", unit: "g Sa eq.", values: [0.121, 0.002, 0.002, 0.001, 0.002, 0], total: 0.128 },
+        { id: "fossil", name: "Fossils resources", unit: "MJ", values: [247.232, 7.610, 9.560, 18.462, 1.033, -11.993], total: 271.904 },
+        { id: "particulate", name: "Particulate matter", unit: "Disease Incidence", values: [0.002, 0, 0, 0, 0, 0], total: 0.002 },
+      ];
+      function renderImpact() {
+        const selected = document.querySelector("#impact-indicator").value;
+        const indicator = indicators.find((item) => item.id === selected);
+        document.querySelector("#impact-indicator-title").textContent = `${selected === "climate" ? "CO2 · " : ""}${indicator.name}`;
+        document.querySelector("#impact-indicator-unit").textContent = indicator.unit;
+        document.querySelector("#impact-indicator-value").textContent = indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: selected === "climate" ? 1 : 3 });
+        document.querySelector("#climate-position").hidden = selected !== "climate";
+        const magnitude = indicator.values.reduce((sum, value) => sum + Math.abs(value), 0);
+        document.querySelector("#lifecycle-bar").innerHTML = indicator.values.map((value, index) => `<span style="--phase-width:${Math.abs(value) / magnitude * 100}%;--phase-color:${phaseColors[index]}"></span>`).join("");
+        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${value.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}</strong></span>`).join("");
+        document.querySelector("#impact-body").innerHTML = indicators.map((item, index) => `<tr class="${item.id === selected ? "active-indicator" : ""}" ${!impactExpanded && index > 3 && item.id !== selected ? "hidden" : ""}><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${value.toFixed(3)}</td>`).join("")}<td>${item.total.toFixed(3)}</td></tr>`).join("");
+        document.querySelector("#impact-more").textContent = impactExpanded ? "See less ⌃" : "See more ⌄";
+        document.querySelector("#impact-more").setAttribute("aria-expanded", String(impactExpanded));
+      }
+      function renderDetail() {
+        if (!detailModel) return;
+        document.querySelector("#detail-model-label").textContent = `${detailModel.code} — ${detailModel.name} · Preview data from the design`;
+        document.querySelector("#detail-bom").textContent = detailModel.bom ? `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY` : "No BOM selected for the model code";
+        document.querySelector(".master-bom").hidden = !detailModel.bom;
+        const status = document.querySelector("#detail-circularity");
+        status.textContent = detailModel.status;
+        status.className = `model-tag ${detailModel.status === "Validated" ? "validated" : detailModel.status === "Evaluated" ? "evaluated" : ""}`;
+      }
+      function openModel(id) {
+        detailModel = models.find((model) => model.id === id);
+        modelCodeNav.href = `#model-code/${id}`;
+        modelCodeNav.setAttribute("aria-disabled", "false");
+        document.querySelector("#model-code-help").hidden = true;
+        location.hash = `model-code/${id}`;
+      }
       function visibleModels() {
         const query = modelSearch.value.trim().toLowerCase();
         return models.filter((model) => `${model.code} ${model.name}`.toLowerCase().includes(query));
@@ -791,7 +937,7 @@
         modelsBody.innerHTML = visible.map((model) => {
           const statusClass = model.status === "Validated" ? "validated" : model.status === "Evaluated" ? "evaluated" : "";
           const hasLevers = model.status !== "Not evaluated";
-          return `<tr>
+          return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td>4.65</td><td>${model.bom ? "80 %" : "--"}</td><td>${model.bom ? "23 %" : "--"}</td>
@@ -809,7 +955,52 @@
         applySelected.disabled = selectedCount === 0 || !bomPicker.value;
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
         selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
+        renderDetail();
       }
+      modelsBody.addEventListener("click", (event) => {
+        if (event.target.closest("input, button, a, select")) return;
+        const row = event.target.closest("[data-row-id]");
+        if (row) openModel(Number(row.dataset.rowId));
+      });
+      modelsBody.addEventListener("keydown", (event) => {
+        if (event.target.matches("[data-row-id]") && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          openModel(Number(event.target.dataset.rowId));
+        }
+      });
+      modelCodeNav.addEventListener("click", (event) => {
+        if (!detailModel) event.preventDefault();
+      });
+      document.querySelector("#synthesis-nav").addEventListener("click", (event) => {
+        event.preventDefault();
+        if (detailModel) location.hash = `model-code/${detailModel.id}`;
+      });
+      function showDetailNotice(message) {
+        const notice = document.querySelector("#detail-notice");
+        notice.textContent = message;
+        notice.hidden = false;
+      }
+      document.querySelector("#detail-recalculate").addEventListener("click", () => showDetailNotice("Preview only: calculation is not connected to a backend."));
+      document.querySelector("#detail-bom-picker").addEventListener("change", (event) => {
+        document.querySelector("#detail-apply").disabled = !event.target.value;
+      });
+      document.querySelector("#detail-apply").addEventListener("click", () => {
+        if (!detailModel || !document.querySelector("#detail-bom-picker").value) return;
+        detailModel.bom = true;
+        detailModel.method = "MANUAL";
+        renderModels();
+        showDetailNotice("Preview: BOM 004 applied to this model code.");
+      });
+      document.querySelector("#detail-bom").addEventListener("click", (event) => {
+        event.preventDefault();
+        showDetailNotice("Preview only: the BOM detail page is not available.");
+      });
+      document.querySelectorAll("[data-detail-preview]").forEach((button) => button.addEventListener("click", () => showDetailNotice(`Preview only: ${button.dataset.detailPreview} is not connected to a backend.`)));
+      document.querySelector("#impact-indicator").addEventListener("change", renderImpact);
+      document.querySelector("#impact-more").addEventListener("click", () => {
+        impactExpanded = !impactExpanded;
+        renderImpact();
+      });
       modelsBody.addEventListener("change", (event) => {
         const input = event.target.closest("[data-model-id]");
         if (!input) return;
@@ -852,22 +1043,44 @@
       });
       function navigateView() {
         if (!location.hash) history.replaceState(null, "", "#all-model-code");
+        const detailMatch = location.hash.match(/^#model-code\/(\d+)$/);
+        const requestedModel = detailMatch ? models.find((model) => model.id === Number(detailMatch[1])) : null;
+        if (requestedModel) detailModel = requestedModel;
+        const detailVisible = Boolean(requestedModel);
         const modelsVisible = location.hash === "#all-model-code";
+        if (!detailVisible && !modelsVisible && location.hash !== "#settings") {
+          history.replaceState(null, "", "#all-model-code");
+          navigateView();
+          return;
+        }
+        document.querySelector("#model-detail-view").hidden = !detailVisible;
+        document.querySelector(detailVisible ? "#detail-heading-slot" : "#models-view").prepend(productHeading);
         document.querySelector("#models-view").hidden = !modelsVisible;
-        document.querySelector("#settings-view").hidden = modelsVisible;
-        document.querySelector(".footer").hidden = modelsVisible;
-        document.body.classList.toggle("models-view", modelsVisible);
-        document.querySelector(modelsVisible ? "#models-year-slot" : "#settings-year-slot").append(document.querySelector(".year-bar"));
+        document.querySelector("#settings-view").hidden = modelsVisible || detailVisible;
+        document.querySelector(".footer").hidden = modelsVisible || detailVisible;
+        document.body.classList.toggle("models-view", modelsVisible || detailVisible);
+        document.body.classList.toggle("synthesis-view", detailVisible);
+        document.querySelector(modelsVisible || detailVisible ? "#models-year-slot" : "#settings-year-slot").append(document.querySelector(".year-bar"));
+        document.querySelector("#synthesis-nav").hidden = !detailVisible;
+        if (detailModel) {
+          modelCodeNav.href = `#model-code/${detailModel.id}`;
+          modelCodeNav.setAttribute("aria-disabled", "false");
+          document.querySelector("#model-code-help").hidden = true;
+        }
         document.querySelectorAll("[data-page]").forEach((item) => {
-          const active = item.dataset.page === (modelsVisible ? "all-model-code" : "settings");
+          const active = item.dataset.page === (detailVisible ? "model-code" : modelsVisible ? "all-model-code" : "settings");
           item.classList.toggle("active", active);
           if (active) item.setAttribute("aria-current", "page");
           else item.removeAttribute("aria-current");
         });
+        renderDetail();
         window.scrollTo(0, 0);
+        updateSidebarTop();
+        if (detailVisible) document.querySelector("#synthesis-title").focus({ preventScroll: true });
       }
       window.addEventListener("hashchange", navigateView);
       renderModels();
+      renderImpact();
       navigateView();
       updateValidation();
     saveButton.addEventListener("click", () => {
