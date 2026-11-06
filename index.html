@@ -396,6 +396,9 @@
     .levers-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
     .levers-card h3 { display: flex; align-items: center; gap: 12px; margin: 0; padding: 20px 24px; font-size: var(--vp-core-font-size-200, 1rem); font-style: normal; font-weight: 600 !important; line-height: 150%; }
     .levers-card h3 span { font-size: 12px; color: #3643BA; }
+    .levers-card-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 24px; }
+    .levers-card-heading h3 { padding: 0; }
+    .design-actions { display: inline-flex; align-items: center; gap: 6px; background: #3643BA; border-color: #3643BA; color: white; }
     .levers-table { min-width: 1160px; table-layout: fixed; font-size: 14px; }
     .levers-table th { background: #f5f4f5; font-size: 12px; border-top: 1px solid #E1E0DF; padding: 16px 10px; }
     .levers-table td { background: white; padding: 16px 10px; }
@@ -776,7 +779,7 @@
             </table></div>
           </section>
           <section class="levers-card" aria-labelledby="design-levers-title">
-            <h3 id="design-levers-title">Design Levers <span>1 Lever</span></h3>
+            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>1 Lever</span></h3><button type="button" class="action compact design-actions" data-detail-preview="Add / Modify actions"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Add / Modify actions</button></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:54%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Value</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
