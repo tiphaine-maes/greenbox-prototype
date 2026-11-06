@@ -201,6 +201,15 @@
       background: white;
     }
 
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.46875 9.53022L6.52941 8.46956L11.9991 13.9392L17.4688 8.46956L18.5294 9.53022L11.9991 16.0605L5.46875 9.53022Z' fill-rule='evenodd' clip-rule='evenodd' fill='%23101010'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 24px 24px;
+      padding-right: 44px;
+    }
+
     input[aria-invalid="true"] { border: 1.5px solid #c33b35; }
 
     .error { margin: 7px 0 0; color: #b3312c; font-size: 14px; }
@@ -332,13 +341,12 @@
     .calculation { display: flex; align-items: center; gap: 14px; color: #616161; font-size: 12px; }
     .detail-calculation-bar { display: flex; align-items: end; gap: 24px; padding: 16px 20px; margin-bottom: 20px; background: white; border: 1px solid #E1E0DF; border-radius: 8px; }
     .detail-bom-field { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; color: #616161; font-size: 12px; }
-    #detail-bom-select { width: 100%; height: 36px; padding: 6px 32px 6px 12px; font-size: 14px; color: #101010; }
+    #detail-bom-select { width: 100%; height: 36px; padding: 6px 44px 6px 12px; font-size: 14px; color: #101010; }
     .bom-label-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .detail-bom-input { position: relative; display: block; }
-    .detail-bom-input::after { content: ""; position: absolute; right: 14px; top: 13px; width: 7px; height: 7px; border-right: 1.5px solid #101010; border-bottom: 1.5px solid #101010; transform: rotate(45deg); pointer-events: none; }
     #detail-bom-select { color: transparent; appearance: none; }
     #detail-bom-select option { color: #101010; }
-    .detail-bom-value { position: absolute; inset: 0 32px 0 12px; display: flex; align-items: center; gap: 12px; pointer-events: none; color: #101010; font-size: 14px; }
+    .detail-bom-value { position: absolute; inset: 0 44px 0 12px; display: flex; align-items: center; gap: 12px; pointer-events: none; color: #101010; font-size: 14px; }
     #detail-bom-label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .reference-bom-tag { display: inline-block; flex-shrink: 0; padding: 2px 6px; background: #ead5ff; color: #101010; font-size: 12px; line-height: 20px; white-space: nowrap; }
     .reference-bom-tag[hidden] { display: none; }
@@ -423,7 +431,7 @@
     .lifecycle-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--phase-color); margin-right: 6px; border-radius: 2px; }
     .lifecycle-legend strong { display: block; margin-top: 10px; color: #272a3b; font-size: 14px; }
     .indicator-control { min-width: 240px; font-size: 12px; color: #616161; }
-    .indicator-control select { margin-top: 8px; width: 100%; height: 32px; padding: 4px 8px; border-radius: 0; }
+    .indicator-control select { margin-top: 8px; width: 100%; height: 32px; padding: 4px 44px 4px 8px; border-radius: 0; }
     .impact-table { font-size: 14px; }
     .impact-table th { font-size: 12px; font-weight: 400; }
     .impact-table tbody tr { background: white; }
@@ -572,7 +580,7 @@
     .year, .compact-year { font-size: 12px; }
     #bom-picker {
       display: flex;
-      padding: var(--vp-semantic-spacing-4xs, 2px);
+      padding: var(--vp-semantic-spacing-4xs, 2px) 44px var(--vp-semantic-spacing-4xs, 2px) 12px;
       flex-direction: column;
       align-items: flex-start;
       gap: var(--vp-semantic-spacing-4xs, 2px);
