@@ -928,6 +928,7 @@
       document.querySelectorAll(".synthesis-cards .synthesis-card:nth-child(-n+2) .synthesis-icon").forEach((icon) => {
         icon.innerHTML = preferredIcon;
       });
+      document.querySelector('[data-model-section="Levers"] .synthesis-icon').innerHTML = preferredIcon.replace('fill="#3643BA"', 'fill="#616161"');
       const indicators = [
         { id: "score", name: "Score", unit: "µ Point", values: [1733.899, 101.401, 114.835, 130.694, 13.017, -37.772], total: 948.907 },
         { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [14.034, 0.700, 0.684, 1.132, 0.109, 0.250], total: 16.909 },
