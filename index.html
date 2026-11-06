@@ -422,8 +422,7 @@
     .design-levers-warning { display: flex; align-items: flex-start; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #d64b00; border-radius: 20px; background: #ffe6d8; }
     .design-levers-warning[hidden], body:not(.levers-view) .design-levers-warning { display: none; }
     .design-levers-warning svg { flex-shrink: 0; color: #d64b00; }
-    .design-levers-warning strong { display: block; margin-bottom: 4px; font-size: 16px; font-weight: 600 !important; }
-    .design-levers-warning p { margin: 0; color: #616161; font-size: 14px; }
+    .design-levers-warning strong { display: block; font-size: 16px; font-weight: 600 !important; }
     .levers-table td:first-child { padding-left: 24px; }
     .lever-toggle { display: flex; gap: 12px; align-items: center; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
     .lever-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 4px; }
@@ -748,7 +747,7 @@
           <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
           <div class="calculation"><span id="detail-last-calculation">Last calculation: 12/05/26 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
         </div>
-        <div class="design-levers-warning" id="design-levers-warning" role="status" hidden><svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12.0008 24.4508C16.6676 24.4508 20.4508 20.6676 20.4508 16.0008C20.4508 11.334 16.6676 7.55078 12.0008 7.55078C7.33398 7.55078 3.55078 11.334 3.55078 16.0008C3.55078 20.6676 7.33398 24.4508 12.0008 24.4508ZM21.9508 16.0008C21.9508 21.496 17.496 25.9508 12.0008 25.9508C6.50555 25.9508 2.05078 21.496 2.05078 16.0008C2.05078 10.5055 6.50555 6.05078 12.0008 6.05078C17.496 6.05078 21.9508 10.5056 21.9508 16.0008ZM11.2508 18.0008V11.0008H12.7508V18.0008H11.2508Z" fill-rule="evenodd" clip-rule="evenodd" fill="#CD4D04"/><path d="M12.0007 19.3008C11.5037 19.3008 11.1007 19.7038 11.1007 20.2008C11.1007 20.6979 11.5037 21.1008 12.0007 21.1008C12.4978 21.1008 12.9007 20.6979 12.9007 20.2008C12.9007 19.7038 12.4978 19.3008 12.0007 19.3008Z" fill="#CD4D04"/></svg><div><strong>Design levers incomplete</strong><p id="design-levers-warning-message"></p></div></div>
+        <div class="design-levers-warning" id="design-levers-warning" role="status" hidden><svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12.0008 24.4508C16.6676 24.4508 20.4508 20.6676 20.4508 16.0008C20.4508 11.334 16.6676 7.55078 12.0008 7.55078C7.33398 7.55078 3.55078 11.334 3.55078 16.0008C3.55078 20.6676 7.33398 24.4508 12.0008 24.4508ZM21.9508 16.0008C21.9508 21.496 17.496 25.9508 12.0008 25.9508C6.50555 25.9508 2.05078 21.496 2.05078 16.0008C2.05078 10.5055 6.50555 6.05078 12.0008 6.05078C17.496 6.05078 21.9508 10.5056 21.9508 16.0008ZM11.2508 18.0008V11.0008H12.7508V18.0008H11.2508Z" fill-rule="evenodd" clip-rule="evenodd" fill="#CD4D04"/><path d="M12.0007 19.3008C11.5037 19.3008 11.1007 19.7038 11.1007 20.2008C11.1007 20.6979 11.5037 21.1008 12.0007 21.1008C12.4978 21.1008 12.9007 20.6979 12.9007 20.2008C12.9007 19.7038 12.4978 19.3008 12.0007 19.3008Z" fill="#CD4D04"/></svg><strong>Design levers incomplete</strong></div>
         <div class="detail-calculation-bar" role="group" aria-label="BOM selection">
           <div class="detail-bom-field"><label for="detail-bom-select-trigger">BOM selected</label>
             <select id="detail-bom-select" hidden><option value="">Select BOM</option><option value="reference">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</option></select>
@@ -1262,7 +1261,6 @@
         document.querySelector("#design-levers-warning").hidden = missingDesignLevers.length === 0;
         const titleWarning = document.querySelector("#design-levers-title svg");
         titleWarning.hidden = missingDesignLevers.length === 0;
-        document.querySelector("#design-levers-warning-message").textContent = `Complete ${missingDesignLevers.join(" and ")} using Update design levers.`;
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
