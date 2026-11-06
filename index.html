@@ -397,6 +397,17 @@
     .document-item { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid #e8e8f4; font-size: 14px; }
     .synthesis-card .center-action { margin: 24px auto 0; display: flex; }
     .synthesis-subnav { margin: 8px 0; display: flex; color: #3643BA; text-decoration: none; }
+    .model-nav-heading { display: flex; align-items: center; gap: 8px; }
+    .model-nav-heading #model-code-nav { flex: 1; min-width: 0; }
+    .model-nav-heading .nav-label { white-space: normal; }
+    .model-nav-heading.selected #model-code-nav { color: #3643BA; background: none; }
+    .model-clear { flex-shrink: 0; border: 0; background: none; color: #3643BA; cursor: pointer; padding: 8px; }
+    .sidebar-collapsed .model-clear { display: none; }
+    .model-subnav .nav-item { display: flex; align-items: center; gap: 12px; width: 100%; border: 0; background: none; text-align: left; cursor: pointer; }
+    .model-subnav .nav-item.active { background: #f4f4ff; }
+    .model-subnav .synthesis-icon { background: none; width: 24px; height: 24px; color: inherit; }
+    .model-subnav .nav-label { white-space: normal; }
+    .model-subnav .nav-item { font-family: inherit; }
     #synthesis-title { font-size: 22px; font-weight: 600 !important; outline: none; }
     #detail-bom-picker { flex: 1; min-width: 120px; border-radius: 0; }
     @media (max-width: 1100px) {
@@ -561,14 +572,23 @@
         <span class="nav-label">All Model Code</span>
       </a>
       <div class="nav-divider" role="separator"></div>
+      <div class="model-nav-heading">
       <a id="model-code-nav" class="nav-item" aria-disabled="true" aria-describedby="model-code-help" data-page="model-code" style="display: flex; align-items: center; gap: 8px;" title="Model Code">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M4.60221 4.60611C4.58679 4.62153 4.54688 4.67122 4.54688 4.80078V19.2008C4.54688 19.3303 4.58679 19.38 4.60221 19.3955C4.61762 19.4109 4.66731 19.4508 4.79688 19.4508H19.1969C19.3221 19.4508 19.3962 19.4122 19.4432 19.3715C19.485 19.3353 19.5231 19.2812 19.5469 19.2092V4.80078C19.5469 4.67122 19.507 4.62153 19.4915 4.60611C19.4761 4.5907 19.4264 4.55078 19.2969 4.55078H15.2469V12.3086L11.9969 11.0086L8.74687 12.3086V4.55078H4.79688C4.66731 4.55078 4.61762 4.5907 4.60221 4.60611ZM10.2469 4.55078V10.093L11.9969 9.39301L13.7469 10.093V4.55078H10.2469ZM3.54155 3.54545C3.87613 3.21087 4.32644 3.05078 4.79688 3.05078H19.2969C19.7673 3.05078 20.2176 3.21087 20.5522 3.54545C20.8868 3.88004 21.0469 4.33035 21.0469 4.80078V19.375L21.0323 19.4479C20.8693 20.2631 20.1892 20.9508 19.1969 20.9508H4.79688C4.32644 20.9508 3.87613 20.7907 3.54154 20.4561C3.20696 20.1215 3.04688 19.6712 3.04688 19.2008V4.80078C3.04688 4.33035 3.20696 3.88004 3.54155 3.54545Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
         </svg>
         <span class="nav-label">Model Code</span>
       </a>
+      <a href="#all-model-code" class="model-clear" id="clear-model" aria-label="Clear selected model code" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></a>
+      </div>
       <p class="nav-help" id="model-code-help">Select a Model Code to view its user journeys.</p>
-      <a href="#model-code" class="nav-item synthesis-subnav" id="synthesis-nav" hidden style="align-items: center; gap: 8px;" title="Synthesis"><span class="synthesis-icon" aria-hidden="true">&#10023;</span><span class="nav-label">Synthesis</span></a>
+      <nav class="model-subnav" id="model-subnav" aria-label="Selected model code" hidden>
+        <a href="#model-code" class="nav-item synthesis-subnav active" id="synthesis-nav" aria-current="page" title="Synthesis"><span class="synthesis-icon" aria-hidden="true">&#10023;</span><span class="nav-label">Synthesis</span></a>
+        <button type="button" class="nav-item" data-model-section="Levers" title="Levers"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span class="nav-label">Levers</span></button>
+        <button type="button" class="nav-item" data-model-section="Design For Circularity" title="Design For Circularity"><span class="synthesis-icon" aria-hidden="true">&#9881;</span><span class="nav-label">Design For Circularity</span></button>
+        <button type="button" class="nav-item" data-model-section="Communication" title="Communication"><span class="synthesis-icon" aria-hidden="true">&#9743;</span><span class="nav-label">Communication</span></button>
+        <button type="button" class="nav-item" data-model-section="Documents" title="Documents"><span class="synthesis-icon" aria-hidden="true">&#128206;</span><span class="nav-label">Documents</span></button>
+      </nav>
       <a href="#settings" id="settings-nav" class="nav-item active" data-page="settings" aria-current="page" style="display: flex; align-items: center; gap: 8px;" title="Settings">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M9.86182 3.28771C10.546 3.05965 11.3269 2.94922 11.999 2.94922C12.6664 2.94922 13.4197 3.059 14.0223 3.15942L14.649 3.26387V4.09922C14.649 5.085 15.5132 5.94922 16.499 5.94922C16.9111 5.94922 17.2279 5.86507 17.449 5.69922L17.9694 5.30894L18.4293 5.76889C19.4238 6.76335 20.1833 8.07299 20.6158 9.47865L20.8027 10.0859L20.2344 10.37C19.6832 10.6456 19.249 11.2892 19.249 11.9992C19.249 12.7093 19.6832 13.3528 20.2344 13.6284L20.8027 13.9125L20.6158 14.5198C20.1833 15.9255 19.4238 17.2351 18.4293 18.2295L18.0471 18.6118L17.5636 18.37C17.1891 18.1828 16.8185 18.0492 16.499 18.0492C15.4319 18.0492 14.649 18.8945 14.649 19.8992V20.7346L14.0223 20.839C13.4197 20.9394 12.6664 21.0492 11.999 21.0492C11.3316 21.0492 10.5782 20.9394 9.97569 20.839L9.34899 20.7346V19.8992C9.34899 18.9134 8.48478 18.0492 7.49899 18.0492C7.08685 18.0492 6.77013 18.1334 6.54899 18.2992L6.02862 18.6895L5.56866 18.2295C4.5742 17.2351 3.81467 15.9255 3.38216 14.5198L3.19531 13.9125L3.76358 13.6284C4.3148 13.3528 4.74899 12.7093 4.74899 11.9992C4.74899 11.2892 4.3148 10.6456 3.76358 10.37L3.19531 10.0859L3.38216 9.47865C3.81159 8.08301 4.46285 6.88491 5.44152 5.7975L5.90032 5.28772L6.44899 5.69922C6.73204 5.9115 7.07665 6.04922 7.49899 6.04922C8.56605 6.04922 9.34899 5.20399 9.34899 4.19921V3.45865L9.86182 3.28771ZM10.8279 4.57736C10.6452 6.20732 9.29475 7.54922 7.49899 7.54922C7.00428 7.54922 6.55904 7.44307 6.16745 7.26601C5.66706 7.91157 5.28637 8.60756 4.99534 9.38999C5.74524 9.99459 6.24899 10.953 6.24899 11.9992C6.24899 13.0441 5.74658 14.0013 4.99832 14.606C5.30708 15.4075 5.73862 16.1464 6.25729 16.7629C6.67418 16.6005 7.10772 16.5492 7.49899 16.5492C9.16166 16.5492 10.5905 17.8391 10.8176 19.4512C11.2299 19.5083 11.6403 19.5492 11.999 19.5492C12.3572 19.5492 12.7669 19.5084 13.1786 19.4514C13.3914 17.8531 14.7289 16.5492 16.499 16.5492C16.9385 16.5492 17.3567 16.6603 17.7123 16.7964C18.2436 16.1732 18.6853 15.4221 18.9997 14.606C18.2514 14.0013 17.749 13.0441 17.749 11.9992C17.749 10.9544 18.2514 9.99713 18.9997 9.39239C18.6909 8.59092 18.2594 7.85206 17.7407 7.23556C17.3238 7.3979 16.8903 7.44922 16.499 7.44922C14.8363 7.44922 13.4075 6.15929 13.1804 4.54728C12.7681 4.49014 12.3577 4.44922 11.999 4.44922C11.631 4.44922 11.2187 4.49275 10.8279 4.57736ZM11.999 10.3492C10.9722 10.3492 10.249 11.0532 10.249 11.9992C10.249 12.985 11.0132 13.7492 11.999 13.7492C12.9655 13.7492 13.749 12.9045 13.749 11.9992C13.749 11.1332 13.0048 10.3492 11.999 10.3492ZM8.74899 11.9992C8.74899 10.1452 10.2257 8.84922 11.999 8.84922C13.7931 8.84922 15.249 10.2652 15.249 11.9992C15.249 13.6939 13.8324 15.2492 11.999 15.2492C10.1848 15.2492 8.74899 13.8134 8.74899 11.9992Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
@@ -869,6 +889,18 @@
       const applySelected = document.querySelector("#apply-selected");
       const productHeading = document.querySelector(".product-heading");
       const modelCodeNav = document.querySelector("#model-code-nav");
+      function updateModelNavigation() {
+        const selected = Boolean(detailModel);
+        modelCodeNav.querySelector(".nav-label").textContent = selected ? `${detailModel.code} ${detailModel.name}` : "Model Code";
+        modelCodeNav.title = selected ? `${detailModel.code} ${detailModel.name}` : "Model Code";
+        modelCodeNav.parentElement.classList.toggle("selected", selected);
+        document.querySelector("#clear-model").hidden = !selected;
+        document.querySelector("#model-subnav").hidden = !selected;
+        document.querySelector("#model-code-help").hidden = selected;
+        modelCodeNav.setAttribute("aria-disabled", String(!selected));
+        if (selected) modelCodeNav.href = `#model-code/${detailModel.id}`;
+        else modelCodeNav.removeAttribute("href");
+      }
       let detailModel = null;
       let impactExpanded = false;
       const phases = ["Material & production", "Manufacturing", "Packaging", "Distribution", "Use", "End of life"];
@@ -971,6 +1003,22 @@
       modelCodeNav.addEventListener("click", (event) => {
         if (!detailModel) event.preventDefault();
       });
+      document.querySelector("#clear-model").addEventListener("click", () => {
+        detailModel = null;
+        updateModelNavigation();
+        document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible);
+        if (detailVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
+        else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
+        if (location.hash === "#all-model-code") navigateView();
+      });
+      document.querySelectorAll("[data-model-section]").forEach((button) => button.addEventListener("click", () => {
+        if (!detailModel) return;
+        if (!location.hash.startsWith("#model-code/")) {
+          location.hash = `model-code/${detailModel.id}`;
+        }
+        showDetailNotice(`Preview only: the ${button.dataset.modelSection} detail view is not available yet.`);
+        document.querySelector("#detail-notice").scrollIntoView({ block: "center" });
+      }));
       document.querySelector("#synthesis-nav").addEventListener("click", (event) => {
         event.preventDefault();
         if (detailModel) location.hash = `model-code/${detailModel.id}`;
@@ -1061,7 +1109,7 @@
         document.body.classList.toggle("models-view", modelsVisible || detailVisible);
         document.body.classList.toggle("synthesis-view", detailVisible);
         document.querySelector(modelsVisible || detailVisible ? "#models-year-slot" : "#settings-year-slot").append(document.querySelector(".year-bar"));
-        document.querySelector("#synthesis-nav").hidden = !detailVisible;
+        updateModelNavigation();
         if (detailModel) {
           modelCodeNav.href = `#model-code/${detailModel.id}`;
           modelCodeNav.setAttribute("aria-disabled", "false");
@@ -1070,7 +1118,7 @@
         document.querySelectorAll("[data-page]").forEach((item) => {
           const active = item.dataset.page === (detailVisible ? "model-code" : modelsVisible ? "all-model-code" : "settings");
           item.classList.toggle("active", active);
-          if (active) item.setAttribute("aria-current", "page");
+          if (active && !detailVisible) item.setAttribute("aria-current", "page");
           else item.removeAttribute("aria-current");
         });
         renderDetail();
