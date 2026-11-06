@@ -416,6 +416,12 @@
     .levers-table { min-width: 1160px; table-layout: fixed; font-size: 14px; }
     .levers-table th { background: #f5f4f5; font-size: 12px; border-top: 1px solid #E1E0DF; padding: 16px 10px; }
     .levers-table td { background: white; padding: 16px 10px; }
+    .levers-table .design-lever-incomplete td { background: #ffe6d8; }
+    .design-levers-warning { display: flex; align-items: flex-start; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #d64b00; border-radius: 20px; background: #ffe6d8; }
+    .design-levers-warning[hidden], body:not(.levers-view) .design-levers-warning { display: none; }
+    .design-levers-warning svg { flex-shrink: 0; color: #d64b00; }
+    .design-levers-warning strong { display: block; margin-bottom: 4px; font-size: 16px; font-weight: 600 !important; }
+    .design-levers-warning p { margin: 0; color: #616161; font-size: 14px; }
     .levers-table td:first-child { padding-left: 24px; }
     .lever-toggle { display: flex; gap: 12px; align-items: center; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
     .lever-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 4px; }
@@ -740,6 +746,7 @@
           <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
           <div class="calculation"><span id="detail-last-calculation">Last calculation: 12/05/26 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
         </div>
+        <div class="design-levers-warning" id="design-levers-warning" role="status" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v7m0 3v2"/></svg><div><strong>Design levers incomplete</strong><p id="design-levers-warning-message"></p></div></div>
         <div class="detail-calculation-bar" role="group" aria-label="BOM selection">
           <div class="detail-bom-field"><label for="detail-bom-select-trigger">BOM selected</label>
             <select id="detail-bom-select" hidden><option value="">Select BOM</option><option value="reference">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</option></select>
@@ -1246,10 +1253,16 @@
         document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         const year = Number(currentYear());
         const design = detailModel.designLeversByYear.get(year);
+        const missingDesignLevers = [
+          !design && "Minimal Waste Design",
+          design?.efficiency == null && "Efficiency",
+        ].filter(Boolean);
+        document.querySelector("#design-levers-warning").hidden = missingDesignLevers.length === 0;
+        document.querySelector("#design-levers-warning-message").textContent = `Complete ${missingDesignLevers.join(" and ")} using Add / Modify actions.`;
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
-        ].map((lever) => `<tr><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
+        ].map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
         updateBomOptions(selector, year);
