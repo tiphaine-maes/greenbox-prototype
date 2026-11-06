@@ -1134,13 +1134,14 @@
         document.querySelector("#detail-notice").scrollIntoView({ block: "center" });
       }));
       const leverPlusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.2513 7.2513V2.66797H8.7513V7.2513H13.3346V8.7513H8.7513V13.3346H7.2513V8.7513H2.66797V7.2513H7.2513Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
+      const leverMinusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.66797 7.25H13.3346V8.75H2.66797V7.25Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
       document.querySelectorAll('.lever-toggle[aria-expanded="false"] > span').forEach((icon) => {
         icon.innerHTML = leverPlusIcon;
       });
       document.querySelectorAll(".lever-toggle").forEach((button) => button.addEventListener("click", () => {
         const expanded = button.getAttribute("aria-expanded") !== "true";
         button.setAttribute("aria-expanded", String(expanded));
-        button.querySelector("span").innerHTML = expanded ? "−" : leverPlusIcon;
+        button.querySelector("span").innerHTML = expanded ? leverMinusIcon : leverPlusIcon;
         document.getElementById(button.getAttribute("aria-controls")).hidden = !expanded;
       }));
       document.querySelector("#synthesis-nav").addEventListener("click", (event) => {
