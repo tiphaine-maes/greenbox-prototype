@@ -396,8 +396,8 @@
     .levers-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
     .levers-card h3 { display: flex; align-items: center; gap: 12px; margin: 0; padding: 20px 24px; font-size: var(--vp-core-font-size-200, 1rem); font-style: normal; font-weight: 600 !important; line-height: 150%; }
     .levers-card h3 span { font-size: 12px; color: #3643BA; }
-    #design-levers-title svg { flex-shrink: 0; }
-    #design-levers-title svg[hidden] { display: none; }
+    .design-lever-name { display: flex; align-items: center; gap: 12px; }
+    .design-lever-name svg { flex-shrink: 0; }
     .levers-card-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 24px; }
     .levers-card-heading h3 { padding: 0; }
     .design-actions { display: inline-flex; align-items: center; gap: 6px; background: #3643BA; border-color: #3643BA; color: white; }
@@ -1259,12 +1259,10 @@
           design?.efficiency == null && "Efficiency",
         ].filter(Boolean);
         document.querySelector("#design-levers-warning").hidden = missingDesignLevers.length === 0;
-        const titleWarning = document.querySelector("#design-levers-title svg");
-        titleWarning.toggleAttribute("hidden", missingDesignLevers.length === 0);
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
-        ].map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td>${lever.name}</td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
+        ].map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td><span class="design-lever-name">${lever.value === "" ? document.querySelector("#design-levers-warning svg").outerHTML : ""}${lever.name}</span></td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
         updateBomOptions(selector, year);
@@ -1643,7 +1641,6 @@
         previousViewHash = location.hash;
       }
       window.addEventListener("hashchange", navigateView);
-      document.querySelector("#design-levers-title").prepend(document.querySelector("#design-levers-warning svg").cloneNode(true));
       [bomPicker, document.querySelector("#detail-bom-select")].forEach(setupBomDropdown);
       renderModels();
       renderImpact();
