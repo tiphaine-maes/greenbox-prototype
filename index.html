@@ -955,6 +955,7 @@
         { id: "fossil", name: "Fossils resources", unit: "MJ", values: [247.232, 7.610, 9.560, 18.462, 1.033, -11.993], total: 271.904 },
         { id: "particulate", name: "Particulate matter", unit: "Disease Incidence", values: [0.002, 0, 0, 0, 0, 0], total: 0.002 },
       ];
+      document.querySelector(".synthesis-cards .synthesis-card:nth-child(3) .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Design For Circularity"] .synthesis-icon').innerHTML.replace('fill="#616161"', 'fill="#3643BA"');
       function renderImpact() {
         const selected = document.querySelector("#impact-indicator").value;
         const indicator = indicators.find((item) => item.id === selected);
