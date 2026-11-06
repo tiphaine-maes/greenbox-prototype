@@ -416,6 +416,10 @@
     .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
     .valid-from { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
     .valid-from.stale { color: #bf4500; background: #ffe6d8; }
+    .metric-card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .all-levers { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 6px 16px; border: 1px solid #aaa; border-radius: 24px; color: #101010; background: white; font-size: 13px; text-decoration: none; }
+    .all-levers:hover { background: #f5f4f5; }
+    .levers-view .all-levers { display: none; }
     .synthesis-impact { margin-bottom: 20px; }
     .impact-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; }
     .impact-summary strong { color: #3643BA; font-size: 36px; }
@@ -720,8 +724,8 @@
         </div>
         <p class="models-notice" id="detail-notice" role="status" hidden></p>
         <div class="synthesis-cards">
-          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><span class="valid-from">Valid from 2026</span></article>
-          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>0%</strong></div><progress value="0" max="100" aria-label="Preferred process: 0 percent"></progress><span class="valid-from">Valid from 2026</span></article>
+          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
+          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>0%</strong></div><progress value="0" max="100" aria-label="Preferred process: 0 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9881;</span><span>Design For Circularity</span><span class="model-tag validated" id="detail-circularity" style="margin-left:auto">Validated</span></div><span class="valid-from">Valid from 2026</span></article>
         </div>
         <div id="levers-content" hidden>
@@ -1085,6 +1089,7 @@
       const referenceBomYears = new Set([2026, 2027]);
       function renderDetail() {
         if (!detailModel) return;
+        document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         const year = Number(currentYear());
         const bom = detailModel.bomByYear.get(year);
         const selector = document.querySelector("#detail-bom-select");
