@@ -457,6 +457,8 @@
     .synthesis-bottom tbody tr { background: white; }
     .document-item { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid #e8e8f4; font-size: 14px; }
     .synthesis-card .center-action { margin: 24px auto 0; display: flex; }
+    #impact-more { gap: 6px; }
+    #impact-more[aria-expanded="true"] svg { transform: rotate(180deg); }
     .synthesis-subnav { margin: 8px 0; display: flex; color: #3643BA; text-decoration: none; }
     .model-nav-heading { display: flex; align-items: center; gap: 8px; }
     .model-nav-heading #model-code-nav { flex: 1; min-width: 0; }
@@ -794,7 +796,7 @@
           <div class="lifecycle-bar" id="lifecycle-bar" aria-hidden="true"></div>
           <div class="lifecycle-breakdown"><div class="lifecycle-legend" id="lifecycle-legend"></div><label class="indicator-control">Change the indicator<select id="impact-indicator"><option value="climate">Climate change (kg CO2 eq.)</option><option value="score">Score (µ Point)</option><option value="fresh">Fresh eutroph. (g P eq.)</option><option value="marine">Marine eutroph. (g N eq.)</option><option value="resource">Resources depletion (g Sa eq.)</option><option value="fossil">Fossils resources (MJ)</option><option value="particulate">Particulate matter (Disease Incidence)</option></select></label></div>
           <div class="table-wrap" id="impact-table-details" hidden><table class="impact-table"><thead><tr><th>Lifecycle phase</th><th>Material and<br>production</th><th>Manufacturing</th><th>Packaging</th><th>Distribution</th><th>Use</th><th>End of life</th><th>Total</th></tr></thead><tbody id="impact-body"></tbody></table></div>
-          <button type="button" class="action compact center-action" id="impact-more" aria-expanded="false" aria-controls="impact-table-details">See more &#8964;</button>
+          <button type="button" class="action compact center-action" id="impact-more" aria-expanded="false" aria-controls="impact-table-details"><span>See more</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3.64453 6.35348L4.35164 5.64637L7.99809 9.29282L11.6445 5.64637L12.3516 6.35348L7.99809 10.707L3.64453 6.35348Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg></button>
         </article>
         <div class="synthesis-bottom">
           <article class="synthesis-card"><h3><span class="synthesis-icon" aria-hidden="true">&#9743;</span>Communication</h3><div class="table-wrap"><table><thead><tr><th>Lever Name</th><th>Status</th><th>Legal Phrase / Communication Text</th><th>Blocked countries</th></tr></thead><tbody><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr></tbody></table></div><button class="action compact center-action" type="button" data-detail-preview="Communication">Toute la communication</button></article>
@@ -1111,7 +1113,7 @@
         document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${value.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}</strong></span>`).join("");
         document.querySelector("#impact-body").innerHTML = indicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${value.toFixed(3)}</td>`).join("")}<td>${item.total.toFixed(3)}</td></tr>`).join("");
         document.querySelector("#impact-table-details").hidden = !impactExpanded;
-        document.querySelector("#impact-more").textContent = impactExpanded ? "See less ⌃" : "See more ⌄";
+        document.querySelector("#impact-more span").textContent = impactExpanded ? "See less" : "See more";
         document.querySelector("#impact-more").setAttribute("aria-expanded", String(impactExpanded));
       }
       const bomsByYear = new Map([
