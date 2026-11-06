@@ -342,14 +342,15 @@
     .detail-calculation-bar { display: flex; align-items: end; gap: 24px; padding: 16px 20px; margin-bottom: 20px; background: white; border: 1px solid #E1E0DF; border-radius: 8px; }
     .detail-bom-field { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; color: #616161; font-size: 12px; }
     #detail-bom-select { width: 100%; height: 36px; padding: 6px 44px 6px 12px; font-size: 14px; color: #101010; }
-    .bom-label-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .bom-label-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
     .detail-bom-input { position: relative; display: block; }
     #detail-bom-select { color: transparent; appearance: none; }
     #detail-bom-select option { color: #101010; }
-    .detail-bom-value { position: absolute; inset: 0 44px 0 12px; display: flex; align-items: center; gap: 12px; pointer-events: none; color: #101010; font-size: 14px; }
+    .detail-bom-value { position: absolute; inset: 0 44px 0 12px; display: flex; align-items: center; gap: 4px; pointer-events: none; color: #101010; font-size: 14px; }
     #detail-bom-label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .reference-bom-tag { display: inline-block; flex-shrink: 0; padding: 2px 6px; background: #ead5ff; color: #101010; font-size: 12px; line-height: 20px; white-space: nowrap; }
     .reference-bom-tag[hidden] { display: none; }
+    .model-caption + .reference-bom-tag { margin-top: 4px; }
     @media (max-width: 1100px) {
       .detail-calculation-bar { flex-direction: column; align-items: stretch; gap: 16px; }
       #model-detail-view > .models-title { flex-wrap: wrap; }
