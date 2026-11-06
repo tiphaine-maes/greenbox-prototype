@@ -537,6 +537,7 @@
       line-height: 118.18%;
     }
     #recalculate.action, #detail-recalculate.action { background: #3643BA; border-color: #3643BA; color: #FFF; }
+    #recalculate.action:disabled, #detail-recalculate.action:disabled { background: #f5f4f5; border-color: #ddd; color: #aaa; cursor: not-allowed; }
     .year, #recalculate, #apply-all, #apply-selected {
       border-radius: var(--vp-web-component-button-border-radius-rounded-top-left, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-top-right, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-bottom-right, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-bottom-left, 62.4375rem);
       border: 1px solid var(--vp-web-component-button-color-secondary-regular-border, #949494);
@@ -902,6 +903,8 @@
           cell.textContent = cell.textContent.replace(/SS\d{2}/g, `SS${button.textContent.slice(-2)}`);
         });
         updateValidation();
+        document.querySelector("#detail-bom-picker").value = "";
+        document.querySelector("#detail-apply").disabled = true;
         renderModels();
       });
     });
@@ -964,8 +967,8 @@
       ];
       const models = modelNames.map(([code, name], index) => ({
         id: index, status: modelStates[index], code, name,
-        selected: false, bom: index !== 7 && index !== 8,
-        method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO",
+        selected: false,
+        bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
       }));
       const modelsBody = document.querySelector("#models-body");
@@ -1057,13 +1060,15 @@
       function renderDetail() {
         if (!detailModel) return;
         const year = Number(currentYear());
-        const validYear = Math.max(...[...detailModel.calculatedYears].filter((calculatedYear) => calculatedYear <= year));
+        const bom = detailModel.bomByYear.get(year);
+        document.querySelector("#detail-recalculate").disabled = !bom;
+        const validYear = Math.max(2026, ...[...detailModel.calculatedYears].filter((calculatedYear) => calculatedYear <= year));
         document.querySelectorAll("#model-detail-view .valid-from").forEach((badge) => {
           badge.textContent = `Valid from ${validYear}`;
           badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
         });
-        document.querySelector("#detail-bom").textContent = detailModel.bom ? `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY` : "No BOM selected for the model code";
-        document.querySelector(".master-bom").hidden = !detailModel.bom;
+        document.querySelector("#detail-bom").textContent = bom ? `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY` : "No BOM selected for the model code";
+        document.querySelector(".master-bom").hidden = !bom;
         const status = document.querySelector("#detail-circularity");
         status.textContent = detailModel.status;
         status.className = `model-tag ${detailModel.status === "Validated" ? "validated" : detailModel.status === "Evaluated" ? "evaluated" : ""}`;
@@ -1085,16 +1090,17 @@
         document.querySelector(".compact-year").textContent = currentYear();
         document.querySelector("#reference-bom").textContent = `${season} BOM 004 : 351243 - SHORT RUN 500 W DRY`;
         modelsBody.innerHTML = visible.map((model) => {
+          const bom = model.bomByYear.get(Number(currentYear()));
           const statusClass = model.status === "Validated" ? "validated" : model.status === "Evaluated" ? "evaluated" : "";
           const hasLevers = model.status !== "Not evaluated";
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td>4.65</td><td>${model.bom ? "80 %" : "--"}</td><td>${model.bom ? "23 %" : "--"}</td>
+            <td>4.65</td><td>${bom ? "80 %" : "--"}</td><td>${bom ? "23 %" : "--"}</td>
             <td><span class="model-tag ${statusClass}">${model.status}</span>${model.status === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
             <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
-            <td>${model.bom ? `<span class="bom-method">${model.method}</span><span class="model-caption">${season} BOM 004 : 351243 - SHORT RUN 500 W DRY</span>` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
+            <td>${bom ? `<span class="bom-method">${bom.method}</span><span class="model-caption">${season} BOM 004 : 351243 - SHORT RUN 500 W DRY</span>` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
           </tr>`;
         }).join("");
         if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="9">No model codes match your search.</td></tr>';
@@ -1105,6 +1111,7 @@
         applySelected.disabled = selectedCount === 0 || !bomPicker.value;
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
         selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
+        document.querySelector("#recalculate").disabled = !models.some((model) => model.bomByYear.has(Number(currentYear())));
         renderDetail();
       }
       modelsBody.addEventListener("click", (event) => {
@@ -1205,12 +1212,12 @@
       }
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
       document.querySelector("#detail-recalculate").addEventListener("click", () => {
-        if (!detailModel) return;
+        if (!detailModel || !detailModel.bomByYear.has(Number(currentYear()))) return;
         detailModel.calculatedYears.add(Number(currentYear()));
         renderDetail();
       });
       document.querySelector("#recalculate").addEventListener("click", () => {
-        models.forEach((model) => model.calculatedYears.add(Number(currentYear())));
+        models.filter((model) => model.bomByYear.has(Number(currentYear()))).forEach((model) => model.calculatedYears.add(Number(currentYear())));
         renderDetail();
       });
       document.querySelector("#detail-bom-picker").addEventListener("change", (event) => {
@@ -1218,8 +1225,8 @@
       });
       document.querySelector("#detail-apply").addEventListener("click", () => {
         if (!detailModel || !document.querySelector("#detail-bom-picker").value) return;
-        detailModel.bom = true;
-        detailModel.method = "MANUAL";
+        detailModel.bomByYear.set(Number(currentYear()), { method: "MANUAL" });
+        detailModel.calculatedYears.delete(Number(currentYear()));
         renderModels();
         showDetailNotice("Preview: BOM 004 applied to this model code.");
       });
@@ -1252,8 +1259,8 @@
       }
       function applyBom(selectedOnly) {
         models.filter((model) => !selectedOnly || model.selected).forEach((model) => {
-          model.bom = true;
-          model.method = selectedOnly ? "MANUAL" : "AUTO";
+          model.bomByYear.set(Number(currentYear()), { method: selectedOnly ? "MANUAL" : "AUTO" });
+          model.calculatedYears.delete(Number(currentYear()));
         });
         renderModels();
         showModelsNotice("Preview: reference BOM applied to the selected scope.");
@@ -1309,6 +1316,8 @@
         document.querySelector("#levers-content").hidden = !leversVisible;
         document.querySelector("#synthesis-title").textContent = leversVisible ? "Levers" : "Synthesis";
         document.querySelector("#detail-notice").hidden = true;
+        document.querySelector("#detail-bom-picker").value = "";
+        document.querySelector("#detail-apply").disabled = true;
         document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible && !leversVisible);
         if (detailVisible && !leversVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
         else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
