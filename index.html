@@ -922,6 +922,12 @@
         const path = detailIcons[icon.textContent];
         if (path) icon.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
       });
+      const preferredIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M13.875 3.6875C10.1517 3.6875 7.125 6.71421 7.125 10.4375V11.0624C8.11418 9.80335 9.52289 8.88912 11.1373 8.53036L11.4627 9.99464C9.63302 10.4012 8.14045 11.7152 7.48468 13.4375H10.125C13.8483 13.4375 16.875 10.4108 16.875 6.6875V3.6875H13.875ZM7.14416 14.9375H10.125C14.6767 14.9375 18.375 11.2392 18.375 6.6875V2.1875H13.875C9.32329 2.1875 5.625 5.88579 5.625 10.4375V14.9375H5.64002C5.63006 15.0904 5.625 15.2446 5.625 15.4V22H7.125V15.4C7.125 15.2443 7.13147 15.09 7.14416 14.9375Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
+      </svg>`;
+      document.querySelectorAll(".synthesis-cards .synthesis-card:nth-child(-n+2) .synthesis-icon").forEach((icon) => {
+        icon.innerHTML = preferredIcon;
+      });
       const indicators = [
         { id: "score", name: "Score", unit: "µ Point", values: [1733.899, 101.401, 114.835, 130.694, 13.017, -37.772], total: 948.907 },
         { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [14.034, 0.700, 0.684, 1.132, 0.109, 0.250], total: 16.909 },
