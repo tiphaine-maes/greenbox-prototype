@@ -333,10 +333,10 @@
     .detail-calculation-bar { display: flex; align-items: end; gap: 24px; padding: 16px 20px; margin-bottom: 20px; background: white; border: 1px solid #E1E0DF; border-radius: 8px; }
     .detail-bom-field { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; color: #616161; font-size: 12px; }
     #detail-bom-select { width: 100%; height: 36px; padding: 6px 32px 6px 12px; font-size: 14px; color: #101010; }
-    .detail-calculation-bar .calculation { padding-bottom: 2px; flex-shrink: 0; }
     @media (max-width: 1100px) {
       .detail-calculation-bar { flex-direction: column; align-items: stretch; gap: 16px; }
-      .detail-calculation-bar .calculation { justify-content: space-between; flex-wrap: wrap; }
+      #model-detail-view > .models-title { flex-wrap: wrap; }
+      #model-detail-view > .models-title .calculation { flex-wrap: wrap; }
     }
     .compact { min-height: 34px; padding: 0 16px; font-size: 13px; white-space: nowrap; }
     .bom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
@@ -692,12 +692,12 @@
         <div id="detail-heading-slot"></div>
         <div class="models-title">
           <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
-        </div>
-        <div class="detail-calculation-bar" role="group" aria-label="BOM and calculation">
-          <label class="detail-bom-field" for="detail-bom-select">BOM selected
-            <select id="detail-bom-select" aria-describedby="detail-last-calculation"><option value="">Select BOM</option><option value="reference">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</option></select>
-          </label>
           <div class="calculation"><span id="detail-last-calculation">Last calculation: 12/05/26 - 12:24</span><button type="button" class="action compact" id="detail-recalculate" disabled>Recalculate</button></div>
+        </div>
+        <div class="detail-calculation-bar" role="group" aria-label="BOM selection">
+          <label class="detail-bom-field" for="detail-bom-select">BOM selected
+            <select id="detail-bom-select"><option value="">Select BOM</option><option value="reference">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</option></select>
+          </label>
         </div>
         <p class="models-notice" id="detail-notice" role="status" hidden></p>
         <div class="synthesis-cards">
@@ -1073,7 +1073,7 @@
         document.querySelector("#detail-recalculate").disabled = !bom;
         const lastCalculation = detailModel.calculationDates.get(year);
         document.querySelector("#detail-last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
-        document.querySelector("#detail-recalculate").title = bom ? "" : "Select a BOM to recalculate";
+        document.querySelector("#detail-recalculate").title = bom ? "Recalculate using the latest BOM data, including changes made in other tools" : "Select a BOM to recalculate";
         const validYear = Math.max(2026, ...[...detailModel.calculatedYears].filter((calculatedYear) => calculatedYear <= year));
         document.querySelectorAll("#model-detail-view .valid-from").forEach((badge) => {
           badge.textContent = `Valid from ${validYear}`;
