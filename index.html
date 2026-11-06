@@ -356,6 +356,25 @@
     .synthesis-view .product-info .product-meta, .synthesis-view .year-bar { left: 32px; }
     .synthesis-view .product-heading { height: calc(188px - 92px * var(--compact-progress, 0)); }
     #detail-heading-slot { display: contents; }
+    .levers-view .synthesis-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .levers-view .synthesis-cards .synthesis-card:last-child { display: none; }
+    .levers-view .synthesis-impact, .levers-view .synthesis-bottom { display: none; }
+    .levers-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+    .levers-card h3 { display: flex; align-items: center; gap: 12px; margin: 0; padding: 20px 24px; font-size: 16px; }
+    .levers-card h3 span { font-size: 12px; color: #3643BA; }
+    .levers-table { min-width: 1160px; table-layout: fixed; font-size: 14px; }
+    .levers-table th { background: #f5f4f5; font-size: 12px; border-top: 1px solid #E1E0DF; padding: 16px 10px; }
+    .levers-table td { background: white; padding: 16px 10px; }
+    .levers-table td:first-child { padding-left: 24px; }
+    .lever-toggle { display: flex; gap: 12px; align-items: center; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+    .lever-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 4px; }
+    .preferred-tag { background: #3643BA; color: white; padding: 3px 4px; font-size: 12px; white-space: nowrap; }
+    .communication-tag { background: #d4f5eb; color: #017f5c; padding: 3px 4px; font-size: 12px; white-space: nowrap; }
+    .communication-tag.neutral { background: #f5f4f5; color: #616161; }
+    .lever-percent { color: #3643BA; }
+    .levers-table .lever-component td { border: 0; font-size: 12px; color: #616161; padding-top: 10px; padding-bottom: 10px; }
+    .levers-table .lever-component td:first-child { padding-left: 48px; }
+    @media (max-width: 900px) { .levers-view .synthesis-cards { grid-template-columns: 1fr; } }
     .synthesis-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
     .synthesis-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; padding: 24px; min-width: 0; }
     .synthesis-card h3 { margin: 0 0 20px; color: #272a3b; font-size: 16px; display: flex; align-items: center; gap: 10px; }
@@ -410,6 +429,8 @@
     .model-subnav .nav-item.active { background: #f4f4ff; }
     body:not(.synthesis-view) #synthesis-nav { color: #616161; }
     body:not(.synthesis-view) #synthesis-nav path { fill: #616161; }
+    #synthesis-nav:not(.active) { color: #616161; }
+    #synthesis-nav:not(.active) path { fill: #616161; }
     .model-subnav .synthesis-icon { background: none; width: 24px; height: 24px; color: inherit; }
     .model-subnav .nav-label { white-space: normal; }
     .model-subnav .nav-item { font-family: inherit; }
@@ -501,7 +522,7 @@
     }
     body, body * { font-weight: 400 !important; }
     .product-info h1 {
-      font-size: var(--vp-core-font-size-450, 1.625rem);
+      font-size: calc(var(--vp-core-font-size-450, 1.625rem) - 4px * var(--compact-progress, 0));
       font-style: normal;
       font-weight: 600 !important;
       line-height: 123.08%;
@@ -672,6 +693,43 @@
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>68%</strong></div><progress value="68" max="100" aria-label="Preferred material: 68 percent"></progress><span class="valid-from">Valid from 2026</span></article>
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>42%</strong></div><progress value="42" max="100" aria-label="Preferred process: 42 percent"></progress><span class="valid-from">Valid from 2026</span></article>
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9881;</span><span>Design For Circularity</span><span class="model-tag validated" id="detail-circularity" style="margin-left:auto">Validated</span></div><span class="valid-from">Valid from 2026</span></article>
+        </div>
+        <div id="levers-content" hidden>
+          <section class="levers-card" aria-labelledby="material-levers-title">
+            <h3 id="material-levers-title">Material Levers <span>2 Levers</span></h3>
+            <div class="table-wrap"><table class="levers-table">
+              <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
+              <thead><tr><th>Lever Name</th><th>Preferred</th><th>Poids (%)</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
+              <tbody>
+                <tr><td><button type="button" class="lever-toggle" data-lever="pet" aria-expanded="true" aria-controls="pet-components"><span aria-hidden="true">−</span>Recycled PET</button></td><td><span class="preferred-tag">Preferred Material</span></td><td class="lever-percent">73 %</td><td><span class="communication-tag">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="valid-from">Valid from 2026</span></td></tr>
+              </tbody>
+              <tbody id="pet-components">
+                <tr class="lever-component"><td>9810002579 - JASMINE RPET/EA MM</td><td></td><td>44 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810052863 - HT PU RFL LG 6MM KPN</td><td></td><td>9 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810052868 - HT PU RFL ISO 10MM KPN</td><td></td><td>5 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810046916 - LBL traceability 30x30 rPES</td><td></td><td>5 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810034862 - LBL Care(Size) fld 30x100 rPES</td><td></td><td>4 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810034883 - LBL Size unfld 25x60 rPES</td><td></td><td>3 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810048450 - EL RNDBRD TIGHT RPET PL 2,5MM</td><td></td><td>3 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810015677 - THREAD GRAMY ECO TEX rPES- DKT</td><td></td><td>3 %</td><td colspan="3"></td></tr>
+                <tr class="lever-component"><td>9810015887 - THREAD CORESPUN ECO rPES- DKT</td><td></td><td>2 %</td><td colspan="3"></td></tr>
+              </tbody>
+              <tbody><tr><td><button type="button" class="lever-toggle" data-lever="polyamide" aria-expanded="false" aria-controls="polyamide-components"><span aria-hidden="true">+</span>Recycled Polyamide</button></td><td></td><td class="lever-percent">15 %</td><td><span class="communication-tag neutral">Not communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="valid-from">Valid from 2026</span></td></tr></tbody>
+              <tbody id="polyamide-components" hidden><tr class="lever-component"><td colspan="6">Preview: component details are not provided in the design.</td></tr></tbody>
+            </table></div>
+          </section>
+          <section class="levers-card" aria-labelledby="process-levers-title">
+            <h3 id="process-levers-title">Process Levers <span>3 Levers</span></h3>
+            <div class="table-wrap"><table class="levers-table">
+              <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
+              <thead><tr><th>Lever Name</th><th>Preferred</th><th>(%)</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
+              <tbody>
+                <tr><td>Process Lever Name</td><td><span class="preferred-tag">Preferred Process</span></td><td class="lever-percent">23 %</td><td><span class="communication-tag">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="valid-from">Valid from 2026</span></td></tr>
+                <tr><td>Process Lever Name</td><td></td><td class="lever-percent">9 %</td><td><span class="communication-tag neutral">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="valid-from">Valid from 2026</span></td></tr>
+                <tr><td>Process Lever Name</td><td></td><td class="lever-percent">2 %</td><td><span class="communication-tag neutral">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="valid-from">Valid from 2026</span></td></tr>
+              </tbody>
+            </table></div>
+          </section>
         </div>
         <article class="synthesis-card synthesis-impact">
           <h3><span class="synthesis-icon" aria-hidden="true">&#9678;</span>Environmental Impact</h3>
@@ -1045,11 +1103,21 @@
       });
       document.querySelectorAll("[data-model-section]").forEach((button) => button.addEventListener("click", () => {
         if (!detailModel) return;
+        if (button.dataset.modelSection === "Levers") {
+          location.hash = `#model-code/${detailModel.id}/levers`;
+          return;
+        }
         if (!location.hash.startsWith("#model-code/")) {
           location.hash = `model-code/${detailModel.id}`;
         }
         showDetailNotice(`Preview only: the ${button.dataset.modelSection} detail view is not available yet.`);
         document.querySelector("#detail-notice").scrollIntoView({ block: "center" });
+      }));
+      document.querySelectorAll(".lever-toggle").forEach((button) => button.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") !== "true";
+        button.setAttribute("aria-expanded", String(expanded));
+        button.querySelector("span").textContent = expanded ? "−" : "+";
+        document.getElementById(button.getAttribute("aria-controls")).hidden = !expanded;
       }));
       document.querySelector("#synthesis-nav").addEventListener("click", (event) => {
         event.preventDefault();
@@ -1123,10 +1191,11 @@
       });
       function navigateView() {
         if (!location.hash) history.replaceState(null, "", "#all-model-code");
-        const detailMatch = location.hash.match(/^#model-code\/(\d+)$/);
+        const detailMatch = location.hash.match(/^#model-code\/(\d+)(\/levers)?$/);
         const requestedModel = detailMatch ? models.find((model) => model.id === Number(detailMatch[1])) : null;
         if (requestedModel) detailModel = requestedModel;
         const detailVisible = Boolean(requestedModel);
+        const leversVisible = detailVisible && Boolean(detailMatch[2]);
         const modelsVisible = location.hash === "#all-model-code";
         if (!detailVisible && !modelsVisible && location.hash !== "#settings") {
           history.replaceState(null, "", "#all-model-code");
@@ -1140,9 +1209,20 @@
         document.querySelector(".footer").hidden = modelsVisible || detailVisible;
         document.body.classList.toggle("models-view", modelsVisible || detailVisible);
         document.body.classList.toggle("synthesis-view", detailVisible);
-        document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible);
-        if (detailVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
+        document.body.classList.toggle("levers-view", leversVisible);
+        document.querySelector("#levers-content").hidden = !leversVisible;
+        document.querySelector("#synthesis-title").textContent = leversVisible ? "Levers" : "Synthesis";
+        document.querySelector("#detail-notice").hidden = true;
+        document.querySelector("#synthesis-nav").classList.toggle("active", detailVisible && !leversVisible);
+        if (detailVisible && !leversVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
         else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
+        document.querySelectorAll("[data-model-section]").forEach((button) => {
+          const active = leversVisible && button.dataset.modelSection === "Levers";
+          button.classList.toggle("active", active);
+          if (active) button.setAttribute("aria-current", "page");
+          else button.removeAttribute("aria-current");
+          button.querySelectorAll("svg path").forEach((path) => path.setAttribute("fill", active ? "#3643BA" : "#616161"));
+        });
         document.querySelector(modelsVisible || detailVisible ? "#models-year-slot" : "#settings-year-slot").append(document.querySelector(".year-bar"));
         updateModelNavigation();
         if (detailModel) {
