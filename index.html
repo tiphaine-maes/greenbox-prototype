@@ -389,6 +389,7 @@
     .synthesis-card progress::-webkit-progress-value { background: #3643BA; }
     .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
     .valid-from { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
+    .valid-from.stale { color: #bf4500; background: #ffe6d8; }
     .master-bom { background: #ead6ff; padding: 2px 4px; font-size: 12px; white-space: nowrap; }
     .synthesis-impact { margin-bottom: 20px; }
     .impact-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; }
@@ -965,6 +966,7 @@
         id: index, status: modelStates[index], code, name,
         selected: false, bom: index !== 7 && index !== 8,
         method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO",
+        calculatedYears: new Set([2026]),
       }));
       const modelsBody = document.querySelector("#models-body");
       const modelSearch = document.querySelector("#model-search");
@@ -1054,6 +1056,12 @@
       }
       function renderDetail() {
         if (!detailModel) return;
+        const year = Number(currentYear());
+        const validYear = Math.max(...[...detailModel.calculatedYears].filter((calculatedYear) => calculatedYear <= year));
+        document.querySelectorAll("#model-detail-view .valid-from").forEach((badge) => {
+          badge.textContent = `Valid from ${validYear}`;
+          badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
+        });
         document.querySelector("#detail-bom").textContent = detailModel.bom ? `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY` : "No BOM selected for the model code";
         document.querySelector(".master-bom").hidden = !detailModel.bom;
         const status = document.querySelector("#detail-circularity");
@@ -1195,6 +1203,16 @@
         notice.textContent = message;
         notice.hidden = false;
       }
+      // Recalculation is simulated locally; the prototype's metric values stay unchanged.
+      document.querySelector("#detail-recalculate").addEventListener("click", () => {
+        if (!detailModel) return;
+        detailModel.calculatedYears.add(Number(currentYear()));
+        renderDetail();
+      });
+      document.querySelector("#recalculate").addEventListener("click", () => {
+        models.forEach((model) => model.calculatedYears.add(Number(currentYear())));
+        renderDetail();
+      });
       document.querySelector("#detail-bom-picker").addEventListener("change", (event) => {
         document.querySelector("#detail-apply").disabled = !event.target.value;
       });
