@@ -955,6 +955,7 @@
       const bomPicker = document.querySelector("#bom-picker");
       const applySelected = document.querySelector("#apply-selected");
       const productHeading = document.querySelector(".product-heading");
+      const productTitle = productHeading.querySelector("h1").textContent;
       const modelCodeNav = document.querySelector("#model-code-nav");
       function updateModelNavigation() {
         const selected = Boolean(detailModel);
@@ -1203,6 +1204,7 @@
           return;
         }
         document.querySelector("#model-detail-view").hidden = !detailVisible;
+        productHeading.querySelector("h1").textContent = detailVisible ? `${detailModel.code} - ${detailModel.name}` : productTitle;
         document.querySelector(detailVisible ? "#detail-heading-slot" : "#models-view").prepend(productHeading);
         document.querySelector("#models-view").hidden = !modelsVisible;
         document.querySelector("#settings-view").hidden = modelsVisible || detailVisible;
