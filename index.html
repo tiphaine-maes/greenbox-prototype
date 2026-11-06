@@ -1260,7 +1260,7 @@
         ].filter(Boolean);
         document.querySelector("#design-levers-warning").hidden = missingDesignLevers.length === 0;
         const titleWarning = document.querySelector("#design-levers-title svg");
-        titleWarning.hidden = missingDesignLevers.length === 0;
+        titleWarning.toggleAttribute("hidden", missingDesignLevers.length === 0);
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
