@@ -342,6 +342,7 @@
     .model-search { width: 280px; height: 34px; border: 0; border-radius: 24px; background: #f5f4f5; font-size: 13px; }
     .models-table { min-width: 1080px; font-size: 12px; table-layout: fixed; }
     .models-table th { background: #f5f4f5; font-size: 12px; }
+    .models-table thead { position: relative; z-index: 2; transform: translateY(var(--table-header-offset, 0px)); }
     .models-table td { height: 84px; background: white; padding: 12px 10px; }
     .models-table th:first-child, .models-table td:first-child { width: 36px; padding: 10px; }
     .models-table input[type="checkbox"] { width: 18px; height: 18px; margin: 0; padding: 0; accent-color: #3944c4; }
@@ -657,7 +658,24 @@
       document.body.style.setProperty("--compact-progress", progress);
       const yearBar = document.querySelector(".year-bar");
       if (yearBar) yearBar.inert = document.body.classList.contains("models-view") && progress === 1;
+      updateTableHeader();
     }
+    function updateTableHeader() {
+      const table = document.querySelector(".models-table");
+      if (document.querySelector("#models-view").hidden) {
+        table.style.setProperty("--table-header-offset", "0px");
+        return;
+      }
+      // Translate the existing header so horizontal overflow stays aligned with its columns.
+      const bounds = table.getBoundingClientRect();
+      const headerHeight = table.tHead.offsetHeight;
+      const stickyTop = Math.max(0, document.querySelector(".product-heading").getBoundingClientRect().bottom);
+      const offset = Math.max(0, Math.min(stickyTop - bounds.top, bounds.height - headerHeight));
+      table.style.setProperty("--table-header-offset", `${offset}px`);
+    }
+    const tableResizeObserver = new ResizeObserver(updateTableHeader);
+    tableResizeObserver.observe(document.querySelector(".models-table"));
+    tableResizeObserver.observe(document.querySelector(".product-heading"));
     window.addEventListener("scroll", updateSidebarTop, { passive: true });
     window.addEventListener("resize", updateSidebarTop);
     updateSidebarTop();
