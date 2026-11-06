@@ -683,7 +683,6 @@
           <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
           <div class="calculation"><span>Last calculation: 12/05/24 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
         </div>
-        <p class="impact-caption" id="detail-model-label"></p>
         <p class="models-notice" id="detail-notice" role="status" hidden></p>
         <div class="bom-actions">
           <div class="bom-action"><div><span class="bom-description">BOM selected :</span><br><a href="#model-code" id="detail-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a></div><span class="master-bom">Master BOM</span></div>
@@ -1037,7 +1036,6 @@
       }
       function renderDetail() {
         if (!detailModel) return;
-        document.querySelector("#detail-model-label").textContent = `${detailModel.code} — ${detailModel.name} · Preview data from the design`;
         document.querySelector("#detail-bom").textContent = detailModel.bom ? `SS${currentYear().slice(-2)} BOM 004 : 351243 - SHORT RUN 500 W DRY` : "No BOM selected for the model code";
         document.querySelector(".master-bom").hidden = !detailModel.bom;
         const status = document.querySelector("#detail-circularity");
@@ -1129,7 +1127,6 @@
         notice.textContent = message;
         notice.hidden = false;
       }
-      document.querySelector("#detail-recalculate").addEventListener("click", () => showDetailNotice("Preview only: calculation is not connected to a backend."));
       document.querySelector("#detail-bom-picker").addEventListener("change", (event) => {
         document.querySelector("#detail-apply").disabled = !event.target.value;
       });
@@ -1180,9 +1177,6 @@
       document.querySelector("#reference-bom").addEventListener("click", (event) => {
         event.preventDefault();
         showModelsNotice("Reference BOM 004 — 351243 - SHORT RUN 500 W DRY.");
-      });
-      document.querySelector("#recalculate").addEventListener("click", () => {
-        showModelsNotice("Preview only: calculation is not connected to a backend.");
       });
       document.querySelector(".favorite").addEventListener("click", (event) => {
         const button = event.currentTarget;
