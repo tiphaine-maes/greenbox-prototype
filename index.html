@@ -713,7 +713,7 @@
         <div id="detail-heading-slot"></div>
         <div class="models-title">
           <h2 id="synthesis-title" tabindex="-1">Synthesis</h2>
-          <div class="calculation"><span id="detail-last-calculation">Last calculation: 12/05/26 - 12:24</span><button type="button" class="action compact" id="detail-recalculate" disabled>Recalculate</button></div>
+          <div class="calculation"><span id="detail-last-calculation">Last calculation: 12/05/26 - 12:24</span><button type="button" class="action compact" id="detail-recalculate">Recalculate</button></div>
         </div>
         <div class="detail-calculation-bar" role="group" aria-label="BOM selection">
           <label class="detail-bom-field" for="detail-bom-select">BOM selected
@@ -1095,7 +1095,6 @@
         selector.value = bom ? "reference" : "";
         document.querySelector("#detail-bom-label").textContent = selector.selectedOptions[0].textContent;
         document.querySelector("#detail-reference-bom-tag").hidden = !bom || !referenceBomYears.has(year);
-        document.querySelector("#detail-recalculate").disabled = !bom;
         const lastCalculation = detailModel.calculationDates.get(year);
         document.querySelector("#detail-last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
         document.querySelector("#detail-recalculate").title = bom ? "Recalculate using the latest BOM data, including changes made in other tools" : "Select a BOM to recalculate";
@@ -1266,7 +1265,13 @@
         renderModels();
       });
       document.querySelector("#detail-recalculate").addEventListener("click", () => {
-        if (!detailModel || !detailModel.bomByYear.has(Number(currentYear()))) return;
+        if (!detailModel) return;
+        if (!detailModel.bomByYear.has(Number(currentYear()))) {
+          showDetailNotice("Select a BOM to recalculate.");
+          document.querySelector("#detail-bom-select").focus();
+          return;
+        }
+        document.querySelector("#detail-notice").hidden = true;
         markCalculated(detailModel);
         renderDetail();
       });
