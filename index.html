@@ -422,7 +422,7 @@
     .synthesis-card progress::-webkit-progress-bar { background: #e1e3fc; }
     .synthesis-card progress::-webkit-progress-value { background: #3643BA; }
     .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
-    .valid-from { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
+    .valid-from, .circularity-validity { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
     .valid-from.stale { color: #bf4500; background: #ffe6d8; }
     .metric-card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .all-levers { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 6px 16px; border: 1px solid #aaa; border-radius: 24px; color: #101010; background: white; font-size: 13px; text-decoration: none; }
@@ -761,6 +761,26 @@
                 <tr><td><button type="button" class="lever-toggle" data-lever="greige" aria-expanded="false" aria-controls="greige-components"><span aria-hidden="true">+</span>Greige</button></td><td></td><td class="lever-percent">1.10 %<span class="impact-caption">(1.73 g)</span></td><td><span class="communication-tag neutral">Not communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="valid-from">Valid from 2026</span></td></tr>
               </tbody>
               <tbody id="greige-components" hidden><tr class="lever-component"><td>8339050 - EL WST STD CFT MIX PL 40MM</td><td></td><td>1.10 %<span class="impact-caption">(1.73 g)</span></td><td colspan="3"></td></tr></tbody>
+            </table></div>
+          </section>
+          <section class="levers-card" aria-labelledby="circularity-levers-title">
+            <h3 id="circularity-levers-title">Design For Circularity Levers <span>3 Levers</span></h3>
+            <div class="table-wrap"><table class="levers-table">
+              <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
+              <thead><tr><th>Lever Name</th><th>Evaluation State</th><th>Score</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
+              <tbody>
+                <tr><td>Recyclability</td><td><span class="model-tag validated">Validated</span></td><td class="lever-percent">A</td><td><span class="communication-tag">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="circularity-validity">Valid from 2026</span></td></tr>
+                <tr><td>Repairability</td><td><span class="model-tag evaluated">Evaluated</span></td><td class="lever-percent">D</td><td><span class="communication-tag neutral">Not communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="circularity-validity">Valid from 2026</span></td></tr>
+                <tr><td>Durability</td><td><span class="model-tag evaluated">Evaluated</span></td><td class="lever-percent">D</td><td><span class="communication-tag neutral">Not communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="circularity-validity">Valid from 2026</span></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+          <section class="levers-card" aria-labelledby="design-levers-title">
+            <h3 id="design-levers-title">Design Levers <span>1 Lever</span></h3>
+            <div class="table-wrap"><table class="levers-table">
+              <colgroup><col style="width:54%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
+              <thead><tr><th>Lever Name</th><th>Value</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
+              <tbody><tr><td>Minimal Waste Design</td><td class="lever-percent">Yes</td><td><span class="communication-tag">Communicated</span></td><td><span class="impact-caption">TMAES26<br>17/03/27</span></td><td><span class="circularity-validity">Valid from 2026</span></td></tr></tbody>
             </table></div>
           </section>
         </div>
