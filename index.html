@@ -368,6 +368,7 @@
     .levers-table td:first-child { padding-left: 24px; }
     .lever-toggle { display: flex; gap: 12px; align-items: center; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
     .lever-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 4px; }
+    .lever-toggle > span { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex-shrink: 0; }
     .preferred-tag { background: #3643BA; color: white; padding: 3px 4px; font-size: 12px; white-space: nowrap; }
     .communication-tag { background: #d4f5eb; color: #017f5c; padding: 3px 4px; font-size: 12px; white-space: nowrap; }
     .communication-tag.neutral { background: #f5f4f5; color: #616161; }
@@ -1132,10 +1133,14 @@
         showDetailNotice(`Preview only: the ${button.dataset.modelSection} detail view is not available yet.`);
         document.querySelector("#detail-notice").scrollIntoView({ block: "center" });
       }));
+      const leverPlusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.2513 7.2513V2.66797H8.7513V7.2513H13.3346V8.7513H8.7513V13.3346H7.2513V8.7513H2.66797V7.2513H7.2513Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
+      document.querySelectorAll('.lever-toggle[aria-expanded="false"] > span').forEach((icon) => {
+        icon.innerHTML = leverPlusIcon;
+      });
       document.querySelectorAll(".lever-toggle").forEach((button) => button.addEventListener("click", () => {
         const expanded = button.getAttribute("aria-expanded") !== "true";
         button.setAttribute("aria-expanded", String(expanded));
-        button.querySelector("span").textContent = expanded ? "−" : "+";
+        button.querySelector("span").innerHTML = expanded ? "−" : leverPlusIcon;
         document.getElementById(button.getAttribute("aria-controls")).hidden = !expanded;
       }));
       document.querySelector("#synthesis-nav").addEventListener("click", (event) => {
