@@ -188,6 +188,21 @@
     }
 
     .status.complete { color: #008665; }
+    #settings-nav { position: relative; }
+    .settings-nav-warning { display: flex; flex-shrink: 0; margin-left: auto; }
+    .settings-nav-warning[hidden], .settings-field-warning[hidden] { display: none; }
+    .sidebar-collapsed .settings-nav-warning { position: absolute; top: 0; right: 0; }
+    #settings-view .card-heading h2 { display: flex; align-items: center; gap: 8px; }
+    .settings-field-warning { display: inline-flex; }
+    .settings-warning { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px; border: 1px solid #CD4D04; border-radius: 12px; background: #FFF5EF; }
+    .settings-warning[hidden] { display: none; }
+    .settings-warning > svg { flex-shrink: 0; }
+    .settings-warning strong { display: block; font-size: 16px; font-weight: 600 !important; }
+    .settings-warning p { margin: 4px 0 0; font-size: 14px; }
+    .settings-warning .action { margin-left: auto; flex-shrink: 0; }
+    #reference, .share-input { scroll-margin-top: 120px; }
+    .share-field-error { max-width: 180px; font-size: 12px; }
+    @media (max-width: 1000px) { .settings-warning { flex-wrap: wrap; } }
     .status-icon { display: block; width: 24px; height: 24px; flex-shrink: 0; }
 
     .field { width: min(100%, 600px); margin-top: 24px; }
@@ -895,7 +910,7 @@
         </div>
         <div class="field">
           <label for="reference">Reference</label>
-          <input id="reference" aria-invalid="true" placeholder="Enter a reference">
+          <input id="reference" aria-invalid="true" aria-describedby="reference-error" placeholder="Enter a reference">
           <p class="error" id="reference-error">Enter a reference to complete the functional unit.</p>
         </div>
         <p class="hint">You can use this file to calculate the reference factor&nbsp; ›</p>
@@ -1011,6 +1026,48 @@
     const sharingByYear = {
       2026: ["100%", "", "", ""],
     };
+    const warningSvg = document.querySelector("#design-levers-warning svg").outerHTML;
+    const settingsWarning = document.createElement("div");
+    settingsWarning.className = "settings-warning";
+    settingsWarning.hidden = true;
+    settingsWarning.setAttribute("role", "status");
+    settingsWarning.innerHTML = `${warningSvg}<div><strong id="settings-warning-title"></strong><p id="settings-warning-details"></p></div><button type="button" class="action compact" id="go-to-settings">Go to settings</button>`;
+    document.querySelector("#settings-view h1").after(settingsWarning);
+    const settingsNavWarning = document.createElement("span");
+    settingsNavWarning.className = "settings-nav-warning";
+    settingsNavWarning.setAttribute("aria-hidden", "true");
+    settingsNavWarning.innerHTML = warningSvg;
+    document.querySelector("#settings-nav").append(settingsNavWarning);
+    ["functional", "sharing"].forEach((section) => {
+      const marker = document.createElement("span");
+      marker.id = `${section}-warning-icon`;
+      marker.className = "settings-field-warning";
+      marker.innerHTML = warningSvg;
+      document.querySelector(`#${section}-card h2`).prepend(marker);
+    });
+    shares.forEach((input, index) => {
+      const error = document.createElement("p");
+      error.id = `share-error-${index}`;
+      error.className = "error share-field-error";
+      error.hidden = true;
+      input.setAttribute("aria-describedby", error.id);
+      input.after(error);
+    });
+    let focusSettingsRequested = false;
+    function focusIncompleteSettings() {
+      const input = document.querySelector('#settings-view input[aria-invalid="true"]');
+      if (input) {
+        input.focus({ preventScroll: true });
+        input.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+      }
+    }
+    document.querySelector("#go-to-settings").addEventListener("click", () => {
+      if (location.hash === "#settings") focusIncompleteSettings();
+      else {
+        focusSettingsRequested = true;
+        location.hash = "settings";
+      }
+    });
 
     function currentYear() {
       return years.find((button) => button.getAttribute("aria-pressed") === "true").textContent;
@@ -1044,18 +1101,43 @@
 
     function updateValidation() {
       const missingReference = !reference.value.trim();
-      const values = shares.map((input) => Number(input.value.replace("%", "").trim()));
+      const values = shares.map((input) => {
+        const text = input.value.trim().replace(/%$/, "").trim().replace(",", ".");
+        return /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) ? Number(text) : NaN;
+      });
+      const invalidShares = values.map((value) => !Number.isFinite(value) || value < 0 || value > 100);
       const total = values.reduce((sum, value) => sum + (Number.isFinite(value) ? value : 0), 0);
-      const sharingComplete = total === 100;
+      const correctTotal = Math.abs(total - 100) < 1e-8;
+      const sharingComplete = !invalidShares.some(Boolean) && correctTotal;
 
       reference.setAttribute("aria-invalid", String(missingReference));
       document.querySelector("#reference-error").hidden = !missingReference;
       setStatus("#functional-status", missingReference, "1 field");
-      shares.forEach((input) => input.setAttribute("aria-invalid", String(!sharingComplete && Boolean(input.value.trim()))));
+      shares.forEach((input, index) => {
+        input.setAttribute("aria-invalid", String(invalidShares[index] || !correctTotal));
+        const error = document.querySelector(`#share-error-${index}`);
+        error.hidden = sharingComplete;
+        error.textContent = !input.value.trim() ? "Enter a sharing percentage (0% is allowed)." : invalidShares[index] ? "Enter a number between 0 and 100%." : !correctTotal ? "Adjust sharing so the total equals 100%." : "";
+        error.hidden = !error.textContent;
+      });
       setStatus("#sharing-status", !sharingComplete);
       sharingError.hidden = sharingComplete;
+      sharingError.textContent = invalidShares.some(Boolean) ? "Fill in every sharing percentage (0% is allowed). The total must equal 100%." : `Total: ${total.toLocaleString("en-GB", { maximumFractionDigits: 2 })}%. The total assigned sharing must equal 100%.`;
       saveButton.disabled = missingReference || !sharingComplete;
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
+      document.querySelector("#functional-warning-icon").hidden = !missingReference;
+      document.querySelector("#sharing-warning-icon").hidden = sharingComplete;
+      settingsNavWarning.hidden = !saveButton.disabled;
+      document.querySelector("#settings-nav").setAttribute("aria-label", saveButton.disabled ? `Settings: incomplete for ${currentYear()}` : "Settings");
+      document.querySelector("#settings-nav").title = saveButton.disabled ? `Settings incomplete for ${currentYear()}` : "Settings";
+      settingsWarning.hidden = !saveButton.disabled;
+      const inSettings = location.hash === "#settings";
+      document.querySelector("#settings-warning-title").textContent = `${inSettings ? "Settings incomplete for" : "Complete your settings for"} ${currentYear()}`;
+      document.querySelector("#settings-warning-details").textContent = [
+        missingReference ? "Functional unit: reference missing." : "",
+        !sharingComplete ? `Specification sharing: ${invalidShares.some(Boolean) ? "fill in every percentage; " : ""}total must equal 100%.` : "",
+      ].filter(Boolean).join(" ");
+      document.querySelector("#go-to-settings").textContent = inSettings ? "Complete fields" : "Go to settings";
     }
 
     function setStatus(selector, incomplete, message) {
@@ -1704,6 +1786,8 @@
           else item.removeAttribute("aria-current");
         });
         renderDetail();
+        document.querySelector(detailVisible ? "#model-detail-view > .models-title" : modelsVisible ? "#models-view > .models-title" : "#settings-view h1").after(settingsWarning);
+        updateValidation();
         window.scrollTo(0, 0);
         updateSidebarTop();
         if (detailVisible) document.querySelector("#synthesis-title").focus({ preventScroll: true });
@@ -1719,6 +1803,10 @@
             ));
         }
         previousViewHash = location.hash;
+        if (focusSettingsRequested && location.hash === "#settings") {
+          focusSettingsRequested = false;
+          requestAnimationFrame(focusIncompleteSettings);
+        }
       }
       window.addEventListener("hashchange", navigateView);
       [bomPicker, document.querySelector("#detail-bom-select")].forEach(setupBomDropdown);
