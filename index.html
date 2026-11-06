@@ -941,8 +941,8 @@
       saveCurrentSharing();
       updateValidation();
     }));
-      const modelStates = ["Validated", "Evaluated", "Not evaluated", "Validated", "Validated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Evaluated", "Not evaluated"];
-      const modelColors = ["#585E95", "#ABB1C9", "#2A3F4D", "#89C2C8", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#879892", "#D1E9E1", "#3B4659", "#494F4F", "#DEEB91"];
+      const modelStates = ["Validated", "Evaluated", "Not evaluated", "Validated", "Validated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated", "Not evaluated"];
+      const modelColors = ["#585E95", "#ABB1C9", "#2A3F4D", "#89C2C8", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#879892", "#D1E9E1", "#3B4659", "#494F4F", "#DEEB91", "#959EC5", "#9D9487", "#DE9BBB", "#FFFFFF", "#57535C", "#34353A"];
       const modelNames = [
         ["8969698", "SHORT RUN 500 W DRY PURPLE C16A"],
         ["8969699", "SHORT RUN 500 W DRY MAUVE L16A"],
@@ -956,6 +956,12 @@
         ["8913701", "SHORT RUN 500 W DRY BLUE H17B"],
         ["8852976", "SHORT RUN 500 W DRY GREEN K23A"],
         ["8852978", "Short Run Dry 500 YELLOW B28B"],
+        ["9017127", "SHORT RUN CORE W PURPLE B16A"],
+        ["9017128", "SHORT RUN CORE W BEIGE H01A"],
+        ["9032359", "SHORT RUN CORE W PINK B12A"],
+        ["9032518", "SHORT RUN CORE W GREEN B27B"],
+        ["9032519", "SHORT RUN CORE W PURPLE K14B"],
+        ["9034123", "SHORT RUN CORE W GREY N06B"],
       ];
       const models = modelNames.map(([code, name], index) => ({
         id: index, status: modelStates[index], code, name,
