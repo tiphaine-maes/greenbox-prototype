@@ -1493,10 +1493,13 @@
         const detail = details[grade];
         return `<div class="recyclability-details"><p>${detail.lead} ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p>${detail.target} potentiellement recyclable</p></div>`;
       }
-      function renderCircularity(year) {
-        const yearLevers = circularityLevers.map((lever) => year >= 2027
+      function modelCircularityLevers(model, year) {
+        return circularityLevers.map((lever) => year !== 2026 || model.status === "Not evaluated"
           ? { ...lever, grade: "", answer: undefined, state: "Not evaluated", color: undefined, communicated: false }
           : { ...lever, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Not evaluated") : circularityEvaluationState(lever.grade) });
+      }
+      function renderCircularity(year) {
+        const yearLevers = modelCircularityLevers(detailModel, year);
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
         document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${circularityValue(lever) ? "" : " not-evaluated"}" aria-label="${lever.name}: ${circularityValue(lever) ? `${circularityValue(lever)}, ` : ""}${lever.state}">
@@ -1577,8 +1580,8 @@
         modelsBody.innerHTML = visible.map((model) => {
           const bom = model.bomByYear.get(Number(currentYear()));
           const hasLevers = model.status !== "Not evaluated";
-          const circularityCells = circularityLevers.map((lever) => {
-            const evaluated = year === 2026 && hasLevers && circularityValue(lever);
+          const circularityCells = modelCircularityLevers(model, year).map((lever) => {
+            const evaluated = circularityValue(lever);
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
