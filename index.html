@@ -279,6 +279,7 @@
     .nav-item[data-page] path { fill: currentColor; }
     #settings-nav { margin-top: auto; }
     .product-heading {
+      overflow: hidden;
       position: sticky;
       z-index: 3;
       top: 0;
@@ -324,7 +325,6 @@
       border: 0;
       gap: 10px;
       white-space: nowrap;
-      opacity: calc(1 - var(--compact-progress, 0));
     }
     .models-view .year-label {
       margin-right: 10px;
@@ -342,10 +342,13 @@
       border-radius: 22px;
       background: #3944c4;
       color: white;
-      opacity: var(--compact-progress, 0);
+      visibility: hidden;
       pointer-events: none;
     }
     .product-heading .favorite { position: absolute; top: 24px; right: 32px; }
+    .header-compacting .product-info .product-meta,
+    .header-compacting.models-view .year-bar { visibility: hidden; }
+    .header-compacting .compact-year { visibility: visible; }
     .product-scrolled .product-heading .favorite { visibility: hidden; }
     .product-meta { display: flex; flex-wrap: wrap; gap: 16px 28px; font-size: 12px; }
     .product-meta span { color: #616161; }
@@ -1014,9 +1017,10 @@
       document.body.style.setProperty("--sidebar-top", `${Math.max(0, 84 - window.scrollY)}px`);
       document.body.classList.toggle("product-scrolled", window.scrollY >= 84);
       const progress = Math.min(1, Math.max(0, (window.scrollY - 24) / 140));
+      document.body.classList.toggle("header-compacting", progress > 0);
       document.body.style.setProperty("--compact-progress", progress);
       const yearBar = document.querySelector(".year-bar");
-      if (yearBar) yearBar.inert = document.body.classList.contains("models-view") && progress === 1;
+      if (yearBar) yearBar.inert = document.body.classList.contains("models-view") && progress > 0;
       updateSidebarToggle();
       updateTableHeader();
     }
