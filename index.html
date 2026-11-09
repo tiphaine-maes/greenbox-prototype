@@ -1015,10 +1015,15 @@
     </form>
   </dialog>
   <dialog class="design-sheet" id="circularity-sheet" aria-labelledby="circularity-sheet-title">
-    <form method="dialog">
+    <form id="circularity-form">
       <header class="design-sheet-header"><h2 id="circularity-sheet-title">Update Recyclability</h2><button type="button" class="design-sheet-close" id="close-circularity-sheet" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101010" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
-      <div class="design-sheet-fields"></div>
-      <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-circularity-sheet">Cancel</button></footer>
+      <div class="design-sheet-fields">
+        <fieldset id="circularity-binary-fields" hidden>
+          <legend id="circularity-binary-question"></legend>
+          <div class="design-sheet-radios"><label><input type="radio" name="circularity-answer" value="yes">Yes</label><label><input type="radio" name="circularity-answer" value="no">No</label></div>
+        </fieldset>
+      </div>
+      <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-circularity-sheet">Cancel</button><button type="submit" class="action primary" id="save-circularity-sheet" hidden>Save</button></footer>
     </form>
   </dialog>
   <script>
@@ -1503,9 +1508,17 @@
         return `<div class="recyclability-details"><p>${detail.lead} ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p>${detail.target} potentially recyclable</p></div>`;
       }
       function modelCircularityLevers(model, year) {
-        return circularityLevers.map((lever) => year < 2026 || model.status === "Not evaluated"
+        return circularityLevers.map((lever) => {
+          const evaluations = model.circularityByYear?.get(lever.name);
+          const validYear = evaluations ? Math.max(...[...evaluations.keys()].filter((value) => value <= year)) : -Infinity;
+          if (evaluations?.has(validYear)) {
+            const evaluation = evaluations.get(validYear);
+            return { ...lever, ...evaluation, validYear, state: evaluation.answer ? "Validated" : "Evaluated", communicated: false };
+          }
+          return year < 2026 || model.status === "Not evaluated"
           ? { ...lever, grade: "", answer: undefined, state: "Not evaluated", color: undefined, communicated: false }
-          : { ...lever, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Evaluated") : circularityEvaluationState(lever.grade) });
+          : { ...lever, validYear: 2026, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Evaluated") : circularityEvaluationState(lever.grade) };
+        });
       }
       function renderCircularity(year) {
         const yearLevers = modelCircularityLevers(detailModel, year);
@@ -1532,9 +1545,24 @@
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${circularityValue(lever)}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${circularityValue(lever) ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${circularityValue(lever) ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
       function updateCircularityValidity(year) {
-        document.querySelectorAll("#circularity-content .circularity-validity, #circularity-levers-body .circularity-validity").forEach((badge) => {
-          badge.textContent = "Valid from 2026";
-          badge.classList.toggle("stale", year > 2026);
+        modelCircularityLevers(detailModel, year).forEach((lever, index) => {
+          const surfaces = [document.querySelector("#circularity-content").children[index], document.querySelector("#circularity-levers-body").children[index]];
+          surfaces.forEach((surface) => {
+            const badge = surface.querySelector(".circularity-validity");
+            if (badge) {
+              badge.textContent = `Valid from ${lever.validYear}`;
+              badge.classList.toggle("stale", year > lever.validYear);
+            }
+            if (lever.modified) {
+              const time = surface.querySelector("time");
+              if (time) {
+                time.textContent = lever.modified;
+                time.dateTime = lever.modifiedISO;
+              }
+              const caption = surface.querySelector(".impact-caption");
+              if (caption) caption.innerHTML = `TMAES26<br>${lever.modified}`;
+            }
+          });
         });
       }
       function preferredResults(model, year) {
@@ -1774,11 +1802,29 @@
         const button = event.target.closest("[data-update-circularity]");
         if (!button) return;
         circularityTrigger = button;
-        document.querySelector("#circularity-sheet-title").textContent = `Update ${button.dataset.updateCircularity}`;
+        const name = button.dataset.updateCircularity;
+        const year = Number(currentYear());
+        const binary = ["Durability", "Rental"].includes(name);
+        circularityEditTarget = { model: detailModel, year, name };
+        circularityForm.reset();
+        document.querySelector("#circularity-sheet-title").textContent = `Update ${name}`;
+        document.querySelector("#circularity-binary-fields").hidden = !binary;
+        document.querySelector("#save-circularity-sheet").hidden = !binary;
+        circularityForm.querySelectorAll('[name="circularity-answer"]').forEach((input) => {
+          input.disabled = !binary;
+          input.required = binary;
+        });
+        if (binary) {
+          document.querySelector("#circularity-binary-question").textContent = name === "Durability" ? "Does the product meet the durability criteria?" : "Is the product suitable for rental?";
+          const lever = modelCircularityLevers(detailModel, year).find((item) => item.name === name);
+          if (typeof lever.answer === "boolean") circularityForm.querySelector(`[value="${lever.answer ? "yes" : "no"}"]`).checked = true;
+        }
         circularitySheet.showModal();
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) circularitySheet.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
       });
       const circularitySheet = document.querySelector("#circularity-sheet");
+      const circularityForm = document.querySelector("#circularity-form");
+      let circularityEditTarget = null;
       let circularityTrigger = null;
       let circularityClosing = false;
       async function closeCircularitySheet() {
@@ -1788,6 +1834,7 @@
           await circularitySheet.animate([{ transform: "translateX(0)" }, { transform: "translateX(100%)" }], { duration: 220, easing: "ease-in" }).finished;
         }
         circularitySheet.close();
+        circularityEditTarget = null;
         circularityClosing = false;
         circularityTrigger?.focus({ preventScroll: true });
         circularityTrigger = null;
@@ -1801,6 +1848,24 @@
         if (event.target !== circularitySheet) return;
         const bounds = circularitySheet.getBoundingClientRect();
         if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeCircularitySheet();
+      });
+      circularityForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!circularityEditTarget || circularityClosing || !circularityForm.reportValidity()) return;
+        const { model, year, name } = circularityEditTarget;
+        if (!["Durability", "Rental"].includes(name)) return;
+        const now = new Date();
+        if (!model.circularityByYear) model.circularityByYear = new Map();
+        if (!model.circularityByYear.has(name)) model.circularityByYear.set(name, new Map());
+        model.circularityByYear.get(name).set(year, {
+          answer: circularityForm.querySelector('[name="circularity-answer"]:checked').value === "yes",
+          modified: now.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" }),
+          modifiedISO: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`,
+        });
+        renderModels();
+        renderDetail();
+        circularityTrigger = document.querySelector(`[data-update-circularity="${name}"]`);
+        closeCircularitySheet();
       });
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
       function markCalculated(model) {
