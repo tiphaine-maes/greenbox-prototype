@@ -573,6 +573,7 @@
     .model-tag.validated { background: #008665; color: white; }
     .model-tag.evaluated { background: #8d98a6; color: white; }
     .model-caption { display: block; color: #616161; margin-top: 4px; line-height: 1.35; }
+    .models-table .bom-selected-text { color: #000000; }
     .empty-bom { color: #aaa; }
     .model-levers { text-decoration: underline; line-height: 1.4; }
     .models-notice { color: #008665; margin: 0 0 18px; font-size: 14px; }
@@ -1466,7 +1467,7 @@
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td>4.65</td><td>${bom ? "80 %" : "--"}</td><td>${bom ? "23 %" : "--"}</td>
-            <td>${bom ? `<span class="model-caption">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
+            <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
             ${circularityCells}<td><span class="model-caption">Not evaluated</span></td>
             <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
