@@ -1411,6 +1411,18 @@
         const sticker = stickers[state];
         return `<img class="evaluation-sticker" src="${sticker.file}" width="${sticker.width}" height="20" alt="${state}">`;
       }
+      function repairabilityCriteria(grade) {
+        const criteria = {
+          A: { description: "Excellent niveau de réparabilité", depth: [3], efficiency: [3] },
+          B: { description: "Très bon niveau de réparabilité", depth: [3], efficiency: [2] },
+          C: { description: "Restaure la valeur d’usage au minimum attendu", depth: [1], efficiency: [2, 3] },
+          D: { description: "Restaure partiellement la valeur d’usage mais performances peu équilibrées entre efficacité et profondeur", depth: [1, 2], efficiency: [1, 2] },
+          E: { description: "Ne permet pas de restaurer durablement la valeur d’usage", depth: [1], efficiency: [1] },
+        };
+        const criterion = criteria[grade];
+        const stars = (scores) => `<span role="img" aria-label="${scores.map((score) => `${score} sur 3`).join(" ou ")}">${scores.map((score) => "★".repeat(score) + "☆".repeat(3 - score)).join(" / ")}</span>`;
+        return `<section class="circularity-assessment"><h4>${criterion.description}</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>${stars(criterion.depth)}</dd></div><div><dt>Efficacité de réparation</dt><dd>${stars(criterion.efficiency)}</dd></div></dl></section>`;
+      }
       function renderCircularity(year) {
         const yearLevers = circularityLevers.map((lever) => year >= 2027
           ? { ...lever, grade: "", state: "Not evaluated", color: undefined, communicated: false }
@@ -1428,7 +1440,7 @@
               <div class="circularity-scale-labels" aria-hidden="true">${["E", "D", "C", "B", "A"].map((grade) => `<span${grade === lever.grade ? ' class="current"' : ""}>${grade}</span>`).join("")}</div>
             </div>` : ""}
             ${!lever.grade ? `<p class="circularity-explanation">Aucune évaluation renseignée pour ${year}. Lancez une évaluation pour obtenir une note.</p>` : ""}
-            ${lever.grade && lever.name === "Repairability" ? '<section class="circularity-assessment"><h4>Détail des critères</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>3 / 3</dd></div><div><dt>Efficacité de réparation</dt><dd>3 / 3</dd></div></dl></section>' : ""}
+            ${lever.grade && lever.name === "Repairability" ? repairabilityCriteria(lever.grade) : ""}
           </article>`).join("");
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
