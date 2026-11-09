@@ -430,10 +430,8 @@
     .circularity-grade { display: grid; place-items: center; width: 80px; height: 80px; flex-shrink: 0; border-radius: 10px; background: var(--grade-color); color: var(--grade-text, white); font-size: 48px; font-weight: 600 !important; }
     .circularity-result strong { display: block; font-size: 20px; font-weight: 600 !important; }
     .circularity-result p { margin: 2px 0 10px; font-size: 13px; color: #616161; }
-    .circularity-state { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 4px 8px; border-radius: 4px; background: #00845f; color: white; font-size: 12px; white-space: nowrap; }
-    .circularity-state.evaluated { background: #edf0f4; color: #475569; }
-    .circularity-state-dot { width: 6px; height: 6px; border-radius: 50%; background: #64748b; }
-    .circularity-state.empty { display: inline-flex; align-items: center; gap: 4px; background: #f5f4f5; color: #101010; }
+    .evaluation-sticker { display: inline-block; height: 20px; vertical-align: middle; }
+    .circularity-result .evaluation-sticker { display: block; margin-top: 8px; }
     .circularity-scale { margin-top: 32px; }
     .circularity-scale-bar { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
     .circularity-scale-bar > span { height: 10px; border-radius: 3px; background: var(--scale-color); }
@@ -1406,6 +1404,15 @@
         };
         return labels[grade] || `Note ${grade}`;
       }
+      function evaluationSticker(state) {
+        const stickers = {
+          Validated: { file: "sticker-validated.svg", width: 66 },
+          Evaluated: { file: "sticker-evaluated.svg", width: 69 },
+          "Not evaluated": { file: "sticker-not-evaluated.svg", width: 93 },
+        };
+        const sticker = stickers[state];
+        return `<img class="evaluation-sticker" src="${sticker.file}" width="${sticker.width}" height="20" alt="${state}">`;
+      }
       function renderCircularity(year) {
         const yearLevers = circularityLevers.map((lever) => year >= 2027
           ? { ...lever, grade: "", state: "Not evaluated", color: undefined, communicated: false }
@@ -1416,7 +1423,7 @@
             <header class="circularity-card-header"><div class="circularity-card-heading"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</div><button type="button" class="action compact circularity-update" data-update-circularity="${lever.name}">${icon('<path d="M12 5v14M5 12h14"/>')}${lever.grade ? "Update" : "Evaluate"} ${lever.name}</button></header>
             <div class="circularity-result">
               ${lever.grade ? `<div class="circularity-grade" style="--grade-color:${lever.color};--grade-text:${["C", "D"].includes(lever.grade) ? "#272a3b" : "white"}" aria-hidden="true">${lever.grade}</div>` : ""}
-              <div>${lever.grade ? `<p>${lever.name} score</p><strong>${circularityGradeLabel(lever.name, lever.grade)}</strong>` : ""}<span class="circularity-state ${lever.grade ? lever.state.toLowerCase() : "empty"}">${lever.state === "Validated" ? icon('<path d="m5 12 4 4L19 6"/>') : lever.grade ? '<span class="circularity-state-dot" aria-hidden="true"></span>' : ""}${lever.state}</span></div>
+              <div>${lever.grade ? `<p>${lever.name} score</p><strong>${circularityGradeLabel(lever.name, lever.grade)}</strong>` : ""}${evaluationSticker(lever.state)}</div>
             </div>
             ${lever.grade ? `<div class="circularity-scale" role="img" aria-label="Note ${lever.grade} sur une échelle de E à A, A étant le meilleur niveau" style="--grade-column:${["E", "D", "C", "B", "A"].indexOf(lever.grade) + 1}">
               <div class="circularity-scale-bar"><span style="--scale-color:#ff2400"></span><span style="--scale-color:#ff8000"></span><span style="--scale-color:#ffc400"></span><span style="--scale-color:#70b900"></span><span style="--scale-color:#3944c4"></span><div class="circularity-scale-marker" aria-hidden="true"></div></div>
@@ -1426,7 +1433,7 @@
             ${lever.grade && lever.name === "Repairability" ? '<section class="circularity-assessment"><h4>Détail des critères</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>3 / 3</dd></div><div><dt>Efficacité de réparation</dt><dd>3 / 3</dd></div></dl></section>' : ""}
             ${lever.grade ? `<footer class="circularity-card-footer">${lever.state === "Validated" ? "Évaluation validée" : "Évaluation à valider"}</footer>` : ""}
           </article>`).join("");
-        document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td><span class="model-tag ${lever.state === "Validated" ? "validated" : lever.grade ? "evaluated" : ""}">${lever.state}</span></td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
+        document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
       function renderDetail() {
         if (!detailModel) return;
@@ -1458,8 +1465,8 @@
         });
         const status = document.querySelector("#detail-circularity");
         const circularityStatus = year >= 2027 ? "Not evaluated" : detailModel.status;
-        status.textContent = circularityStatus;
-        status.className = `model-tag ${circularityStatus === "Validated" ? "validated" : circularityStatus === "Evaluated" ? "evaluated" : ""}`;
+        status.innerHTML = evaluationSticker(circularityStatus);
+        status.className = "";
         status.closest(".synthesis-card").querySelector(".valid-from").hidden = year >= 2027;
       }
       function openModel(id) {
@@ -1488,7 +1495,7 @@
           const hasLevers = model.status !== "Not evaluated";
           const circularityCells = circularityLevers.map((lever) => {
             const evaluated = year === 2026 && hasLevers && lever.grade;
-            return `<td>${evaluated ? `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${lever.state}">${lever.grade}</span>` : '<span class="model-caption">Not evaluated</span>'}</td>`;
+            return `<td>${evaluated ? `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${lever.state}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
