@@ -434,7 +434,7 @@
     .circularity-scale { margin-top: 44px; }
     .circularity-scale-bar { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
     .circularity-scale-bar > span { height: 12px; border-radius: 3px; background: var(--scale-color); }
-    .circularity-scale-marker { position: absolute; grid-column: var(--grade-column) / span 1; grid-row: 1 / span 1; bottom: 18px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 9px solid #101010; }
+    .circularity-scale-marker { position: absolute; grid-column: var(--grade-column) / span 1; grid-row: 1 / span 1; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border: 3px solid white; border-radius: 50%; background: #101010; }
     .circularity-scale-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: #616161; }
     .circularity-scale-labels span:last-child { color: #3643BA; font-weight: 600 !important; }
     .circularity-assessment { margin-top: 20px; padding-top: 20px; border-top: 1px solid #E1E0DF; }
@@ -1405,7 +1405,7 @@
               <div class="circularity-grade"${lever.color ? ` style="--grade-color:${lever.color}"` : ""} aria-hidden="true">${lever.grade}</div>
               <div>${lever.grade ? `<strong>Leader / Aspirationnel</strong><p>Performance d’excellence</p>` : ""}<span class="circularity-state ${lever.grade ? lever.state.toLowerCase() : "empty"}">${!lever.grade ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3 10 18H2zM12 9v5m0 3v1"/></svg>' : ""}${lever.state}</span></div>
             </div>
-            ${lever.grade ? `<div class="circularity-scale" role="img" aria-label="Note ${lever.grade}, de E (moins bon) à A (meilleur niveau)" style="--grade-column:${["E", "D", "C", "B", "A"].indexOf(lever.grade) + 1}">
+            ${lever.grade ? `<div class="circularity-scale" role="img" aria-label="Note ${lever.grade} sur une échelle de E à A, A étant le meilleur niveau" style="--grade-column:${["E", "D", "C", "B", "A"].indexOf(lever.grade) + 1}">
               <div class="circularity-scale-bar"><span style="--scale-color:#ff2400"></span><span style="--scale-color:#ff8000"></span><span style="--scale-color:#ffc400"></span><span style="--scale-color:#70b900"></span><span style="--scale-color:#3944c4"></span><div class="circularity-scale-marker" aria-hidden="true"></div></div>
               <div class="circularity-scale-labels" aria-hidden="true"><span>Moins bon</span><span>Meilleur niveau</span></div>
             </div>` : ""}
