@@ -1014,6 +1014,13 @@
       <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-design-sheet">Cancel</button><button type="submit" class="action primary">Save</button></footer>
     </form>
   </dialog>
+  <dialog class="design-sheet" id="circularity-sheet" aria-labelledby="circularity-sheet-title">
+    <form method="dialog">
+      <header class="design-sheet-header"><h2 id="circularity-sheet-title">Update Recyclability</h2><button type="button" class="design-sheet-close" id="close-circularity-sheet" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101010" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+      <div class="design-sheet-fields"></div>
+      <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-circularity-sheet">Cancel</button></footer>
+    </form>
+  </dialog>
   <script>
     function updateSidebarTop() {
       document.body.style.setProperty("--sidebar-top", `${Math.max(0, 84 - window.scrollY)}px`);
@@ -1765,7 +1772,35 @@
       }
       document.querySelector("#circularity-content").addEventListener("click", (event) => {
         const button = event.target.closest("[data-update-circularity]");
-        if (button) showDetailNotice(`Preview only: the ${button.dataset.updateCircularity} update form is not available yet.`);
+        if (!button) return;
+        circularityTrigger = button;
+        document.querySelector("#circularity-sheet-title").textContent = `Update ${button.dataset.updateCircularity}`;
+        circularitySheet.showModal();
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) circularitySheet.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
+      });
+      const circularitySheet = document.querySelector("#circularity-sheet");
+      let circularityTrigger = null;
+      let circularityClosing = false;
+      async function closeCircularitySheet() {
+        if (!circularitySheet.open || circularityClosing) return;
+        circularityClosing = true;
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          await circularitySheet.animate([{ transform: "translateX(0)" }, { transform: "translateX(100%)" }], { duration: 220, easing: "ease-in" }).finished;
+        }
+        circularitySheet.close();
+        circularityClosing = false;
+        circularityTrigger?.focus({ preventScroll: true });
+        circularityTrigger = null;
+      }
+      ["#close-circularity-sheet", "#cancel-circularity-sheet"].forEach((selector) => document.querySelector(selector).addEventListener("click", closeCircularitySheet));
+      circularitySheet.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        closeCircularitySheet();
+      });
+      circularitySheet.addEventListener("click", (event) => {
+        if (event.target !== circularitySheet) return;
+        const bounds = circularitySheet.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeCircularitySheet();
       });
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
       function markCalculated(model) {
