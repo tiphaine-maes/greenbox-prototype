@@ -442,8 +442,7 @@
     .circularity-assessment { margin-top: 20px; padding-top: 20px; border-top: 1px solid #E1E0DF; }
     .circularity-divider { margin: 20px 0 0; border: 0; border-top: 1px solid #E1E0DF; }
     .recyclability-details { display: flex; flex-direction: column; gap: 16px; margin: 20px 0 0; }
-    .recyclability-details dt { margin-bottom: 4px; color: #616161; font-size: 12px; font-weight: 500 !important; line-height: 133.33%; }
-    .recyclability-details dd { margin: 0; font-size: 14px; line-height: 142.86%; }
+    .recyclability-details p { margin: 0; font-size: 14px; line-height: 142.86%; }
     .recyclability-details strong { font-weight: 500 !important; }
     .recyclability-details em { display: block; }
     .circularity-assessment h4 { margin: 0 0 4px; font-size: var(--vp-core-font-size-150, 0.875rem); font-style: normal; font-weight: 500 !important; line-height: 142.86%; }
@@ -1472,7 +1471,7 @@
           E: { lead: "Peu ou pas compatible", definition: "avec les filières existantes : le tri et le recyclage sont fortement compromis.", target: "-25% de matière" },
         };
         const detail = details[grade];
-        return `<dl class="recyclability-details"><div><dt>Définition</dt><dd><strong>${detail.lead}</strong> ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</dd></div><div><dt>Objectif de performance</dt><dd><strong>${detail.target}</strong> potentiellement recyclable</dd></div></dl>`;
+        return `<div class="recyclability-details"><p><strong>${detail.lead}</strong> ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p><strong>${detail.target}</strong> potentiellement recyclable</p></div>`;
       }
       function renderCircularity(year) {
         const yearLevers = circularityLevers.map((lever) => year >= 2027
