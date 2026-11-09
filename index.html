@@ -1413,7 +1413,7 @@
         { name: "Rental", grade: "", state: "Not evaluated", communicated: false, icon: '<g fill="#3643BA" stroke="none"><path d="M23.0232 4.39392C21.9084 2.85559 19.9379 2 17.4662 2C17.0255 2 16.5675 2.02593 16.1094 2.08643V3.47783C16.5761 3.40869 17.0255 3.38277 17.4662 3.38277C18.8922 3.38277 20.8195 3.70253 21.8997 5.20629C22.9023 6.58906 22.8763 8.62 21.822 10.9188C21.2689 12.1374 20.4651 13.3473 19.4713 14.4881C18.4774 15.6375 17.2761 16.7092 15.9279 17.6685C12.8513 19.855 9.4462 21.1168 6.55968 21.1168C5.1337 21.1168 3.20647 20.797 2.12618 19.3019C1.12367 17.9105 1.1496 15.8795 2.20396 13.5893C2.35952 13.235 2.54965 12.8806 2.75707 12.5263H1.16688C1.08046 12.6905 1.01132 12.8547 0.933543 13.0189C-0.328232 15.7845 -0.310947 18.2994 0.985397 20.1142C2.10025 21.6526 4.0707 22.5082 6.54239 22.5082C9.71411 22.5082 13.413 21.16 16.7144 18.8093C19.6095 16.7524 21.8652 14.1511 23.0665 11.4979C24.3282 8.73235 24.3109 6.2088 23.0146 4.40256L23.0232 4.39392Z"/><path d="M9.40267 6.2607C9.74837 5.72488 10.3274 5.09399 11.062 5.08535C11.8052 5.08535 12.3756 5.72488 12.73 6.25206C12.9547 6.58047 13.1534 6.96937 13.3176 7.40148H14.7868C14.5448 6.66689 14.2424 6.02736 13.8794 5.49153C12.9028 4.0137 11.8052 3.70258 11.062 3.70258C10.3188 3.70258 9.22119 4.02235 8.25325 5.50018C7.89027 6.036 7.58779 6.68417 7.35445 7.41012H8.815C8.9792 6.97801 9.17797 6.59775 9.40267 6.2607Z"/><path d="M14.4585 15.9832L17.0512 12.3016V8.91384H5.08162V12.2843L7.68295 15.9832H14.4585ZM6.46438 10.2966H15.6684V11.8695L13.7412 14.6005H8.40026L6.46438 11.8436V10.288V10.2966Z"/></g>' },
       ];
       circularityLevers.forEach((lever) => {
-        if (["Durability", "Rental"].includes(lever.name)) lever.answer = true;
+        if (["Durability", "Rental"].includes(lever.name)) lever.answer = lever.name === "Durability";
       });
       function circularityValue(lever) {
         return typeof lever.answer === "boolean" ? (lever.answer ? "Oui" : "Non") : lever.grade;
@@ -1482,7 +1482,7 @@
       function renderCircularity(year) {
         const yearLevers = circularityLevers.map((lever) => year >= 2027
           ? { ...lever, grade: "", answer: undefined, state: "Not evaluated", color: undefined, communicated: false }
-          : { ...lever, state: typeof lever.answer === "boolean" ? "Evaluated" : circularityEvaluationState(lever.grade) });
+          : { ...lever, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Not evaluated") : circularityEvaluationState(lever.grade) });
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
         document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${circularityValue(lever) ? "" : " not-evaluated"}" aria-label="${lever.name}: ${circularityValue(lever) ? `${circularityValue(lever)}, ` : ""}${lever.state}">
