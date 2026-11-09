@@ -480,6 +480,8 @@
     .design-lever-name svg { flex-shrink: 0; }
     .levers-card-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 24px; }
     .levers-card-heading h3 { padding: 0; }
+    .circularity-link { gap: 6px; background: white; border-color: #aaa; color: #101010; text-decoration: none; }
+    .circularity-link svg { width: 16px; height: 16px; flex-shrink: 0; }
     .design-actions { display: inline-flex; align-items: center; gap: 6px; background: #3643BA; border-color: #3643BA; color: white; }
     .design-sheet { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(600px, 100%); max-width: 100%; height: 100dvh; max-height: 100dvh; padding: 0; border: 0; background: white; color: #101010; }
     .design-sheet::backdrop { background: rgb(0 0 0 / 55%); }
@@ -884,7 +886,7 @@
             </table></div>
           </section>
           <section class="levers-card" aria-labelledby="circularity-levers-title">
-            <h3 id="circularity-levers-title">Design For Circularity Levers <span>4 Levers</span></h3>
+            <div class="levers-card-heading"><h3 id="circularity-levers-title">Design For Circularity Levers <span>4 Levers</span></h3><a class="action compact circularity-link" id="go-to-circularity" href="#model-code/0/circularity"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M13.4141 8.00065C13.4141 5.00911 10.9889 2.58398 7.9974 2.58398C5.00585 2.58398 2.58073 5.00911 2.58073 8.00065C2.58073 10.9922 5.00585 13.4173 7.9974 13.4173C10.9889 13.4173 13.4141 10.9922 13.4141 8.00065ZM7.9974 1.08398C11.8174 1.08398 14.9141 4.18068 14.9141 8.00065C14.9141 11.8206 11.8174 14.9173 7.9974 14.9173C4.17743 14.9173 1.08073 11.8206 1.08073 8.00065C1.08073 4.18068 4.17743 1.08398 7.9974 1.08398ZM11.7247 8.00065L8.52773 11.1976L7.46707 10.137L8.8534 8.75065H4.66406V7.25065L8.8534 7.25065L7.46707 5.86431L8.52773 4.80365L11.7247 8.00065Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>Go to Design for circularity</a></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Evaluation State</th><th>Score</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
@@ -1536,6 +1538,7 @@
       function renderDetail() {
         if (!detailModel) return;
         document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
+        document.querySelector("#go-to-circularity").href = `#model-code/${detailModel.id}/circularity`;
         const year = Number(currentYear());
         renderCircularity(year);
         updateCircularityValidity(year);
