@@ -1498,7 +1498,7 @@
       function modelCircularityLevers(model, year) {
         return circularityLevers.map((lever) => year !== 2026 || model.status === "Not evaluated"
           ? { ...lever, grade: "", answer: undefined, state: "Not evaluated", color: undefined, communicated: false }
-          : { ...lever, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Not evaluated") : circularityEvaluationState(lever.grade) });
+          : { ...lever, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Evaluated") : circularityEvaluationState(lever.grade) });
       }
       function renderCircularity(year) {
         const yearLevers = modelCircularityLevers(detailModel, year);
