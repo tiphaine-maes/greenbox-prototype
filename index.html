@@ -472,7 +472,6 @@
     }
     @media (max-width: 1050px) { .circularity-cards { grid-template-columns: 1fr; } }
     .levers-view .synthesis-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .levers-view .synthesis-cards .synthesis-card:last-child { display: none; }
     .levers-view .synthesis-impact, .levers-view .synthesis-bottom { display: none; }
     .levers-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
     .levers-card h3 { display: flex; align-items: center; gap: 12px; margin: 0; padding: 20px 24px; font-size: var(--vp-core-font-size-200, 1rem); font-style: normal; font-weight: 600 !important; line-height: 150%; }
@@ -516,7 +515,7 @@
     .levers-table .lever-component td:first-child { padding-left: 48px; }
     .lever-component-content { overflow: hidden; }
     @media (max-width: 900px) { .levers-view .synthesis-cards { grid-template-columns: 1fr; } }
-    .synthesis-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
+    .synthesis-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
     .synthesis-card { background: white; border: 1px solid #E1E0DF; border-radius: 8px; padding: 24px; min-width: 0; }
     .synthesis-cards > .synthesis-card { display: flex; flex-direction: column; }
     .synthesis-card h3 { margin: 0 0 20px; color: #272a3b; font-size: var(--vp-core-font-size-200, 1rem); font-style: normal; font-weight: 600 !important; line-height: 150%; display: flex; align-items: center; gap: 10px; }
@@ -852,7 +851,6 @@
         <div class="synthesis-cards">
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>0%</strong></div><progress value="0" max="100" aria-label="Preferred process: 0 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
-          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9881;</span><span>Design For Circularity</span><span class="model-tag validated" id="detail-circularity" style="margin-left:auto">Validated</span></div><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span></div></article>
         </div>
         <div id="levers-content" hidden>
           <section class="levers-card" aria-labelledby="material-levers-title">
@@ -1303,7 +1301,6 @@
         { id: "fossil", name: "Fossils resources", unit: "MJ", values: [247.232, 7.610, 9.560, 18.462, 1.033, -11.993], total: 271.904 },
         { id: "particulate", name: "Particulate matter", unit: "Disease Incidence", values: [0.002, 0, 0, 0, 0, 0], total: 0.002 },
       ];
-      document.querySelector(".synthesis-cards .synthesis-card:nth-child(3) .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Design For Circularity"] .synthesis-icon').innerHTML.replace('fill="#616161"', 'fill="#3643BA"');
       document.querySelector(".synthesis-impact h3 .synthesis-icon").innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M6.74883 5.36847C4.79738 6.91287 3.55078 9.30423 3.55078 12.0008C3.55078 15.9623 6.24126 19.2651 9.90448 20.1915L9.20773 16.5684L7.55078 14.9114V12.6901L9.59012 10.6508H13.9508V7.45078H13.4114L11.8114 9.05078H7.60519L6.74883 5.36847ZM8.08729 4.5017L8.79638 7.55078H11.1901L12.7901 5.95078H15.4508V12.1508H10.2114L9.05078 13.3114V14.2901L10.5938 15.8332L11.4788 20.4351C11.6514 20.4455 11.8255 20.4508 12.0008 20.4508C12.9551 20.4508 13.8713 20.2946 14.7252 20.0064L15.6067 15.3342L17.1508 13.7901V10.1508H20.2498C19.4119 6.36249 16.0506 3.55078 12.0008 3.55078C10.5862 3.55078 9.25566 3.89382 8.08729 4.5017ZM20.4438 11.6508H18.6508V14.4114L16.9948 16.0674L16.3987 19.2271C18.8331 17.7483 20.4508 15.0725 20.4508 12.0008C20.4508 11.8835 20.4484 11.7668 20.4438 11.6508ZM16.0451 21.101C19.5314 19.5573 21.9508 16.0731 21.9508 12.0008C21.9508 6.48657 17.515 2.05078 12.0008 2.05078C6.48657 2.05078 2.05078 6.48657 2.05078 12.0008C2.05078 17.515 6.48657 21.9508 12.0008 21.9508C13.4177 21.9508 14.7634 21.6579 15.9809 21.1291L16.0378 21.1398L16.0451 21.101Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
       </svg>`;
@@ -1576,14 +1573,6 @@
           badge.textContent = `Valid from ${validYear}`;
           badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
         });
-        const status = document.querySelector("#detail-circularity");
-        const circularityStatus = detailModel.status;
-        status.innerHTML = evaluationSticker(circularityStatus);
-        status.className = "";
-        const circularityValidity = status.closest(".synthesis-card").querySelector(".valid-from");
-        circularityValidity.hidden = circularityStatus === "Not evaluated";
-        circularityValidity.textContent = "Valid from 2026";
-        circularityValidity.classList.toggle("stale", year > 2026);
       }
       function openModel(id) {
         detailModel = models.find((model) => model.id === id);
