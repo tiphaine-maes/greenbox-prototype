@@ -529,7 +529,7 @@
     .synthesis-card progress::-webkit-progress-value { background: #3643BA; }
     .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
     .valid-from, .circularity-validity { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
-    .valid-from.stale { color: #bf4500; background: #ffe6d8; }
+    .valid-from.stale, .circularity-validity.stale { color: #bf4500; background: #ffe6d8; }
     .metric-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px; margin-top: auto; }
     .metric-card-footer .valid-from { flex-shrink: 0; }
     @media (max-width: 1350px) { .metric-card-footer .all-levers { padding-inline: 8px; } }
@@ -1496,7 +1496,7 @@
         return `<div class="recyclability-details"><p>${detail.lead} ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p>${detail.target} potentially recyclable</p></div>`;
       }
       function modelCircularityLevers(model, year) {
-        return circularityLevers.map((lever) => year !== 2026 || model.status === "Not evaluated"
+        return circularityLevers.map((lever) => year < 2026 || model.status === "Not evaluated"
           ? { ...lever, grade: "", answer: undefined, state: "Not evaluated", color: undefined, communicated: false }
           : { ...lever, state: typeof lever.answer === "boolean" ? (lever.answer ? "Validated" : "Evaluated") : circularityEvaluationState(lever.grade) });
       }
@@ -1524,11 +1524,18 @@
           </article>`).join("");
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${circularityValue(lever)}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${circularityValue(lever) ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${circularityValue(lever) ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
+      function updateCircularityValidity(year) {
+        document.querySelectorAll("#circularity-content .circularity-validity, #circularity-levers-body .circularity-validity").forEach((badge) => {
+          badge.textContent = "Valid from 2026";
+          badge.classList.toggle("stale", year > 2026);
+        });
+      }
       function renderDetail() {
         if (!detailModel) return;
         document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         const year = Number(currentYear());
         renderCircularity(year);
+        updateCircularityValidity(year);
         const design = detailModel.designLeversByYear.get(year);
         const missingDesignLevers = [
           !design && "Minimal Waste Design",
@@ -1553,10 +1560,13 @@
           badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
         });
         const status = document.querySelector("#detail-circularity");
-        const circularityStatus = year >= 2027 ? "Not evaluated" : detailModel.status;
+        const circularityStatus = detailModel.status;
         status.innerHTML = evaluationSticker(circularityStatus);
         status.className = "";
-        status.closest(".synthesis-card").querySelector(".valid-from").hidden = year >= 2027;
+        const circularityValidity = status.closest(".synthesis-card").querySelector(".valid-from");
+        circularityValidity.hidden = circularityStatus === "Not evaluated";
+        circularityValidity.textContent = "Valid from 2026";
+        circularityValidity.classList.toggle("stale", year > 2026);
       }
       function openModel(id) {
         detailModel = models.find((model) => model.id === id);
