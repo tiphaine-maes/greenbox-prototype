@@ -412,6 +412,11 @@
     .circularity-view .synthesis-cards,
     .circularity-view .synthesis-impact,
     .circularity-view .synthesis-bottom { display: none; }
+    .placeholder-view .models-title .calculation,
+    .placeholder-view .detail-calculation-bar,
+    .placeholder-view .synthesis-cards,
+    .placeholder-view .synthesis-impact,
+    .placeholder-view .synthesis-bottom { display: none; }
     .circularity-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
     .circularity-cards[hidden] { display: none; }
     .circularity-card { min-width: 0; min-height: 440px; padding: 24px; border: 1px solid #E1E0DF; border-radius: 12px; background: white; color: #272a3b; }
@@ -1560,11 +1565,7 @@
           location.hash = `#model-code/${detailModel.id}/circularity`;
           return;
         }
-        if (!location.hash.startsWith("#model-code/")) {
-          location.hash = `model-code/${detailModel.id}`;
-        }
-        showDetailNotice(`Preview only: the ${button.dataset.modelSection} detail view is not available yet.`);
-        document.querySelector("#detail-notice").scrollIntoView({ block: "center" });
+        location.hash = `#model-code/${detailModel.id}/${button.dataset.modelSection === "Communication" ? "communication" : "documentation"}`;
       }));
       const leverPlusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.2513 7.2513V2.66797H8.7513V7.2513H13.3346V8.7513H8.7513V13.3346H7.2513V8.7513H2.66797V7.2513H7.2513Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
       const leverMinusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.66797 7.25H13.3346V8.75H2.66797V7.25Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
@@ -1785,13 +1786,16 @@
       });
       function navigateView() {
         if (!location.hash) history.replaceState(null, "", "#all-model-code");
-        const detailMatch = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity))?$/);
+        const detailMatch = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
         const requestedModel = detailMatch ? models.find((model) => model.id === Number(detailMatch[1])) : null;
         if (requestedModel) detailModel = requestedModel;
         const detailVisible = Boolean(requestedModel);
         const leversVisible = detailVisible && detailMatch[2] === "levers";
         const circularityVisible = detailVisible && detailMatch[2] === "circularity";
-        const synthesisVisible = detailVisible && !leversVisible && !circularityVisible;
+        const communicationVisible = detailVisible && detailMatch[2] === "communication";
+        const documentationVisible = detailVisible && detailMatch[2] === "documentation";
+        const placeholderVisible = communicationVisible || documentationVisible;
+        const synthesisVisible = detailVisible && !leversVisible && !circularityVisible && !placeholderVisible;
         const modelsVisible = location.hash === "#all-model-code";
         if (!detailVisible && !modelsVisible && location.hash !== "#settings") {
           history.replaceState(null, "", "#all-model-code");
@@ -1808,15 +1812,16 @@
         document.body.classList.toggle("synthesis-view", detailVisible);
         document.body.classList.toggle("levers-view", leversVisible);
         document.body.classList.toggle("circularity-view", circularityVisible);
+        document.body.classList.toggle("placeholder-view", placeholderVisible);
         document.querySelector("#levers-content").hidden = !leversVisible;
         document.querySelector("#circularity-content").hidden = !circularityVisible;
-        document.querySelector("#synthesis-title").textContent = circularityVisible ? "Design For Circularity" : leversVisible ? "Levers" : "Synthesis";
+        document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity" : leversVisible ? "Levers" : "Synthesis";
         document.querySelector("#detail-notice").hidden = true;
         document.querySelector("#synthesis-nav").classList.toggle("active", synthesisVisible);
         if (synthesisVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
         else document.querySelector("#synthesis-nav").removeAttribute("aria-current");
         document.querySelectorAll("[data-model-section]").forEach((button) => {
-          const active = (leversVisible && button.dataset.modelSection === "Levers") || (circularityVisible && button.dataset.modelSection === "Design For Circularity");
+          const active = (leversVisible && button.dataset.modelSection === "Levers") || (circularityVisible && button.dataset.modelSection === "Design For Circularity") || (communicationVisible && button.dataset.modelSection === "Communication") || (documentationVisible && button.dataset.modelSection === "Documents");
           button.classList.toggle("active", active);
           if (active) button.setAttribute("aria-current", "page");
           else button.removeAttribute("aria-current");
