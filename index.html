@@ -576,6 +576,7 @@
     .models-table .bom-selected-text { color: #000000; }
     .empty-bom { color: #aaa; }
     .model-levers { text-decoration: underline; line-height: 1.4; }
+    .model-levers-empty { color: #616161; }
     .models-notice { color: #008665; margin: 0 0 18px; font-size: 14px; }
     @media (max-width: 1100px) {
       .bom-actions { grid-template-columns: 1fr; }
@@ -1469,7 +1470,7 @@
             <td>4.65</td><td>${bom ? "80 %" : "--"}</td><td>${bom ? "23 %" : "--"}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
             ${circularityCells}<td><span class="model-caption">Not evaluated</span></td>
-            <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
+            <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : '<span class="model-levers-empty">--</span>'}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
           </tr>`;
         }).join("");
