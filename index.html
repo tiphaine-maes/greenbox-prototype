@@ -1417,13 +1417,13 @@
         const criteria = {
           A: { description: "Excellent niveau de réparabilité", depth: [3], efficiency: [3] },
           B: { description: "Très bon niveau de réparabilité", depth: [3], efficiency: [2] },
-          C: { description: "Restaure la valeur d’usage au minimum attendu", depth: [1], efficiency: [2, 3] },
+          C: { description: "Restaure la valeur d’usage au minimum attendu", depth: [1], efficiency: [2.5] },
           D: { description: "Restaure partiellement la valeur d’usage mais performances peu équilibrées entre efficacité et profondeur", depth: [1, 2], efficiency: [1, 2] },
           E: { description: "Ne permet pas de restaurer durablement la valeur d’usage", depth: [1], efficiency: [1] },
         };
         const criterion = criteria[grade];
-        const star = (filled) => `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${filled ? '<path d="M7.99658 10.6012L11.1966 12.8678L9.99658 9.1345L13.1299 6.86783H9.19658L7.99658 3.1345L6.79658 6.86783H2.86324L5.99658 9.1345L4.79658 12.8678L7.99658 10.6012Z" fill="#3643BA"/>' : ""}<path d="M7.99658 0.683594L9.7433 6.11783H15.4463L10.8771 9.42316L12.5991 14.7804L7.99658 11.5203L3.39403 14.7804L5.116 9.42316L0.546875 6.11783H6.24986L7.99658 0.683594ZM7.99658 5.58541L7.3433 7.61783H5.17961L6.87715 8.84584L6.19912 10.9553L7.99658 9.68208L9.79403 10.9553L9.116 8.84584L10.8135 7.61783H8.64986L7.99658 5.58541Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/></svg>`;
-        const stars = (scores) => `<span class="repairability-stars" role="img" aria-label="${scores.map((score) => `${score} sur 3`).join(" ou ")}">${scores.map((score) => Array.from({ length: 3 }, (_, index) => star(index < score)).join("")).join('<span aria-hidden="true">/</span>')}</span>`;
+        const star = (fill) => `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${fill > 0 ? `<path d="M7.99658 10.6012L11.1966 12.8678L9.99658 9.1345L13.1299 6.86783H9.19658L7.99658 3.1345L6.79658 6.86783H2.86324L5.99658 9.1345L4.79658 12.8678L7.99658 10.6012Z" fill="#3643BA" style="clip-path:inset(0 ${(1 - fill) * 100}% 0 0)"/>` : ""}<path d="M7.99658 0.683594L9.7433 6.11783H15.4463L10.8771 9.42316L12.5991 14.7804L7.99658 11.5203L3.39403 14.7804L5.116 9.42316L0.546875 6.11783H6.24986L7.99658 0.683594ZM7.99658 5.58541L7.3433 7.61783H5.17961L6.87715 8.84584L6.19912 10.9553L7.99658 9.68208L9.79403 10.9553L9.116 8.84584L10.8135 7.61783H8.64986L7.99658 5.58541Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/></svg>`;
+        const stars = (scores) => `<span class="repairability-stars" role="img" aria-label="${scores.map((score) => `${String(score).replace(".", ",")} sur 3`).join(" ou ")}">${scores.map((score) => Array.from({ length: 3 }, (_, index) => star(Math.max(0, Math.min(1, score - index)))).join("")).join('<span aria-hidden="true">/</span>')}</span>`;
         return `<section class="circularity-assessment"><h4>${criterion.description}</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>${stars(criterion.depth)}</dd></div><div><dt>Efficacité de réparation</dt><dd>${stars(criterion.efficiency)}</dd></div></dl></section>`;
       }
       function renderCircularity(year) {
