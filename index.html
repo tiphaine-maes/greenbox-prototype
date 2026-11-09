@@ -420,10 +420,12 @@
     .circularity-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
     .circularity-cards[hidden] { display: none; }
     .circularity-card { min-width: 0; min-height: 440px; padding: 24px; border: 1px solid #E1E0DF; border-radius: 12px; background: white; color: #272a3b; }
-    .circularity-card-header { display: flex; align-items: center; gap: 8px; padding-bottom: 20px; border-bottom: 1px solid #E1E0DF; }
+    .circularity-card-header { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid #E1E0DF; }
+    .circularity-card-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .circularity-card-header h3 { margin: 0; font-size: var(--vp-core-font-size-200, 1rem); font-style: normal; font-weight: 600 !important; line-height: 150%; }
     .circularity-card-header .synthesis-icon { width: 40px; height: 40px; }
-    .circularity-card-header .circularity-validity { margin-left: auto; white-space: nowrap; }
+    .circularity-card-header .circularity-validity { white-space: nowrap; }
+    .circularity-update { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; }
     .circularity-result { display: flex; align-items: center; gap: 20px; margin-top: 20px; min-height: 76px; }
     .circularity-grade { display: grid; place-items: center; width: 76px; height: 76px; flex-shrink: 0; border-radius: 8px; background: var(--grade-color, #e1e0df); color: white; font-size: 48px; }
     .circularity-result strong { display: block; font-size: 16px; font-weight: 600 !important; }
@@ -444,8 +446,6 @@
     .circularity-assessment dd { margin: 0; color: #3643BA; font-size: 18px; line-height: 1.2; }
     .circularity-card.not-evaluated .circularity-assessment { margin-top: 104px; }
     @media (max-width: 1350px) {
-      .circularity-card-header { flex-wrap: wrap; }
-      .circularity-card-header .circularity-validity { margin-left: 0; }
       .circularity-result { gap: 12px; }
     }
     @media (max-width: 1050px) { .circularity-cards { grid-template-columns: 1fr; } }
@@ -1400,7 +1400,7 @@
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
         document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${lever.grade ? "" : " not-evaluated"}" aria-label="${lever.name}: ${lever.grade ? `${lever.grade}, ` : ""}${lever.state}">
-            <header class="circularity-card-header"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</header>
+            <header class="circularity-card-header"><div class="circularity-card-heading"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</div><button type="button" class="action compact circularity-update" data-update-circularity="${lever.name}">${icon('<path d="M12 5v14M5 12h14"/>')}Update ${lever.name}</button></header>
             <div class="circularity-result">
               <div class="circularity-grade"${lever.color ? ` style="--grade-color:${lever.color}"` : ""} aria-hidden="true">${lever.grade}</div>
               <div>${lever.grade ? `<strong>Leader / Aspirationnel</strong><p>Performance d’excellence</p>` : ""}<span class="circularity-state ${lever.grade ? lever.state.toLowerCase() : "empty"}">${!lever.grade ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3 10 18H2zM12 9v5m0 3v1"/></svg>' : ""}${lever.state}</span></div>
@@ -1632,6 +1632,10 @@
         notice.textContent = message;
         notice.hidden = false;
       }
+      document.querySelector("#circularity-content").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-update-circularity]");
+        if (button) showDetailNotice(`Preview only: the ${button.dataset.updateCircularity} update form is not available yet.`);
+      });
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
       function markCalculated(model) {
         const year = Number(currentYear());
