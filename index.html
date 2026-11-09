@@ -790,10 +790,10 @@
           <div class="models-table-toolbar"><h3 id="model-count">11 Model Codes</h3><input type="search" class="model-search" id="model-search" placeholder="Search model code" aria-label="Search model code"></div>
           <div class="table-wrap">
             <table class="models-table">
-              <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:220px"><col style="width:110px"><col style="width:92px"><col style="width:230px"></colgroup>
+              <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:230px"><col style="width:220px"><col style="width:110px"><col style="width:92px"></colgroup>
               <thead><tr>
                 <th><input type="checkbox" id="select-all-models" aria-label="Select all visible model codes"></th>
-                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>Design For Circularity</th><th>Design Levers</th><th>Last<br>Modification</th><th>BOM selected</th>
+                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>BOM selected</th><th>Design For Circularity</th><th>Design Levers</th><th>Last<br>Modification</th>
               </tr></thead>
               <tbody id="models-body"></tbody>
             </table>
@@ -1463,10 +1463,10 @@
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td>4.65</td><td>${bom ? "80 %" : "--"}</td><td>${bom ? "23 %" : "--"}</td>
+            <td>${bom ? `<span class="model-caption">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
             <td><span class="model-tag ${statusClass}">${circularityStatus}</span>${circularityStatus === "Validated" ? '<span class="model-caption">in Recyclability &amp; Repairability</span>' : ""}</td>
             <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : "--"}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
-            <td>${bom ? `<span class="model-caption">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
           </tr>`;
         }).join("");
         if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="9">No model codes match your search.</td></tr>';
