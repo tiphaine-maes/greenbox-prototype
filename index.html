@@ -1516,7 +1516,7 @@
               <div class="circularity-scale-bar"><span style="--scale-color:#ff2400"></span><span style="--scale-color:#ff8000"></span><span style="--scale-color:#ffc400"></span><span style="--scale-color:#70b900"></span><span style="--scale-color:#3944c4"></span><div class="circularity-scale-marker" aria-hidden="true"></div></div>
               <div class="circularity-scale-labels" aria-hidden="true">${["E", "D", "C", "B", "A"].map((grade) => `<span${grade === lever.grade ? ' class="current"' : ""}>${grade}</span>`).join("")}</div>
             </div>` : ""}
-            ${!circularityValue(lever) ? `<p class="circularity-explanation">Aucune évaluation renseignée pour ${year}. Lancez une évaluation pour ${["Durability", "Rental"].includes(lever.name) ? "renseigner une réponse Oui ou Non" : "obtenir une note"}.</p>` : ""}
+            ${!circularityValue(lever) ? `<p class="circularity-explanation">No evaluation provided. Start an evaluation to ${["Durability", "Rental"].includes(lever.name) ? "provide a Yes or No answer" : "get a grade"}.</p>` : ""}
             ${lever.grade && lever.name === "Repairability" ? repairabilityCriteria(lever.grade) : ""}
             ${lever.grade && lever.name === "Recyclability" ? recyclabilityDetails(lever.grade) : ""}
             </div>
