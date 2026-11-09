@@ -909,7 +909,7 @@
         <article class="synthesis-card synthesis-impact">
           <h3><span class="synthesis-icon" aria-hidden="true">&#9678;</span>Environmental Impact</h3>
           <div class="impact-summary"><div><span id="impact-indicator-title">CO2 · Climate change</span><span class="impact-caption" id="impact-indicator-unit">kg CO2 eq.</span></div><strong id="impact-indicator-value">16,9</strong></div>
-          <div class="impact-position" id="climate-position"><span>Positionnement dans la famille de produit</span><span>Shorts running · médiane <strong>15,5</strong><span class="median-warning">+ 9% vs médiane</span></span></div>
+          <div class="impact-position" id="climate-position"><span>Position within the product family</span><span>Running shorts · median <strong>15.5</strong><span class="median-warning">+ 9% vs median</span></span></div>
           <div class="lifecycle-bar" id="lifecycle-bar" aria-hidden="true"></div>
           <div class="lifecycle-breakdown"><div class="lifecycle-legend" id="lifecycle-legend"></div><label class="indicator-control">Change the indicator<select id="impact-indicator"><option value="climate">Climate change (kg CO2 eq.)</option><option value="score">Score (µ Point)</option><option value="fresh">Fresh eutroph. (g P eq.)</option><option value="marine">Marine eutroph. (g N eq.)</option><option value="resource">Resources depletion (g Sa eq.)</option><option value="fossil">Fossils resources (MJ)</option><option value="particulate">Particulate matter (Disease Incidence)</option></select></label></div>
           <div class="table-wrap" id="impact-table-details" hidden><table class="impact-table"><thead><tr><th>Lifecycle phase</th><th>Material and<br>production</th><th>Manufacturing</th><th>Packaging</th><th>Distribution</th><th>Use</th><th>End of life</th><th>Total</th></tr></thead><tbody id="impact-body"></tbody></table></div>
@@ -1432,26 +1432,26 @@
         if (["Durability", "Rental"].includes(lever.name)) lever.answer = lever.name === "Durability";
       });
       function circularityValue(lever) {
-        return typeof lever.answer === "boolean" ? (lever.answer ? "Oui" : "Non") : lever.grade;
+        return typeof lever.answer === "boolean" ? (lever.answer ? "Yes" : "No") : lever.grade;
       }
       function circularityGradeLabel(name, grade) {
-        if (name !== "Repairability" && name !== "Recyclability") return `Note ${grade}`;
+        if (name !== "Repairability" && name !== "Recyclability") return `Grade ${grade}`;
         const labels = {
-          A: name === "Recyclability" ? "Leader / aspirationnel" : "Leader / Aspirationnel",
-          B: "Avancé / Performant",
-          C: "Standard / Cœur de marché",
-          D: "À améliorer / Fragile",
-          E: name === "Recyclability" ? "Critique / Non-conforme" : "Critique",
+          A: "Leader / Aspirational",
+          B: "Advanced / High-performing",
+          C: "Standard / Mainstream",
+          D: "Needs improvement / Fragile",
+          E: name === "Recyclability" ? "Critical / Non-compliant" : "Critical",
         };
-        return labels[grade] || `Note ${grade}`;
+        return labels[grade] || `Grade ${grade}`;
       }
       function circularitySubtitle(name, grade) {
         const subtitles = {
-          A: "Performance d’excellence",
-          B: "Performance supérieure",
-          C: "Conforme aux attentes du marché",
-          D: "Performance inférieure",
-          E: name === "Recyclability" ? "Performance non acceptable" : "Produit non réparable dans un BM circulaire",
+          A: "Excellent performance",
+          B: "Superior performance",
+          C: "Meets market expectations",
+          D: "Below-standard performance",
+          E: name === "Recyclability" ? "Unacceptable performance" : "Product not repairable within a circular business model",
         };
         return `<span class="circularity-subtitle">${subtitles[grade]}</span>`;
       }
@@ -1470,30 +1470,30 @@
       }
       function repairabilityCriteria(grade) {
         const criteria = {
-          A: { description: "Excellent niveau de réparabilité", depth: [3], efficiency: [3] },
-          B: { description: "Très bon niveau de réparabilité", depth: [3], efficiency: [2] },
-          C: { description: "Restaure la valeur d’usage au minimum attendu", depth: [1], efficiency: [2.5] },
-          D: { description: "Restaure partiellement la valeur d’usage mais performances peu équilibrées entre efficacité et profondeur", depth: [1.5], efficiency: [1.5] },
-          E: { description: "Ne permet pas de restaurer durablement la valeur d’usage", depth: [1], efficiency: [1] },
+          A: { description: "Excellent repairability", depth: [3], efficiency: [3] },
+          B: { description: "Very good repairability", depth: [3], efficiency: [2] },
+          C: { description: "Restores use value to the minimum expected level", depth: [1], efficiency: [2.5] },
+          D: { description: "Partially restores use value, but performance is unbalanced between repair efficiency and depth", depth: [1.5], efficiency: [1.5] },
+          E: { description: "Does not sustainably restore use value", depth: [1], efficiency: [1] },
         };
         const criterion = criteria[grade];
         const star = (fill) => {
           if (fill === 0.5) return '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M7.99658 0.685547L9.7433 6.11979H15.4463L10.8771 9.42511L12.5991 14.7823L7.99658 11.5222L3.39403 14.7823L5.116 9.42511L0.546875 6.11979H6.24986L7.99658 0.685547ZM7.99658 5.58736L7.3433 7.61979H5.17961L6.87715 8.84779L6.19912 10.9572L7.99658 9.68403L9.79403 10.9572L9.116 8.84779L10.8135 7.61979H8.64986L7.99658 5.58736Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/><path d="M7.99658 3.06978V10.5364L4.79658 12.8031L5.99658 9.06978L2.86324 6.80312L6.79658 6.73645L7.99658 3.06978Z" fill="#3643BA"/></svg>';
           return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${fill === 1 ? '<path d="M7.99658 10.6012L11.1966 12.8678L9.99658 9.1345L13.1299 6.86783H9.19658L7.99658 3.1345L6.79658 6.86783H2.86324L5.99658 9.1345L4.79658 12.8678L7.99658 10.6012Z" fill="#3643BA"/>' : ""}<path d="M7.99658 0.683594L9.7433 6.11783H15.4463L10.8771 9.42316L12.5991 14.7804L7.99658 11.5203L3.39403 14.7804L5.116 9.42316L0.546875 6.11783H6.24986L7.99658 0.683594ZM7.99658 5.58541L7.3433 7.61783H5.17961L6.87715 8.84584L6.19912 10.9553L7.99658 9.68208L9.79403 10.9553L9.116 8.84584L10.8135 7.61783H8.64986L7.99658 5.58541Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/></svg>`;
         };
-        const stars = (scores) => `<span class="repairability-stars" role="img" aria-label="${scores.map((score) => `${String(score).replace(".", ",")} sur 3`).join(" ou ")}">${scores.map((score) => Array.from({ length: 3 }, (_, index) => star(Math.max(0, Math.min(1, score - index)))).join("")).join('<span aria-hidden="true">/</span>')}</span>`;
-        return `<section class="circularity-assessment"><h4>${criterion.description}</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>${stars(criterion.depth)}</dd></div><div><dt>Efficacité de réparation</dt><dd>${stars(criterion.efficiency)}</dd></div></dl></section>`;
+        const stars = (scores) => `<span class="repairability-stars" role="img" aria-label="${scores.map((score) => `${score} out of 3`).join(" or ")}">${scores.map((score) => Array.from({ length: 3 }, (_, index) => star(Math.max(0, Math.min(1, score - index)))).join("")).join('<span aria-hidden="true">/</span>')}</span>`;
+        return `<section class="circularity-assessment"><h4>${criterion.description}</h4><dl><div><dt>Repairability depth</dt><dd>${stars(criterion.depth)}</dd></div><div><dt>Repair efficiency</dt><dd>${stars(criterion.efficiency)}</dd></div></dl></section>`;
       }
       function recyclabilityDetails(grade) {
         const details = {
-          A: { lead: "Quasi intégralement compatibles", definition: "avec les filières de tri et de recyclage existantes.", target: "+95% de matière" },
-          B: { lead: "Majoritairement compatible", definition: "avec les filières existantes, peu de pertes de matière.", target: "+75% de matière" },
-          C: { lead: "Conforme", definition: "avec les pratiques actuelles de recyclage du marché.", note: "Une part significative de la matière peut être valorisée via les filières existantes.", target: "+50% de matière" },
-          D: { lead: "Compatibilité limitée", definition: "avec les filières de recyclage existantes. Sa composition ou son assemblage limite le tri et la valorisation des matières.", target: "-50% de matière" },
-          E: { lead: "Peu ou pas compatible", definition: "avec les filières existantes : le tri et le recyclage sont fortement compromis.", target: "-25% de matière" },
+          A: { lead: "Almost fully compatible", definition: "with existing sorting and recycling streams.", target: "+95% of material" },
+          B: { lead: "Mostly compatible", definition: "with existing streams, with little material loss.", target: "+75% of material" },
+          C: { lead: "Aligned", definition: "with current market recycling practices.", note: "A significant share of the material can be recovered through existing streams.", target: "+50% of material" },
+          D: { lead: "Limited compatibility", definition: "with existing recycling streams. The composition or assembly limits material sorting and recovery.", target: "-50% of material" },
+          E: { lead: "Little or no compatibility", definition: "with existing streams: sorting and recycling are severely compromised.", target: "-25% of material" },
         };
         const detail = details[grade];
-        return `<div class="recyclability-details"><p>${detail.lead} ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p>${detail.target} potentiellement recyclable</p></div>`;
+        return `<div class="recyclability-details"><p>${detail.lead} ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p>${detail.target} potentially recyclable</p></div>`;
       }
       function modelCircularityLevers(model, year) {
         return circularityLevers.map((lever) => year !== 2026 || model.status === "Not evaluated"
@@ -1505,14 +1505,14 @@
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
         document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${circularityValue(lever) ? "" : " not-evaluated"}" aria-label="${lever.name}: ${circularityValue(lever) ? `${circularityValue(lever)}, ` : ""}${lever.state}">
-            <header class="circularity-card-header"><div class="circularity-card-heading"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3></div>${circularityValue(lever) ? '<div class="circularity-modified" aria-label="Dernière modification">TMAES26<time datetime="2027-03-17">17/03/27</time></div>' : ""}</header>
+            <header class="circularity-card-header"><div class="circularity-card-heading"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3></div>${circularityValue(lever) ? '<div class="circularity-modified" aria-label="Last modified">TMAES26<time datetime="2027-03-17">17/03/27</time></div>' : ""}</header>
             <div class="circularity-card-body">
-            ${["Durability", "Rental"].includes(lever.name) ? `<p class="circularity-question">${lever.name === "Durability" ? "Le produit répond-il aux critères de durabilité ?" : "Le produit est-il adapté à la location ?"}</p>` : ""}
+            ${["Durability", "Rental"].includes(lever.name) ? `<p class="circularity-question">${lever.name === "Durability" ? "Does the product meet the durability criteria?" : "Is the product suitable for rental?"}</p>` : ""}
             <div class="circularity-result${["Durability", "Rental"].includes(lever.name) ? " binary" : ""}">
               ${lever.grade ? `<div class="circularity-grade" style="--grade-color:${lever.color};--grade-text:${["C", "D"].includes(lever.grade) ? "#272a3b" : "white"}" aria-hidden="true">${lever.grade}</div>` : ""}
               ${typeof lever.answer === "boolean" ? `<span class="circularity-answer${lever.answer ? " yes" : ""}">${lever.answer ? icon('<path d="m5 12 4 4L19 6"/>') : ""}${circularityValue(lever)}</span>${evaluationSticker(lever.state)}` : `<div>${lever.grade ? `<strong>${circularityGradeLabel(lever.name, lever.grade)}</strong>${["Repairability", "Recyclability"].includes(lever.name) ? circularitySubtitle(lever.name, lever.grade) : ""}` : ""}${evaluationSticker(lever.state)}</div>`}
             </div>
-            ${lever.grade ? `<div class="circularity-scale" role="img" aria-label="Note ${lever.grade} sur une échelle de E à A, A étant le meilleur niveau" style="--grade-column:${["E", "D", "C", "B", "A"].indexOf(lever.grade) + 1}">
+            ${lever.grade ? `<div class="circularity-scale" role="img" aria-label="Grade ${lever.grade} on a scale from E to A, with A being the best" style="--grade-column:${["E", "D", "C", "B", "A"].indexOf(lever.grade) + 1}">
               <div class="circularity-scale-bar"><span style="--scale-color:#ff2400"></span><span style="--scale-color:#ff8000"></span><span style="--scale-color:#ffc400"></span><span style="--scale-color:#70b900"></span><span style="--scale-color:#3944c4"></span><div class="circularity-scale-marker" aria-hidden="true"></div></div>
               <div class="circularity-scale-labels" aria-hidden="true">${["E", "D", "C", "B", "A"].map((grade) => `<span${grade === lever.grade ? ' class="current"' : ""}>${grade}</span>`).join("")}</div>
             </div>` : ""}
