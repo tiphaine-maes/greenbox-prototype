@@ -440,6 +440,7 @@
     .circularity-scale-labels .current { color: #3643BA; font-weight: 600 !important; }
     .circularity-explanation { margin: 24px 0 0; color: #616161; font-size: 14px; line-height: 1.6; }
     .circularity-assessment { margin-top: 20px; padding-top: 20px; border-top: 1px solid #E1E0DF; }
+    .circularity-divider { margin: 20px 0 0; border: 0; border-top: 1px solid #E1E0DF; }
     .circularity-assessment h4 { margin: 0 0 4px; font-size: var(--vp-core-font-size-150, 0.875rem); font-style: normal; font-weight: 500 !important; line-height: 142.86%; }
     .circularity-assessment dl { display: flex; flex-direction: column; gap: 4px; margin: 0; font-size: 14px; color: #616161; }
     .circularity-assessment dl > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -1475,6 +1476,7 @@
             </div>` : ""}
             ${!lever.grade ? `<p class="circularity-explanation">Aucune évaluation renseignée pour ${year}. Lancez une évaluation pour obtenir une note.</p>` : ""}
             ${lever.grade && lever.name === "Repairability" ? repairabilityCriteria(lever.grade) : ""}
+            ${lever.grade && lever.name === "Recyclability" ? '<hr class="circularity-divider">' : ""}
           </article>`).join("");
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
