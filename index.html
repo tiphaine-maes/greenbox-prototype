@@ -1428,6 +1428,10 @@
         };
         return `<span class="repairability-subtitle">${subtitles[grade]}</span>`;
       }
+      function circularityEvaluationState(grade) {
+        if (!grade) return "Not evaluated";
+        return ["A", "B", "C"].includes(grade) ? "Validated" : "Evaluated";
+      }
       function evaluationSticker(state) {
         const stickers = {
           Validated: { file: "sticker-validated.svg", width: 66 },
@@ -1456,7 +1460,7 @@
       function renderCircularity(year) {
         const yearLevers = circularityLevers.map((lever) => year >= 2027
           ? { ...lever, grade: "", state: "Not evaluated", color: undefined, communicated: false }
-          : lever);
+          : { ...lever, state: circularityEvaluationState(lever.grade) });
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
         document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${lever.grade ? "" : " not-evaluated"}" aria-label="${lever.name}: ${lever.grade ? `${lever.grade}, ` : ""}${lever.state}">
@@ -1534,7 +1538,7 @@
           const hasLevers = model.status !== "Not evaluated";
           const circularityCells = circularityLevers.map((lever) => {
             const evaluated = year === 2026 && hasLevers && lever.grade;
-            return `<td>${evaluated ? `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${lever.state}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
+            return `<td>${evaluated ? `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
