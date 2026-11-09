@@ -441,6 +441,11 @@
     .circularity-explanation { margin: 24px 0 0; color: #616161; font-size: 14px; line-height: 1.6; }
     .circularity-assessment { margin-top: 20px; padding-top: 20px; border-top: 1px solid #E1E0DF; }
     .circularity-divider { margin: 20px 0 0; border: 0; border-top: 1px solid #E1E0DF; }
+    .recyclability-details { display: flex; flex-direction: column; gap: 16px; margin: 20px 0 0; }
+    .recyclability-details dt { margin-bottom: 4px; color: #616161; font-size: 12px; font-weight: 500 !important; line-height: 133.33%; }
+    .recyclability-details dd { margin: 0; font-size: 14px; line-height: 142.86%; }
+    .recyclability-details strong { font-weight: 500 !important; }
+    .recyclability-details em { display: block; }
     .circularity-assessment h4 { margin: 0 0 4px; font-size: var(--vp-core-font-size-150, 0.875rem); font-style: normal; font-weight: 500 !important; line-height: 142.86%; }
     .circularity-assessment dl { display: flex; flex-direction: column; gap: 4px; margin: 0; font-size: 14px; color: #616161; }
     .circularity-assessment dl > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -1458,6 +1463,17 @@
         const stars = (scores) => `<span class="repairability-stars" role="img" aria-label="${scores.map((score) => `${String(score).replace(".", ",")} sur 3`).join(" ou ")}">${scores.map((score) => Array.from({ length: 3 }, (_, index) => star(Math.max(0, Math.min(1, score - index)))).join("")).join('<span aria-hidden="true">/</span>')}</span>`;
         return `<section class="circularity-assessment"><h4>${criterion.description}</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>${stars(criterion.depth)}</dd></div><div><dt>Efficacité de réparation</dt><dd>${stars(criterion.efficiency)}</dd></div></dl></section>`;
       }
+      function recyclabilityDetails(grade) {
+        const details = {
+          A: { lead: "Quasi intégralement compatibles", definition: "avec les filières de tri et de recyclage existantes.", target: "+95% de matière" },
+          B: { lead: "Majoritairement compatible", definition: "avec les filières existantes, peu de pertes de matière.", target: "+75% de matière" },
+          C: { lead: "Conforme", definition: "avec les pratiques actuelles de recyclage du marché.", note: "Une part significative de la matière peut être valorisée via les filières existantes.", target: "+50% de matière" },
+          D: { lead: "Compatibilité limitée", definition: "avec les filières de recyclage existantes. Sa composition ou son assemblage limite le tri et la valorisation des matières.", target: "-50% de matière" },
+          E: { lead: "Peu ou pas compatible", definition: "avec les filières existantes : le tri et le recyclage sont fortement compromis.", target: "-25% de matière" },
+        };
+        const detail = details[grade];
+        return `<dl class="recyclability-details"><div><dt>Définition</dt><dd><strong>${detail.lead}</strong> ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</dd></div><div><dt>Objectif de performance</dt><dd><strong>${detail.target}</strong> potentiellement recyclable</dd></div></dl>`;
+      }
       function renderCircularity(year) {
         const yearLevers = circularityLevers.map((lever) => year >= 2027
           ? { ...lever, grade: "", state: "Not evaluated", color: undefined, communicated: false }
@@ -1476,7 +1492,7 @@
             </div>` : ""}
             ${!lever.grade ? `<p class="circularity-explanation">Aucune évaluation renseignée pour ${year}. Lancez une évaluation pour obtenir une note.</p>` : ""}
             ${lever.grade && lever.name === "Repairability" ? repairabilityCriteria(lever.grade) : ""}
-            ${lever.grade && lever.name === "Recyclability" ? '<hr class="circularity-divider">' : ""}
+            ${lever.grade && lever.name === "Recyclability" ? `<hr class="circularity-divider">${recyclabilityDetails(lever.grade)}` : ""}
           </article>`).join("");
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${lever.grade}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${lever.grade ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${lever.grade ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
