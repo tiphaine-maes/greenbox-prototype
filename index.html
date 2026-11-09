@@ -575,7 +575,13 @@
     .model-caption { display: block; color: #616161; margin-top: 4px; line-height: 1.35; }
     .models-table .bom-selected-text { color: #000000; }
     .empty-bom { color: #aaa; }
-    .model-levers { text-decoration: underline; line-height: 1.4; }
+    .model-levers { display: inline-block; text-decoration: underline; line-height: 1.4; cursor: help; }
+    .model-levers:focus-visible { outline: 2px solid #3643BA; outline-offset: 4px; }
+    .model-levers-tooltip { position: fixed; inset: auto; overflow: visible; width: max-content; max-width: calc(100vw - 24px); margin: 0; padding: 12px 16px; border: 0; border-radius: 12px; background: #101010; color: white; font-size: 14px; line-height: 1.5; }
+    .model-levers-tooltip::before { content: ""; position: absolute; bottom: 100%; left: var(--arrow-left); transform: translateX(-50%); border: 8px solid transparent; border-bottom-color: #101010; }
+    .model-levers-tooltip.above::before { top: 100%; bottom: auto; border-bottom-color: transparent; border-top-color: #101010; }
+    .model-levers-tooltip ul { margin: 0; padding: 0; list-style: none; }
+    .model-levers-tooltip li::before { content: "- "; }
     .model-levers-empty { color: #616161; }
     .models-notice { color: #008665; margin: 0 0 18px; font-size: 14px; }
     @media (max-width: 1100px) {
@@ -1470,7 +1476,7 @@
             <td>4.65</td><td>${bom ? "80 %" : "--"}</td><td>${bom ? "23 %" : "--"}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
             ${circularityCells}<td><span class="model-caption">Not evaluated</span></td>
-            <td>${hasLevers ? '<span class="model-levers">2 Design Levers<br>activated</span>' : '<span class="model-levers-empty">--</span>'}</td>
+            <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">2 Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul><li>Minimal Waste Design</li><li>Efficiency</li></ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
           </tr>`;
         }).join("");
@@ -1486,6 +1492,45 @@
         document.querySelector("#recalculate").disabled = !models.some((model) => model.bomByYear.has(Number(currentYear())));
         renderDetail();
       }
+      let activeLeverTooltip = null;
+      function hideLeverTooltip() {
+        if (activeLeverTooltip?.isConnected && activeLeverTooltip.matches(":popover-open")) activeLeverTooltip.hidePopover();
+        activeLeverTooltip = null;
+      }
+      function showLeverTooltip(trigger) {
+        hideLeverTooltip();
+        const tooltip = document.getElementById(trigger.getAttribute("aria-describedby"));
+        tooltip.showPopover();
+        activeLeverTooltip = tooltip;
+        const rect = trigger.getBoundingClientRect();
+        const box = tooltip.getBoundingClientRect();
+        const left = Math.max(12, Math.min(rect.left + rect.width / 2 - box.width / 2, innerWidth - box.width - 12));
+        const above = rect.bottom + box.height + 20 > innerHeight;
+        tooltip.classList.toggle("above", above);
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${above ? Math.max(12, rect.top - box.height - 10) : rect.bottom + 10}px`;
+        tooltip.style.setProperty("--arrow-left", `${Math.max(16, Math.min(rect.left + rect.width / 2 - left, box.width - 16))}px`);
+      }
+      modelsBody.addEventListener("mouseover", (event) => {
+        const trigger = event.target.closest(".model-levers");
+        if (trigger && !trigger.contains(event.relatedTarget)) showLeverTooltip(trigger);
+      });
+      modelsBody.addEventListener("mouseout", (event) => {
+        const trigger = event.target.closest(".model-levers");
+        if (trigger && !trigger.contains(event.relatedTarget) && document.activeElement !== trigger) hideLeverTooltip();
+      });
+      modelsBody.addEventListener("focusin", (event) => {
+        if (event.target.matches(".model-levers")) showLeverTooltip(event.target);
+      });
+      modelsBody.addEventListener("focusout", (event) => {
+        if (event.target.matches(".model-levers")) hideLeverTooltip();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") hideLeverTooltip();
+      });
+      window.addEventListener("scroll", hideLeverTooltip, true);
+      window.addEventListener("resize", hideLeverTooltip);
+      window.addEventListener("hashchange", hideLeverTooltip);
       modelsBody.addEventListener("click", (event) => {
         if (event.target.closest("input, button, a, select")) return;
         const row = event.target.closest("[data-row-id]");
