@@ -1033,7 +1033,7 @@
     settingsWarning.className = "settings-warning";
     settingsWarning.hidden = true;
     settingsWarning.setAttribute("role", "status");
-    settingsWarning.innerHTML = `${warningSvg}<div><strong id="settings-warning-title"></strong><p id="settings-warning-details"></p></div><button type="button" class="action compact" id="go-to-settings">Go to settings</button>`;
+    settingsWarning.innerHTML = `${warningSvg}<div><strong id="settings-warning-title"></strong></div><button type="button" class="action compact" id="go-to-settings">Go to settings</button>`;
     document.querySelector("#models-view > .models-title").after(settingsWarning);
     const settingsNavWarning = document.createElement("span");
     settingsNavWarning.className = "settings-nav-warning";
@@ -1137,10 +1137,6 @@
       settingsWarning.hidden = !saveButton.disabled || location.hash !== "#all-model-code";
       const inSettings = location.hash === "#settings";
       document.querySelector("#settings-warning-title").textContent = `${inSettings ? "Settings incomplete for" : "Complete your settings for"} ${currentYear()}`;
-      document.querySelector("#settings-warning-details").textContent = [
-        missingReference ? "Functional unit: reference missing." : "",
-        !sharingComplete ? `Specification sharing: ${invalidShares.some(Boolean) ? "enter valid percentages; " : ""}${totalGuidance} to reach 100%.` : "",
-      ].filter(Boolean).join(" ");
       document.querySelector("#go-to-settings").textContent = inSettings ? "Complete fields" : "Go to settings";
     }
 
