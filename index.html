@@ -1429,7 +1429,7 @@
               <div class="circularity-scale-bar"><span style="--scale-color:#ff2400"></span><span style="--scale-color:#ff8000"></span><span style="--scale-color:#ffc400"></span><span style="--scale-color:#70b900"></span><span style="--scale-color:#3944c4"></span><div class="circularity-scale-marker" aria-hidden="true"></div></div>
               <div class="circularity-scale-labels" aria-hidden="true">${["E", "D", "C", "B", "A"].map((grade) => `<span${grade === lever.grade ? ' class="current"' : ""}>${grade}</span>`).join("")}</div>
             </div>` : ""}
-            <p class="circularity-explanation">${!lever.grade ? `Aucune évaluation renseignée pour ${year}. Lancez une évaluation pour obtenir une note.` : lever.state === "Validated" ? "L’évaluation est validée." : "L’évaluation est renseignée et reste à valider."}</p>
+            ${!lever.grade ? `<p class="circularity-explanation">Aucune évaluation renseignée pour ${year}. Lancez une évaluation pour obtenir une note.</p>` : ""}
             ${lever.grade && lever.name === "Repairability" ? '<section class="circularity-assessment"><h4>Détail des critères</h4><dl><div><dt>Profondeur de réparabilité</dt><dd>3 / 3</dd></div><div><dt>Efficacité de réparation</dt><dd>3 / 3</dd></div></dl></section>' : ""}
             ${lever.grade ? `<footer class="circularity-card-footer">${lever.state === "Validated" ? "Évaluation validée" : "Évaluation à valider"}</footer>` : ""}
           </article>`).join("");
