@@ -1104,26 +1104,28 @@
       const missingReference = !reference.value.trim();
       const values = shares.map((input) => {
         const text = input.value.trim().replace(/%$/, "").trim().replace(",", ".");
-        return /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) ? Number(text) : NaN;
+        return text === "" ? null : /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) ? Number(text) : NaN;
       });
-      const invalidShares = values.map((value) => !Number.isFinite(value) || value < 0 || value > 100);
-      const total = values.reduce((sum, value) => sum + (Number.isFinite(value) ? value : 0), 0);
+      const invalidShares = values.map((value) => value !== null && (!Number.isFinite(value) || value < 0 || value > 100));
+      const total = values.reduce((sum, value) => sum + (typeof value === "number" && Number.isFinite(value) ? value : 0), 0);
       const correctTotal = Math.abs(total - 100) < 1e-8;
       const sharingComplete = !invalidShares.some(Boolean) && correctTotal;
+      const totalAdjustment = Math.abs(100 - total).toLocaleString("en-GB", { maximumFractionDigits: 2 });
+      const totalGuidance = total < 100 ? `${totalAdjustment}% remains` : `${totalAdjustment}% over`;
 
       reference.setAttribute("aria-invalid", String(missingReference));
       document.querySelector("#reference-error").hidden = !missingReference;
       setStatus("#functional-status", missingReference, "1 field");
       shares.forEach((input, index) => {
-        input.setAttribute("aria-invalid", String(invalidShares[index] || !correctTotal));
+        const fieldInvalid = invalidShares[index] || (!correctTotal && Boolean(input.value.trim()));
+        input.setAttribute("aria-invalid", String(fieldInvalid));
         const error = document.querySelector(`#share-error-${index}`);
-        error.hidden = sharingComplete;
-        error.textContent = !input.value.trim() ? "Enter a sharing percentage (0% is allowed)." : invalidShares[index] ? "Enter a number between 0 and 100%." : !correctTotal ? "Adjust sharing so the total equals 100%." : "";
+        error.textContent = invalidShares[index] ? "Enter a number between 0 and 100%." : !correctTotal && Boolean(input.value.trim()) ? `Adjust the total; ${totalGuidance}.` : "";
         error.hidden = !error.textContent;
       });
       setStatus("#sharing-status", !sharingComplete);
       sharingError.hidden = sharingComplete;
-      sharingError.textContent = invalidShares.some(Boolean) ? "Fill in every sharing percentage (0% is allowed). The total must equal 100%." : `Total: ${total.toLocaleString("en-GB", { maximumFractionDigits: 2 })}%. The total assigned sharing must equal 100%.`;
+      sharingError.textContent = invalidShares.some(Boolean) ? "Enter valid sharing percentages between 0% and 100%." : `Total assigned: ${total.toLocaleString("en-GB", { maximumFractionDigits: 2 })}%. The total must equal 100%; ${totalGuidance}.`;
       saveButton.disabled = missingReference || !sharingComplete;
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
       document.querySelector("#functional-warning-icon").hidden = !missingReference;
@@ -1136,7 +1138,7 @@
       document.querySelector("#settings-warning-title").textContent = `${inSettings ? "Settings incomplete for" : "Complete your settings for"} ${currentYear()}`;
       document.querySelector("#settings-warning-details").textContent = [
         missingReference ? "Functional unit: reference missing." : "",
-        !sharingComplete ? `Specification sharing: ${invalidShares.some(Boolean) ? "fill in every percentage; " : ""}total must equal 100%.` : "",
+        !sharingComplete ? `Specification sharing: ${invalidShares.some(Boolean) ? "enter valid percentages; " : ""}${totalGuidance} to reach 100%.` : "",
       ].filter(Boolean).join(" ");
       document.querySelector("#go-to-settings").textContent = inSettings ? "Complete fields" : "Go to settings";
     }
