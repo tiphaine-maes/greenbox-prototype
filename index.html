@@ -1008,7 +1008,7 @@
       const bounds = banner.getBoundingClientRect();
       const sidebar = document.querySelector("aside").getBoundingClientRect();
       const toggle = document.querySelector(".sidebar-toggle");
-      const top = bounds.height ? bounds.top + bounds.height / 2 - sidebar.top - toggle.offsetHeight / 2 : 14;
+      const top = bounds.height ? bounds.top + 96 / 2 - sidebar.top - toggle.offsetHeight / 2 : 14;
       document.body.style.setProperty("--sidebar-toggle-top", `${top}px`);
     }
     function updateTableHeader() {
