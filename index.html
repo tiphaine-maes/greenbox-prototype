@@ -1983,11 +1983,42 @@
         `<tr><th scope="row">${name}</th>${values.map((value) => `<td><span>${value ? `${value[0]} g` : "-"}</span><span>${value ? `${value[1]} %` : "-"}</span></td>`).join("")}</tr>`
       ).join("");
       const compositionSheet = document.querySelector("#bom-composition-sheet");
+      let compositionAnimation = null;
+      let compositionClosing = false;
+      function closeCompositionSheet() {
+        if (!compositionSheet.open || compositionClosing) return;
+        const transform = getComputedStyle(compositionSheet).transform;
+        if (compositionAnimation) compositionAnimation.cancel();
+        if (reducedMotion.matches) {
+          compositionSheet.close();
+          compositionAnimation = null;
+          return;
+        }
+        compositionClosing = true;
+        compositionAnimation = compositionSheet.animate([
+          { transform },
+          { transform: "translateX(100%)" },
+        ], { duration: 220, easing: "ease-in", fill: "forwards" });
+        compositionAnimation.onfinish = () => {
+          compositionSheet.close();
+          compositionAnimation.cancel();
+          compositionAnimation = null;
+          compositionClosing = false;
+        };
+      }
       document.querySelectorAll("[data-open-composition]").forEach((button) => button.addEventListener("click", () => {
         compositionSheet.showModal();
         compositionSheet.querySelector(".bom-composition-body").scrollTop = 0;
+        if (!reducedMotion.matches) compositionAnimation = compositionSheet.animate([
+          { transform: "translateX(100%)" },
+          { transform: "translateX(0)" },
+        ], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
       }));
-      document.querySelectorAll("[data-close-composition]").forEach((button) => button.addEventListener("click", () => compositionSheet.close()));
+      document.querySelectorAll("[data-close-composition]").forEach((button) => button.addEventListener("click", closeCompositionSheet));
+      compositionSheet.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        closeCompositionSheet();
+      });
       const leverPlusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.2513 7.2513V2.66797H8.7513V7.2513H13.3346V8.7513H8.7513V13.3346H7.2513V8.7513H2.66797V7.2513H7.2513Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
       const leverMinusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.66797 7.25H13.3346V8.75H2.66797V7.25Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
       document.querySelectorAll('.lever-toggle[aria-expanded="false"] > span').forEach((icon) => {
