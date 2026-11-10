@@ -2329,8 +2329,8 @@
         }));
         const count = favoriteProducts.length;
         document.querySelector("#favorites-title").textContent = `${count} favorites`;
-        document.querySelector("#header-favorites span").textContent = String(count + 1);
-        document.querySelector("#header-favorites").setAttribute("aria-label", `Open ${count + 1} favorites`);
+        document.querySelector("#header-favorites span").textContent = String(count);
+        document.querySelector("#header-favorites").setAttribute("aria-label", `Open ${count} favorites`);
       }
       renderFavorites();
       document.querySelector("#header-favorites").addEventListener("click", () => {
