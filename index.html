@@ -496,27 +496,25 @@
     .design-sheet-radios label { display: flex; align-items: center; gap: 12px; margin: 0; color: #101010; }
     .design-sheet-radios input { width: 20px; height: 20px; margin: 0; accent-color: #3643BA; }
     .design-sheet-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 20px 24px; border-top: 1px solid #E1E0DF; }
-    .recyclability-sheet { width: min(1040px, 100%); }
+    .recyclability-sheet { width: min(680px, 100%); }
     .recyclability-sheet .design-sheet-header { padding: 16px 22px; }
     .recyclability-sheet .design-sheet-header h2 { font-size: 20px; }
     .recyclability-sheet .design-sheet-fields { padding: 16px 40px 24px; }
     .recyclability-section { margin: 0 0 24px; }
-    .recyclability-section h3 { margin: 0 0 14px; font-size: 14px; font-weight: 600 !important; }
+    .recyclability-section h3 { margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid #E1E0DF; font-size: 14px; font-weight: 600 !important; }
     .recyclability-bom { padding: 16px 20px 10px; border: 1px solid #dedede; border-radius: 7px; }
     .recyclability-bom-label { display: block; margin-bottom: 8px; font-size: 12px; }
     .recyclability-bom .bom-dropdown-trigger { height: 42px; border-radius: 0; font-size: 13px; }
-    .recyclability-question { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; min-height: 70px; margin-top: 10px; padding: 12px 14px; border: 1px solid #e8e8ee; border-radius: 8px; background: #fff; }
-    .recyclability-question-copy { min-width: 0; }
+    .recyclability-question { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 8px; min-height: 52px; margin-top: 10px; padding: 4px 0; }
     .recyclability-question-title { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.45; }
-    .recyclability-question-title > span:first-child { min-width: 0; }
-    .recyclability-lock { display: inline-flex; flex: 0 0 auto; color: #777; }
-    .recyclability-lock svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+    .recyclability-question-title > span:first-child { min-width: 0; flex: 1; }
     .recyclability-material-icon { display: inline-flex; width: 14px; height: 14px; vertical-align: -2px; }
     .recyclability-material-icon svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
     .recyclability-info { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: 0 0 18px; border: 1px solid #3643ba; border-radius: 50%; color: #3643ba; font-size: 12px; font-weight: 600; }
-    .recyclability-main-material { display: inline-flex; align-items: center; gap: 6px; margin: 7px 0 0 26px; color: #616161; font-size: 12px; }
+    .recyclability-main-material { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: #616161; font-size: 12px; }
     .recyclability-main-material strong { color: #101010; font-weight: 600; }
-    .recyclability-value { display: inline-flex; align-items: center; justify-content: center; min-width: 66px; height: 42px; padding: 0 13px; border: 1px solid #e1e1e7; border-radius: 8px; background: #fff; color: #101010; font-size: 14px; font-weight: 600; white-space: nowrap; }
+    .recyclability-data-pill { display: inline-flex; align-items: center; gap: 14px; min-height: 32px; width: fit-content; padding: 0 12px; border: 1px solid #dedede; border-radius: 7px; color: #616161; font-size: 12px; }
+    .recyclability-value { display: inline-flex; align-items: center; justify-content: center; min-width: 54px; min-height: 30px; padding: 0 12px; border: 1px solid #dedede; border-radius: 7px; background: #fff; color: #101010; font-size: 12px; font-weight: 600; white-space: nowrap; }
     .recyclability-manual { padding-top: 2px; }
     .recyclability-manual h3 { margin-bottom: 10px; }
     .recyclability-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; min-height: 50px; padding: 6px 0; }
@@ -537,9 +535,33 @@
     .recyclability-stepper button { width: 30px; height: 34px; border: 0; background: transparent; color: #101010; font-size: 17px; cursor: pointer; }
     .recyclability-stepper output { min-width: 24px; font-size: 14px; text-align: center; font-variant-numeric: tabular-nums; }
     .recyclability-sheet .design-sheet-footer { padding: 14px 22px 16px; }
+    .recyclability-result-view { flex: 1; overflow-y: auto; padding: 4px 18px 20px; }
+    .recyclability-result-view[hidden] { display: none; }
+    .recyclability-summary { display: grid; grid-template-columns: minmax(0, 1fr) 48px; align-items: center; gap: 12px; padding: 12px; border: 1px solid #E1E0DF; border-radius: 8px; }
+    .recyclability-summary p { margin: 0; color: #616161; font-size: 12px; line-height: 1.45; }
+    .recyclability-summary strong { color: #3643ba; }
+    .recyclability-index-grade { display: grid; width: 48px; height: 48px; place-items: center; border: 2px solid #3643ba; border-radius: 50%; color: #101010; font-size: 18px; font-weight: 600 !important; }
+    .recyclability-status { justify-self: start; margin-top: 6px; padding: 3px 6px; background: #e7f5ef; color: #017f5c; font-size: 10px; font-weight: 600; }
+    .recyclability-result-heading { margin: 14px 0 8px; padding-bottom: 7px; border-bottom: 1px solid #E1E0DF; font-size: 13px; font-weight: 600 !important; }
+    .recyclability-streams { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .recyclability-stream { min-width: 0; padding: 10px; border: 1px solid #E1E0DF; border-bottom: 3px solid #017f5c; border-radius: 7px; }
+    .recyclability-stream.selected { border-color: #3643ba; border-bottom-color: #017f5c; background: #fbfbff; }
+    .recyclability-stream-label { display: flex; align-items: center; gap: 6px; color: #616161; font-size: 11px; }
+    .recyclability-stream.selected .recyclability-stream-label { color: #3643ba; font-weight: 600; }
+    .recyclability-stream-icon { display: grid; width: 26px; height: 26px; place-items: center; flex: 0 0 26px; border-radius: 50%; background: #f2f2f2; color: #616161; }
+    .recyclability-stream-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .recyclability-stream-score { margin-top: 8px; text-align: center; font-size: 14px; font-weight: 600; }
+    .recyclability-stream-score small { color: #616161; font-size: 10px; font-weight: 400; }
+    .recyclability-duplicate-copy { margin: 0 0 10px; color: #616161; font-size: 11px; line-height: 1.4; }
+    .recyclability-duplicate-list { display: grid; gap: 7px; }
+    .recyclability-duplicate { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 10px; border: 1px solid #E1E0DF; border-radius: 7px; color: #616161; font-size: 11px; }
+    .recyclability-duplicate input { width: 15px; height: 15px; margin: 0; accent-color: #3643ba; }
+    .recyclability-duplicate strong { color: #101010; }
     @media (max-width: 700px) {
       .recyclability-sheet .design-sheet-fields { padding: 16px 18px 20px; }
-      .recyclability-question { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 10px; }
+      .recyclability-result-view { padding: 4px 18px 20px; }
+      .recyclability-question { gap: 10px; padding: 10px 0; }
+      .recyclability-streams { grid-template-columns: 1fr; }
       .recyclability-field { gap: 10px; }
       .recyclability-field-question { align-items: flex-start; }
       .recyclability-toggle-wrap { min-width: auto; }
@@ -1075,15 +1097,12 @@
             <select id="recyclability-bom-select" hidden><option value="">Select BOM</option></select>
           </div>
           <div class="recyclability-question">
-            <div class="recyclability-question-copy">
-              <div class="recyclability-question-title"><span>Main material and percentage in the heaviest textile component</span><span class="recyclability-lock" aria-label="Read only"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="7" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span><span class="recyclability-info" title="Data retrieved from the selected BOM">i</span></div>
-              <span class="recyclability-main-material"><span class="recyclability-material-icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m2 8 6-6h5v5l-6 6z"/><circle cx="10.5" cy="5.5" r=".8"/></svg></span> &nbsp;Main material: &nbsp;<strong id="recyclability-material">PET</strong></span>
-            </div>
-            <span class="recyclability-value" id="recyclability-material-share">89 %</span>
+            <div class="recyclability-question-title"><span>Main material in the heaviest textile component of the finished product</span><span class="recyclability-info" title="Data retrieved from the selected BOM">i</span></div>
+            <div class="recyclability-data-pill"><span class="recyclability-main-material"><span class="recyclability-material-icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m2 8 6-6h5v5l-6 6z"/><circle cx="10.5" cy="5.5" r=".8"/></svg></span>Main material: <strong id="recyclability-material">PET</strong></span><strong id="recyclability-material-share">89 %</strong></div>
           </div>
           <div class="recyclability-question">
-            <div class="recyclability-question-title"><span>Laminated membrane and/or coating</span><span class="recyclability-lock" aria-label="Read only"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="7" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span><span class="recyclability-info" title="Data retrieved from the selected BOM">i</span></div>
-            <span class="recyclability-value" id="recyclability-coating">NO</span>
+            <div class="recyclability-question-title"><span>Laminated membrane and/or coating</span><span class="recyclability-info" title="Data retrieved from the selected BOM">i</span></div>
+            <span class="recyclability-value" id="recyclability-coating">No</span>
           </div>
         </section>
         <section class="recyclability-section recyclability-manual" aria-labelledby="recyclability-manual-heading">
@@ -1102,7 +1121,7 @@
           </div>
           <div class="recyclability-field">
             <div class="recyclability-field-question"><span>How many layers does the product have?</span><span class="recyclability-info" title="Choose Yes for a single layer, or Multiple when the product has several layers">i</span></div>
-            <div class="recyclability-binary" role="radiogroup" aria-label="Number of product layers"><label><input type="radio" name="recyclability-layers" value="single" checked>Yes</label><label><input type="radio" name="recyclability-layers" value="multiple">Multiple</label></div>
+            <div class="recyclability-binary" role="radiogroup" aria-label="Number of product layers"><label><input type="radio" name="recyclability-layers" value="single" checked>1 layer</label><label><input type="radio" name="recyclability-layers" value="multiple">Multiple</label></div>
           </div>
           <div class="recyclability-field">
             <div class="recyclability-field-question"><span>How many small solvent-based prints (less than 5 x 5 cm) on the product?</span><span class="recyclability-info" title="Small prints are less than 5 × 5 cm">i</span></div>
@@ -1124,7 +1143,22 @@
           <div class="design-sheet-radios"><label><input type="radio" name="circularity-answer" value="yes">Yes</label><label><input type="radio" name="circularity-answer" value="no">No</label></div>
         </fieldset>
       </div>
-      <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-circularity-sheet">Cancel</button><button type="submit" class="action primary" id="save-circularity-sheet" hidden>Save</button></footer>
+      <div class="recyclability-result-view" id="recyclability-result-view" hidden>
+        <section class="recyclability-summary" aria-label="Recyclability index result">
+          <div><p>Based on the best available treatment method. This product is technically recyclable through the <strong>Thermal</strong> recycling process.</p><span class="recyclability-status">RECYCLABLE</span></div>
+          <div class="recyclability-index-grade" aria-label="Recyclability index 8.8">8.8</div>
+        </section>
+        <h3 class="recyclability-result-heading">Details by processing stream</h3>
+        <section class="recyclability-streams" aria-label="Scores by processing stream">
+          <article class="recyclability-stream"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.6 2.8-.2-.1a1.7 1.7 0 0 0-1.8.2l-.2.1h-3.2l-.1-.2a1.7 1.7 0 0 0-1.6-1l-.2.1-2.8-1.6.1-.2a1.7 1.7 0 0 0-.2-1.8l-.1-.2v-3.2l.2-.1a1.7 1.7 0 0 0 1-1.6l-.1-.2 1.6-2.8.2.1a1.7 1.7 0 0 0 1.8-.2l.2-.1h3.2l.1.2a1.7 1.7 0 0 0 1.6 1l.2-.1 2.8 1.6-.1.2a1.7 1.7 0 0 0 .2 1.8l.1.2v3.2z"/></svg></span>Mechanical score</div><div class="recyclability-stream-score">7.7 <small>/10</small></div></article>
+          <article class="recyclability-stream"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4 17h16L12 3z"/><path d="M12 9v4m0 2v.1"/></svg></span>Chemical score</div><div class="recyclability-stream-score">8.7 <small>/10</small></div></article>
+          <article class="recyclability-stream selected"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3c0 3 3 3 3 6s-3 3-3 6 3 3 3 6M15 3c0 3 3 3 3 6s-3 3-3 6 3 3 3 6"/></svg></span>Thermal score</div><div class="recyclability-stream-score">7.8 <small>/10</small></div></article>
+        </section>
+        <h3 class="recyclability-result-heading">Duplicate this evaluation</h3>
+        <p class="recyclability-duplicate-copy">Duplicate the responses provided for other template BOMs in the selected BOM. The values calculated from this BOM will be similar.</p>
+        <div class="recyclability-duplicate-list" id="recyclability-duplicate-list" aria-label="Template BOMs"></div>
+      </div>
+      <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-circularity-sheet">Cancel</button><button type="submit" class="action primary" id="save-circularity-sheet" hidden>Save</button><button type="button" class="action primary" id="calculate-recyclability-index" hidden>Calculate Index</button></footer>
     </form>
   </dialog>
   <script>
@@ -1915,8 +1949,9 @@
         circularitySheet.classList.toggle("recyclability-sheet", name === "Recyclability");
         recyclabilityFields.hidden = name !== "Recyclability";
         circularityBinaryFields.hidden = !binary;
-        document.querySelector("#save-circularity-sheet").hidden = !binary && name !== "Recyclability";
-        document.querySelector("#save-circularity-sheet").textContent = name === "Recyclability" ? "Save" : "Save";
+        document.querySelector("#recyclability-result-view").hidden = true;
+        document.querySelector("#calculate-recyclability-index").hidden = name !== "Recyclability";
+        document.querySelector("#save-circularity-sheet").hidden = !binary;
         circularityForm.querySelectorAll('[name="circularity-answer"]').forEach((input) => {
           input.disabled = !binary;
           input.required = binary;
@@ -1935,6 +1970,7 @@
           const saved = detailModel.circularityByYear?.get(name);
           const savedYear = saved ? Math.max(...[...saved.keys()].filter((value) => value <= year)) : -Infinity;
           const data = saved?.get(savedYear);
+          renderRecyclabilityDuplicateTargets(detailModel, year, selectedBom, data?.duplicateTargets || []);
           const defaults = { threads: true, interlining: false, cuts: 0, layers: "single", smallSolventPrints: 1, largeSolventPrints: 0, largeWaterPrints: 0 };
           Object.entries({ ...defaults, ...data?.form }).forEach(([key, value]) => {
             const toggle = circularityForm.querySelector(`[data-recycle-toggle="${key}"]`);
@@ -1955,14 +1991,45 @@
         const hasBom = Boolean(recyclabilityBomSelect.value);
         document.querySelector("#recyclability-material").textContent = hasBom ? "PET" : "—";
         document.querySelector("#recyclability-material-share").textContent = hasBom ? "89 %" : "—";
-        document.querySelector("#recyclability-coating").textContent = hasBom ? "NO" : "—";
+        document.querySelector("#recyclability-coating").textContent = hasBom ? "No" : "—";
+      }
+      function renderRecyclabilityDuplicateTargets(model, year, selectedBom, selectedTargets = []) {
+        const list = document.querySelector("#recyclability-duplicate-list");
+        const selected = new Set(selectedTargets.map(String));
+        const targets = selectedBom ? models.filter((candidate) =>
+          candidate.id !== model.id && candidate.bomByYear.get(year)?.id === selectedBom
+        ).slice(0, 8) : [];
+        list.replaceChildren(...targets.map((candidate) => {
+          const label = document.createElement("label");
+          label.className = "recyclability-duplicate";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.value = String(candidate.id);
+          checkbox.checked = selected.has(checkbox.value);
+          const code = document.createElement("strong");
+          code.textContent = candidate.code;
+          label.append(checkbox, code, document.createTextNode(` ${candidate.name}`));
+          return label;
+        }));
       }
       const circularitySheet = document.querySelector("#circularity-sheet");
       const circularityForm = document.querySelector("#circularity-form");
       const recyclabilityFields = document.querySelector("#recyclability-fields");
       const circularityBinaryFields = document.querySelector("#circularity-binary-fields");
       const recyclabilityBomSelect = document.querySelector("#recyclability-bom-select");
-      recyclabilityBomSelect.addEventListener("change", updateRecyclabilityBomData);
+      recyclabilityBomSelect.addEventListener("change", () => {
+        updateRecyclabilityBomData();
+        if (circularityEditTarget?.name === "Recyclability") {
+          renderRecyclabilityDuplicateTargets(circularityEditTarget.model, circularityEditTarget.year, recyclabilityBomSelect.value);
+        }
+      });
+      document.querySelector("#calculate-recyclability-index").addEventListener("click", () => {
+        recyclabilityFields.hidden = true;
+        document.querySelector("#recyclability-result-view").hidden = false;
+        document.querySelector("#calculate-recyclability-index").hidden = true;
+        document.querySelector("#save-circularity-sheet").hidden = false;
+        document.querySelector("#recyclability-result-view").scrollTop = 0;
+      });
       let circularityEditTarget = null;
       let circularityTrigger = null;
       let circularityClosing = false;
@@ -2008,6 +2075,7 @@
         if (!circularityEditTarget || circularityClosing || !circularityForm.reportValidity()) return;
         const { model, year, name } = circularityEditTarget;
         if (!["Durability", "Rental", "Recyclability"].includes(name)) return;
+        if (name === "Recyclability" && document.querySelector("#recyclability-result-view").hidden) return;
         const now = new Date();
         if (!model.circularityByYear) model.circularityByYear = new Map();
         if (!model.circularityByYear.has(name)) model.circularityByYear.set(name, new Map());
@@ -2017,6 +2085,7 @@
         };
         if (name === "Recyclability") {
           const grade = modelCircularityLevers(model, year).find((lever) => lever.name === name).grade;
+          const duplicateTargets = [...document.querySelectorAll(".recyclability-duplicate input:checked")].map((input) => Number(input.value));
           Object.assign(evaluation, {
             grade,
             answer: undefined,
@@ -2026,8 +2095,27 @@
               ...[...circularityForm.querySelectorAll("[data-recyclability-stepper]")].map((stepper) => [stepper.dataset.recyclabilityStepper, Number(stepper.querySelector("output").textContent)]),
               ["layers", circularityForm.querySelector('[name="recyclability-layers"]:checked')?.value || "single"],
             ]),
+            index: 8.8,
+            processingScores: { mechanical: 7.7, chemical: 8.7, thermal: 7.8 },
+            duplicateTargets,
           });
           if (recyclabilityBomSelect.value) model.bomByYear.set(year, { id: recyclabilityBomSelect.value, method: "MANUAL" });
+          duplicateTargets.forEach((targetId) => {
+            const target = models.find((candidate) => candidate.id === targetId);
+            if (!target) return;
+            if (!target.circularityByYear) target.circularityByYear = new Map();
+            if (!target.circularityByYear.has(name)) target.circularityByYear.set(name, new Map());
+            const targetGrade = modelCircularityLevers(target, year).find((lever) => lever.name === name).grade;
+            target.circularityByYear.get(name).set(year, {
+              ...evaluation,
+              grade: targetGrade,
+              form: { ...evaluation.form },
+              processingScores: { ...evaluation.processingScores },
+              duplicateTargets: [],
+              modified: evaluation.modified,
+              modifiedISO: evaluation.modifiedISO,
+            });
+          });
         } else {
           evaluation.answer = circularityForm.querySelector('[name="circularity-answer"]:checked').value === "yes";
         }
