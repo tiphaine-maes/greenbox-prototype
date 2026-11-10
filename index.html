@@ -505,16 +505,18 @@
     .recyclability-bom { padding: 16px 20px 10px; border: 1px solid #dedede; border-radius: 7px; }
     .recyclability-bom-label { display: block; margin-bottom: 8px; font-size: 12px; }
     .recyclability-bom .bom-dropdown-trigger { height: 42px; border-radius: 0; font-size: 13px; }
-    .recyclability-question { display: grid; grid-template-columns: minmax(0, 1fr) 66px; align-items: center; gap: 14px; min-height: 60px; }
+    .recyclability-question { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; min-height: 70px; margin-top: 10px; padding: 12px 14px; border: 1px solid #e8e8ee; border-radius: 8px; background: #f8f8fb; }
     .recyclability-question-copy { min-width: 0; }
-    .recyclability-question-title { display: flex; align-items: center; gap: 9px; font-size: 13px; line-height: 1.4; }
-    .recyclability-lock { display: inline-flex; color: #777; }
+    .recyclability-question-title { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.45; }
+    .recyclability-question-title > span:first-child { min-width: 0; }
+    .recyclability-lock { display: inline-flex; flex: 0 0 auto; color: #777; }
     .recyclability-lock svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
     .recyclability-material-icon { display: inline-flex; width: 14px; height: 14px; vertical-align: -2px; }
     .recyclability-material-icon svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
     .recyclability-info { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: 0 0 18px; border: 1px solid #3643ba; border-radius: 50%; color: #3643ba; font-size: 12px; font-weight: 600; }
-    .recyclability-main-material { display: block; margin: 3px 0 0 24px; color: #616161; font-size: 11px; }
-    .recyclability-value { display: inline-flex; align-items: center; justify-content: center; min-width: 54px; height: 42px; padding: 0 12px; border: 1px solid #aaa; border-radius: 24px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+    .recyclability-main-material { display: inline-flex; align-items: center; gap: 6px; margin: 7px 0 0 26px; color: #616161; font-size: 12px; }
+    .recyclability-main-material strong { color: #101010; font-weight: 600; }
+    .recyclability-value { display: inline-flex; align-items: center; justify-content: center; min-width: 66px; height: 42px; padding: 0 13px; border: 1px solid #e1e1e7; border-radius: 8px; background: #fff; color: #101010; font-size: 14px; font-weight: 600; white-space: nowrap; }
     .recyclability-manual { padding-top: 2px; }
     .recyclability-manual h3 { margin-bottom: 10px; }
     .recyclability-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; min-height: 50px; padding: 6px 0; }
@@ -537,7 +539,7 @@
     .recyclability-sheet .design-sheet-footer { padding: 14px 22px 16px; }
     @media (max-width: 700px) {
       .recyclability-sheet .design-sheet-fields { padding: 16px 18px 20px; }
-      .recyclability-question { grid-template-columns: minmax(0, 1fr) auto; }
+      .recyclability-question { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 10px; }
       .recyclability-field { gap: 10px; }
       .recyclability-field-question { align-items: flex-start; }
       .recyclability-toggle-wrap { min-width: auto; }
