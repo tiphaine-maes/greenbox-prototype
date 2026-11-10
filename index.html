@@ -409,7 +409,7 @@
     .models-table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; }
     .models-table-toolbar h3 { margin: 0; font-size: 16px; color: #272a3b; }
     .model-search { width: 280px; height: 34px; border: 0; border-radius: 24px; background: #f5f4f5; font-size: 13px; }
-    .models-table { min-width: 1486px; font-size: 12px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+    .models-table { min-width: 1376px; font-size: 12px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
     .circularity-score { display: inline-grid; place-items: center; min-width: 28px; height: 28px; border-radius: 8px; background: var(--grade-color); color: white; font-size: 16px; }
     .models-table th { background: #f5f4f5; font-size: 12px; }
     .models-table th { position: sticky; top: 96px; z-index: 2; border-bottom: 1px solid #E1E0DF; box-shadow: inset 0 -1px #E1E0DF; }
@@ -965,10 +965,10 @@
           <div class="models-table-toolbar"><h3 id="model-count">11 Model Codes</h3><input type="search" class="model-search" id="model-search" placeholder="Search model code" aria-label="Search model code"></div>
           <div class="table-wrap">
             <table class="models-table">
-              <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:230px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:92px"></colgroup>
+              <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:230px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:92px"></colgroup>
               <thead><tr>
                 <th><input type="checkbox" id="select-all-models" aria-label="Select all visible model codes"></th>
-                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>BOM selected</th><th>Durability</th><th>Repairability</th><th>Recyclability</th><th>Rental</th><th>Design Levers</th><th>Last<br>Modification</th>
+                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>BOM selected</th><th>Durability</th><th>Repairability</th><th>Recyclability</th><th>Design Levers</th><th>Last<br>Modification</th>
               </tr></thead>
               <tbody id="models-body"></tbody>
             </table>
@@ -1872,7 +1872,7 @@
           const bom = model.bomByYear.get(Number(currentYear()));
           const preferred = preferredResults(model, year);
           const hasLevers = model.status !== "Not evaluated";
-          const circularityCells = modelCircularityLevers(model, year).map((lever) => {
+          const circularityCells = modelCircularityLevers(model, year).filter((lever) => lever.name !== "Rental").map((lever) => {
             const evaluated = circularityValue(lever);
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
@@ -1886,7 +1886,7 @@
             <td>TMAES26<span class="model-caption">17/03/27</span></td>
           </tr>`;
         }).join("");
-        if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="12">No model codes match your search.</td></tr>';
+        if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="11">No model codes match your search.</td></tr>';
         document.querySelector("#model-count").textContent = `${visible.length} Model Codes`;
         const selectedCount = models.filter((model) => model.selected).length;
         document.querySelector("#selected-count").textContent = `${selectedCount} model code selected`;
