@@ -622,7 +622,9 @@
     .levers-table td { background: white; padding: 16px 10px; }
     .levers-table .design-lever-incomplete td { background: #FFF5EF; }
     .design-levers-warning { display: flex; align-items: center; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #d64b00; border-radius: 20px; background: #ffe6d8; }
-    .design-levers-warning[hidden], body:not(.levers-view) .design-levers-warning { display: none; }
+    .design-levers-warning[hidden], body:not(.levers-view):not(.circularity-view) .design-levers-warning { display: none; }
+    .design-levers-section-heading { display: none; margin: 32px 0 24px; font-size: 24px; font-weight: 600 !important; }
+    .circularity-view .design-levers-section-heading { display: block; }
     .design-levers-warning svg { flex-shrink: 0; color: #d64b00; }
     .design-levers-warning strong { display: block; font-size: 16px; font-weight: 600 !important; }
     .levers-table td:first-child { padding-left: 24px; }
@@ -1035,6 +1037,9 @@
               </tbody>
             </table></div>
           </section>
+        </div>
+        <div id="shared-design-levers" hidden>
+          <h2 class="design-levers-section-heading">Design Levers</h2>
           <section class="levers-card" aria-labelledby="design-levers-title">
             <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>2 Levers</span></h3><button type="button" class="action compact design-actions" id="edit-design-levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Update design levers</button></div>
             <div class="table-wrap"><table class="levers-table">
@@ -2522,6 +2527,7 @@
         document.body.classList.toggle("circularity-view", circularityVisible);
         document.body.classList.toggle("placeholder-view", placeholderVisible);
         document.querySelector("#levers-content").hidden = !leversVisible;
+        document.querySelector("#shared-design-levers").hidden = !(leversVisible || circularityVisible);
         document.querySelector("#circularity-content").hidden = !circularityVisible;
         document.querySelector("#synthesis-circularity").hidden = !synthesisVisible;
         document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity" : leversVisible ? "Levers" : "Synthesis";
