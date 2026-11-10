@@ -1688,9 +1688,9 @@
         });
       }
       function renderCircularity(year) {
-        const yearLevers = modelCircularityLevers(detailModel, year);
+        const yearLevers = modelCircularityLevers(detailModel, year).filter((lever) => lever.name !== "Rental");
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
-        document.querySelector("#synthesis-circularity").innerHTML = yearLevers.filter((lever) => lever.name !== "Rental").map((lever) => {
+        document.querySelector("#synthesis-circularity").innerHTML = yearLevers.map((lever) => {
           const value = circularityValue(lever);
           const binary = typeof lever.answer === "boolean";
           return `<article class="synthesis-card" data-summary-lever="${lever.name}" aria-label="${lever.name}: ${value || "Not evaluated"}">
@@ -1720,7 +1720,7 @@
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${circularityValue(lever)}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${circularityValue(lever) ? '<span class="impact-caption">TMAES26<br>17/03/27</span>' : ""}</td><td>${circularityValue(lever) ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
       function updateCircularityValidity(year) {
-        modelCircularityLevers(detailModel, year).forEach((lever, index) => {
+        modelCircularityLevers(detailModel, year).filter((lever) => lever.name !== "Rental").forEach((lever, index) => {
           const surfaces = [document.querySelector("#circularity-content").children[index], document.querySelector("#circularity-levers-body").children[index], document.querySelector(`[data-summary-lever="${lever.name}"]`)].filter(Boolean);
           surfaces.forEach((surface) => {
             const badge = surface.querySelector(".circularity-validity");
