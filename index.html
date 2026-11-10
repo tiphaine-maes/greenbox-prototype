@@ -107,11 +107,14 @@
     #favorites-view { min-height: calc(100vh - 84px); padding: 50px 5.3% 40px; background: #F5F4F5; }
     .favorites-title { margin: 0 0 28px; color: #000000; font-size: var(--vp-core-font-size-350, 1.375rem); font-style: normal; font-weight: 600; line-height: 118.18%; }
     .favorites-list { display: grid; gap: 18px; }
-    .favorite-item { display: grid; grid-template-columns: 76px minmax(0, 1fr) 48px; align-items: center; gap: 34px; min-height: 114px; padding: 18px 48px 18px 38px; border-radius: 7px; background: white; }
+    .favorite-item { position: relative; display: grid; grid-template-columns: 76px minmax(0, 1fr) 48px; align-items: center; gap: 34px; min-height: 114px; padding: 18px 48px 18px 38px; border-radius: 7px; background: white; }
     .favorite-item img { width: 76px; height: 76px; object-fit: contain; background: #f5f5f5; }
-    .favorite-item-name { color: #101010; font-size: 16px; }
+    .favorite-item-name { color: #101010; font-size: 16px; text-decoration: none; }
+    .favorite-item-name::after { position: absolute; inset: 0; border-radius: 7px; content: ""; }
+    .favorite-item-name:focus-visible { outline: none; }
+    .favorite-item-name:focus-visible::after { outline: 2px solid #3643BA; outline-offset: 3px; }
     .favorite-item-name strong { margin-right: 6px; color: #3643BA; font-weight: 700 !important; }
-    .favorite-remove { display: grid; width: 48px; height: 48px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #3643BA; cursor: pointer; }
+    .favorite-remove { position: relative; display: grid; width: 48px; height: 48px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #3643BA; cursor: pointer; }
     .favorite-remove:hover { background: transparent; }
     .favorite-remove svg { width: 23px; height: 23px; fill: currentColor; }
     .favorites-footer { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px; padding: 42px 5.3% 28px; background: white; }
@@ -2310,8 +2313,9 @@
           const image = document.createElement("img");
           image.src = "product-preview.png";
           image.alt = "";
-          const label = document.createElement("div");
+          const label = document.createElement("a");
           label.className = "favorite-item-name";
+          label.href = "#all-model-code";
           const productCode = document.createElement("strong");
           productCode.textContent = code;
           label.append(productCode, document.createTextNode(name));
