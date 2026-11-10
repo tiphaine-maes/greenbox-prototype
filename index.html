@@ -57,9 +57,12 @@
     }
     .search svg { flex-shrink: 0; }
 
-    .user { margin-left: auto; line-height: 1.35; }
+    .user { position: relative; margin-left: auto; line-height: 1.35; }
     .user img { display: block; width: 290px; height: 60px; }
     .user small { display: block; color: #555; }
+    .header-favorites { position: absolute; top: 3px; left: 0; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+    .header-favorites:focus-visible { outline: 2px solid #3944c4; outline-offset: 2px; }
+    .header-favorites span { position: absolute; top: 30px; right: 0; display: grid; width: 20px; height: 20px; place-items: center; border-radius: 50%; background: #3643ba; color: white; font-size: 11px; font-weight: 600; }
 
     .layout { display: flex; min-height: 100vh; padding-top: 84px; --sidebar-width: 296px; }
     body { --sidebar-width: 296px; }
@@ -98,6 +101,32 @@
     .nav-item[aria-disabled="true"] path { fill: currentColor; }
     .nav-help { margin: 12px 18px 0; color: #555; font-size: 13px; line-height: 1.4; }
     .nav-item.active { color: #3944c4; background: #f4f4ff; border-radius: 28px; }
+    body.favorites-view #sidebar { display: none; }
+    body.favorites-view main { width: 100%; margin-left: 0; padding: 0; }
+    body.favorites-view .footer { display: none; }
+    #favorites-view { min-height: calc(100vh - 84px); padding: 50px 5.3% 40px; background: #eef0f2; }
+    .favorites-title { margin: 0 0 28px; color: #000000; font-size: var(--vp-core-font-size-350, 1.375rem); font-style: normal; font-weight: 600; line-height: 118.18%; }
+    .favorites-list { display: grid; gap: 18px; }
+    .favorite-item { display: grid; grid-template-columns: 76px minmax(0, 1fr) 48px; align-items: center; gap: 34px; min-height: 114px; padding: 18px 48px 18px 38px; border-radius: 7px; background: white; }
+    .favorite-item img { width: 76px; height: 76px; object-fit: contain; background: #f5f5f5; }
+    .favorite-item-name { color: #101010; font-size: 16px; }
+    .favorite-item-name strong { margin-right: 6px; color: #3643BA; font-weight: 700 !important; }
+    .favorite-remove { display: grid; width: 48px; height: 48px; place-items: center; border: 0; border-radius: 50%; background: #f7f8fa; color: #000000; cursor: pointer; }
+    .favorite-remove:hover { background: #eceef6; }
+    .favorite-remove svg { width: 23px; height: 23px; fill: currentColor; }
+    .favorites-footer { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px; padding: 42px 5.3% 28px; background: white; }
+    .favorites-footer h2 { margin: 0 0 14px; font-size: 16px; font-weight: 700 !important; }
+    .favorites-footer p { margin: 0 0 8px; font-size: 14px; font-weight: 600 !important; }
+    .favorites-brand { font-size: 24px; font-weight: 800 !important; letter-spacing: 1px; }
+    .favorites-brand p { max-width: 230px; margin-top: 16px; font-weight: 600 !important; line-height: 1.5; }
+    .favorites-language { display: flex; justify-content: space-between; align-items: center; min-height: 48px; padding: 0 12px; border: 1px solid #aaa; }
+    @media (max-width: 800px) {
+      #favorites-view { padding: 32px 20px; }
+      .favorite-item { grid-template-columns: 60px minmax(0, 1fr) 42px; gap: 16px; min-height: 92px; padding: 12px 16px; }
+      .favorite-item img { width: 60px; height: 60px; }
+      .favorite-item-name { font-size: 13px; }
+      .favorites-footer { grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 32px 20px; }
+    }
 
     main { flex: 1; min-width: 0; margin-left: var(--sidebar-width); padding: 32px 40px 108px; }
     main { transition: margin-left 260ms cubic-bezier(.22, 1, .36, 1); }
@@ -799,7 +828,7 @@
       </svg>
       <span>Search a model code, a conception code...</span>
     </div>
-    <div class="user"><img src="user-menu.svg" width="290" height="60" alt="Favorites, Tiphaine M. — Product Engineer, user menu and applications"></div>
+    <div class="user"><img src="user-menu.svg" width="290" height="60" alt=""><button class="header-favorites" id="header-favorites" type="button" aria-label="Open 15 favorites"><span>15</span></button></div>
   </header>
 
   <div class="layout">
@@ -841,6 +870,10 @@
     </aside>
 
     <main>
+      <section id="favorites-view" hidden aria-labelledby="favorites-title">
+        <h1 class="favorites-title" id="favorites-title">14 favorites</h1>
+        <div class="favorites-list" id="favorites-list"></div>
+      </section>
       <section id="models-view" hidden>
         <div class="product-heading">
           <span class="compact-year" aria-hidden="true">2026</span>
@@ -1055,6 +1088,12 @@
     <span class="footer-message" id="footer-message">Complete the highlighted fields before saving.</span>
     <button class="action">Cancel</button>
     <button class="action primary" id="save-button">Save Changes</button>
+  </footer>
+  <footer class="favorites-footer" id="favorites-footer" hidden>
+    <div><div class="favorites-brand">◧ GREENBOX</div><p>Ecodesign made simple and empowering</p></div>
+    <div><h2>Need help?</h2><p>Report incident</p></div>
+    <div><h2>Greenbox</h2><p>Consult Ecodesign chart</p></div>
+    <div><h2>Language</h2><div class="favorites-language"><span>🇬🇧 &nbsp; English</span><span aria-hidden="true">⌄</span></div></div>
   </footer>
 
   <dialog class="design-sheet" id="design-levers-sheet" aria-labelledby="design-sheet-title">
@@ -2247,6 +2286,56 @@
         button.setAttribute("aria-pressed", String(selected));
         button.setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
       });
+      const favoriteProducts = [
+        ["363217", "SHORT 2in1 RUN FLOW W"],
+        ["352352", "Yoga Mat Grip"],
+        ["352938", "KIPRIDE W"],
+        ["330283", "FTI MESH 500"],
+        ["122294", "BL 400lm PWB & USB C Battery"],
+        ["8969698", "SHORT RUN 500 W DRY PURPLE C16A"],
+        ["8969699", "SHORT RUN 500 W DRY MAUVE L16A"],
+        ["8969700", "SHORT RUN 500 W DRY DUCK BLUE F20A"],
+        ["8969702", "SHORT RUN 500 W DRY TURQUOISE B21A"],
+        ["8969697", "SHORT RUN 500 W DRY GREY L16B"],
+        ["8969701", "SHORT RUN 500 W DRY BLUE D19B"],
+        ["8902380", "SHORT RUN 500 W DRY KHAKI J28B"],
+        ["8913701", "SHORT RUN 500 W DRY BLUE H17B"],
+        ["8852976", "SHORT RUN 500 W DRY GREEN K23A"],
+      ];
+      const favoritesList = document.querySelector("#favorites-list");
+      function renderFavorites() {
+        favoritesList.replaceChildren(...favoriteProducts.map(([code, name]) => {
+          const item = document.createElement("article");
+          item.className = "favorite-item";
+          const image = document.createElement("img");
+          image.src = "product-preview.png";
+          image.alt = "";
+          const label = document.createElement("div");
+          label.className = "favorite-item-name";
+          const productCode = document.createElement("strong");
+          productCode.textContent = code;
+          label.append(productCode, document.createTextNode(name));
+          const remove = document.createElement("button");
+          remove.className = "favorite-remove";
+          remove.type = "button";
+          remove.setAttribute("aria-label", `Remove ${code} from favorites`);
+          remove.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.53 3.79c-2.65-.84-4.63.96-5.38 1.8l-.11.11-.09-.11-.02-.02c-.82-.82-2.69-2.5-5.42-1.79l-.02.01c-1.42.47-3.05 1.87-3.4 4.08-.37 2.11.29 6.56 8.51 12.34l.43.3.43-.3c8.22-5.78 8.88-10.23 8.51-12.34-.35-2.22-1.98-3.62-3.4-4.09z"/></svg>';
+          remove.addEventListener("click", () => {
+            favoriteProducts.splice(favoriteProducts.findIndex((product) => product[0] === code), 1);
+            renderFavorites();
+          });
+          item.append(image, label, remove);
+          return item;
+        }));
+        const count = favoriteProducts.length;
+        document.querySelector("#favorites-title").textContent = `${count} favorites`;
+        document.querySelector("#header-favorites span").textContent = String(count + 1);
+        document.querySelector("#header-favorites").setAttribute("aria-label", `Open ${count + 1} favorites`);
+      }
+      renderFavorites();
+      document.querySelector("#header-favorites").addEventListener("click", () => {
+        location.hash = "#favorites";
+      });
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       let previousViewHash = null;
       let pageAnimations = [];
@@ -2263,6 +2352,7 @@
       });
       function navigateView() {
         if (!location.hash) history.replaceState(null, "", "#all-model-code");
+        const favoritesVisible = location.hash === "#favorites";
         const detailMatch = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
         const requestedModel = detailMatch ? models.find((model) => model.id === Number(detailMatch[1])) : null;
         if (requestedModel) detailModel = requestedModel;
@@ -2274,18 +2364,22 @@
         const placeholderVisible = communicationVisible || documentationVisible;
         const synthesisVisible = detailVisible && !leversVisible && !circularityVisible && !placeholderVisible;
         const modelsVisible = location.hash === "#all-model-code";
-        if (!detailVisible && !modelsVisible && location.hash !== "#settings") {
+        if (!detailVisible && !modelsVisible && !favoritesVisible && location.hash !== "#settings") {
           history.replaceState(null, "", "#all-model-code");
           navigateView();
           return;
         }
         document.querySelector("#model-detail-view").hidden = !detailVisible;
+        document.querySelector("#favorites-view").hidden = !favoritesVisible;
+        document.querySelector("#favorites-footer").hidden = !favoritesVisible;
         productHeading.querySelector("h1").textContent = detailVisible ? `${detailModel.code} - ${detailModel.name}` : productTitle;
         document.querySelector(detailVisible ? "#detail-heading-slot" : "#models-view").prepend(productHeading);
         document.querySelector("#models-view").hidden = !modelsVisible;
-        document.querySelector("#settings-view").hidden = modelsVisible || detailVisible;
-        document.querySelector(".footer").hidden = modelsVisible || detailVisible;
+        document.querySelector("#settings-view").hidden = modelsVisible || detailVisible || favoritesVisible;
+        document.querySelector(".footer").hidden = modelsVisible || detailVisible || favoritesVisible;
+        document.querySelector(".year-bar").hidden = favoritesVisible;
         document.body.classList.toggle("models-view", modelsVisible || detailVisible);
+        document.body.classList.toggle("favorites-view", favoritesVisible);
         document.body.classList.toggle("synthesis-view", detailVisible);
         document.body.classList.toggle("levers-view", leversVisible);
         document.body.classList.toggle("circularity-view", circularityVisible);
@@ -2312,7 +2406,7 @@
           document.querySelector("#model-code-help").hidden = true;
         }
         document.querySelectorAll("[data-page]").forEach((item) => {
-          const active = item.dataset.page === (detailVisible ? "model-code" : modelsVisible ? "all-model-code" : "settings");
+          const active = !favoritesVisible && item.dataset.page === (detailVisible ? "model-code" : modelsVisible ? "all-model-code" : "settings");
           item.classList.toggle("active", active);
           if (active && !detailVisible) item.setAttribute("aria-current", "page");
           else item.removeAttribute("aria-current");
@@ -2325,7 +2419,7 @@
         pageAnimations.forEach((animation) => animation.cancel());
         pageAnimations = [];
         if (previousViewHash !== null && previousViewHash !== location.hash && !reducedMotion.matches) {
-          const view = document.querySelector(detailVisible ? "#model-detail-view" : modelsVisible ? "#models-view" : "#settings-view");
+          const view = document.querySelector(detailVisible ? "#model-detail-view" : favoritesVisible ? "#favorites-view" : modelsVisible ? "#models-view" : "#settings-view");
           pageAnimations = [...view.children]
             .filter((element) => !element.hidden && element !== productHeading && element.id !== "detail-heading-slot")
             .map((element) => element.animate(
