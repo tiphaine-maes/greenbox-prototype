@@ -504,7 +504,7 @@
     .recyclability-section h3 { margin: 0 0 14px; font-size: 14px; font-weight: 600 !important; }
     .recyclability-bom { padding: 16px 20px 10px; border: 1px solid #dedede; border-radius: 7px; }
     .recyclability-bom-label { display: block; margin-bottom: 8px; font-size: 12px; }
-    .recyclability-bom-select { width: 100%; height: 42px; padding: 0 10px; border: 1px solid #aaa; border-radius: 0; background: white; color: #101010; font: 12px Inter, Arial, sans-serif; }
+    .recyclability-bom .bom-dropdown-trigger { height: 42px; border-radius: 0; font-size: 13px; }
     .recyclability-question { display: grid; grid-template-columns: minmax(0, 1fr) 66px; align-items: center; gap: 14px; min-height: 60px; }
     .recyclability-question-copy { min-width: 0; }
     .recyclability-question-title { display: flex; align-items: center; gap: 9px; font-size: 13px; line-height: 1.4; }
@@ -1069,8 +1069,8 @@
         <section class="recyclability-section" aria-labelledby="recyclability-bom-heading">
           <h3 id="recyclability-bom-heading">Data retrieved from BOM</h3>
           <div class="recyclability-bom">
-            <label class="recyclability-bom-label" for="recyclability-bom-select">BOM selected</label>
-            <select class="recyclability-bom-select" id="recyclability-bom-select"></select>
+            <label class="recyclability-bom-label" for="recyclability-bom-select-trigger">BOM selected</label>
+            <select id="recyclability-bom-select" hidden><option value="">Select BOM</option></select>
           </div>
           <div class="recyclability-question">
             <div class="recyclability-question-copy">
@@ -1702,6 +1702,9 @@
         updateBomOptions(selector, year);
         selector.value = bom ? bom.id : "";
         syncBomDropdown(selector);
+        updateBomOptions(recyclabilityBomSelect, year);
+        recyclabilityBomSelect.value = bom ? bom.id : "";
+        syncBomDropdown(recyclabilityBomSelect);
         const lastCalculation = detailModel.calculationDates.get(year);
         document.querySelector("#detail-last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
         document.querySelector("#detail-recalculate").title = bom ? "Recalculate using the latest BOM data, including changes made in other tools" : "Select a BOM to recalculate";
@@ -1922,10 +1925,10 @@
           if (typeof lever.answer === "boolean") circularityForm.querySelector(`[value="${lever.answer ? "yes" : "no"}"]`).checked = true;
         }
         if (name === "Recyclability") {
-          const bomIds = bomsByYear.get(year) || [];
           const selectedBom = detailModel.bomByYear.get(year)?.id || "";
-          recyclabilityBomSelect.innerHTML = '<option value="">Select BOM</option>' + bomIds.map((id) => `<option value="${id}">${bomLabel(year, id)}${id === referenceBoms.get(year) ? " — Reference BOM" : ""}</option>`).join("");
+          updateBomOptions(recyclabilityBomSelect, year);
           recyclabilityBomSelect.value = selectedBom;
+          syncBomDropdown(recyclabilityBomSelect);
           updateRecyclabilityBomData();
           const saved = detailModel.circularityByYear?.get(name);
           const savedYear = saved ? Math.max(...[...saved.keys()].filter((value) => value <= year)) : -Infinity;
@@ -2043,12 +2046,20 @@
       document.querySelector("#detail-bom-select").addEventListener("change", (event) => {
         if (!detailModel) return;
         const year = Number(currentYear());
-        if (event.target.value) detailModel.bomByYear.set(year, { id: event.target.value, method: "MANUAL" });
-        else detailModel.bomByYear.delete(year);
-        detailModel.calculatedYears.delete(year);
-        detailModel.calculationDates.delete(year);
-        renderModels();
+        updateModelBom(detailModel, year, event.target.value);
       });
+      recyclabilityBomSelect.addEventListener("change", (event) => {
+        if (!detailModel) return;
+        const year = Number(currentYear());
+        updateModelBom(detailModel, year, event.target.value);
+      });
+      function updateModelBom(model, year, id) {
+        if (id) model.bomByYear.set(year, { id, method: "MANUAL" });
+        else model.bomByYear.delete(year);
+        model.calculatedYears.delete(year);
+        model.calculationDates.delete(year);
+        renderModels();
+      }
       document.querySelector("#detail-recalculate").addEventListener("click", () => {
         if (!detailModel) return;
         if (!detailModel.bomByYear.has(Number(currentYear()))) {
@@ -2266,7 +2277,7 @@
         }
       }
       window.addEventListener("hashchange", navigateView);
-      [bomPicker, document.querySelector("#detail-bom-select")].forEach(setupBomDropdown);
+      [bomPicker, document.querySelector("#detail-bom-select"), document.querySelector("#recyclability-bom-select")].forEach(setupBomDropdown);
       renderModels();
       renderImpact();
       navigateView();
