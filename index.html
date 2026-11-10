@@ -494,6 +494,33 @@
     .design-lever-name svg { flex-shrink: 0; }
     .levers-card-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 24px; }
     .levers-card-heading h3 { padding: 0; }
+    .calculation-link { display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; background: none; color: #3643BA; font: inherit; cursor: pointer; }
+    .calculation-link span { text-decoration: underline; text-underline-offset: 4px; }
+    .calculation-link:focus-visible { outline: 2px solid #3643BA; outline-offset: 4px; }
+    .design-sheet.bom-composition-sheet { width: min(1440px, 96vw); }
+    .bom-composition-sheet[open] { display: flex; flex-direction: column; }
+    body:has(#bom-composition-sheet[open]) { overflow: hidden; }
+    .bom-composition-sheet .design-sheet-header { flex-shrink: 0; border-bottom: 1px solid #d5d9de; }
+    .bom-composition-title { display: flex; align-items: center; gap: 16px; }
+    .bom-composition-title h2 { margin: 0; }
+    .bom-composition-body { flex: 1; min-height: 0; overflow: auto; padding: 24px; }
+    .bom-composition-body > p { margin: 0 0 20px; }
+    .bom-composition-example { color: #616161; font-size: 12px; }
+    .bom-composition-table { width: 100%; min-width: 960px; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+    .bom-composition-table th, .bom-composition-table td { padding: 16px 12px; border-right: 1px solid #d5d9de; border-bottom: 1px solid #d5d9de; text-align: right; vertical-align: middle; }
+    .bom-composition-table tr > :first-child { border-left: 1px solid #d5d9de; }
+    .bom-composition-table th { background: #35424e; color: white; font-weight: 600 !important; }
+    .bom-composition-table thead tr:first-child > :first-child { border-top-left-radius: 8px; }
+    .bom-composition-table thead tr:first-child > :last-child { border-top-right-radius: 8px; }
+    .bom-composition-table th[scope="colgroup"], .bom-composition-table thead tr:last-child th { text-align: center; }
+    .bom-composition-table tr > :first-child { text-align: left; }
+    .bom-composition-table tbody th { background: white; color: #101010; font-weight: 400 !important; }
+    .bom-composition-table td span { display: block; white-space: nowrap; line-height: 1.5; }
+    .bom-composition-table tfoot th, .bom-composition-table tfoot td { background: white; color: #101010; font-weight: 600 !important; }
+    .bom-composition-table tfoot span { font-weight: 600 !important; }
+    .bom-composition-summaries { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; margin-top: 28px; }
+    .bom-composition-summaries .bom-composition-table { min-width: 440px; }
+    @media (max-width: 900px) { .bom-composition-summaries { grid-template-columns: 1fr; } }
     .circularity-link { gap: 6px; background: white; border-color: #aaa; color: #101010; text-decoration: none; }
     .circularity-link svg { width: 16px; height: 16px; flex-shrink: 0; }
     .design-actions { display: inline-flex; align-items: center; gap: 6px; background: #3643BA; border-color: #3643BA; color: white; }
@@ -963,7 +990,7 @@
         <div class="synthesis-circularity" id="synthesis-circularity" hidden aria-label="Circularity summary"></div>
         <div id="levers-content" hidden>
           <section class="levers-card" aria-labelledby="material-levers-title">
-            <h3 id="material-levers-title">Material Levers <span>2 Levers</span></h3>
+            <div class="levers-card-heading"><h3 id="material-levers-title">Material Levers <span>2 Levers</span></h3><button type="button" class="calculation-link" data-open-composition aria-haspopup="dialog" aria-controls="bom-composition-sheet"><span>See detailed calculation</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></button></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Preferred</th><th>Poids (%)</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
@@ -982,7 +1009,7 @@
             </table></div>
           </section>
           <section class="levers-card" aria-labelledby="process-levers-title">
-            <h3 id="process-levers-title">Process Levers <span>1 Lever</span></h3>
+            <div class="levers-card-heading"><h3 id="process-levers-title">Process Levers <span>1 Lever</span></h3><button type="button" class="calculation-link" data-open-composition aria-haspopup="dialog" aria-controls="bom-composition-sheet"><span>See detailed calculation</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></button></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Preferred</th><th>(%)</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
@@ -1116,6 +1143,27 @@
     <div><h2>Language</h2><div class="favorites-language"><span>🇬🇧 &nbsp; English</span><span aria-hidden="true">⌄</span></div></div>
   </footer>
 
+  <dialog class="design-sheet bom-composition-sheet" id="bom-composition-sheet" aria-labelledby="bom-composition-title" aria-describedby="bom-composition-example">
+    <header class="design-sheet-header">
+      <div class="bom-composition-title"><button type="button" class="design-sheet-close" data-close-composition aria-label="Back to Levers" autofocus><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><h2 id="bom-composition-title">BOM composition details</h2></div>
+      <button type="button" class="design-sheet-close" data-close-composition aria-label="Close BOM composition details"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3643BA" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </header>
+    <div class="bom-composition-body">
+      <p><strong>Name of the BOM:</strong> SS27- BOM : 363217 - SHORT 2in1 RUN 500 W</p>
+      <p class="bom-composition-example" id="bom-composition-example">Example calculation from the reference mockup, independent of the selected BOM.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="BOM component composition">
+        <table class="bom-composition-table">
+          <thead><tr><th rowspan="2" scope="col">Components</th><th rowspan="2" scope="col">Weight</th><th scope="colgroup">Recycled polyamide</th><th scope="colgroup">Polyester from recycled bottles</th><th colspan="2" scope="colgroup">Other materials</th></tr><tr><th scope="col">Other process</th><th scope="col">Other process</th><th scope="col">Greige</th><th scope="col">Other process</th></tr></thead>
+          <tbody id="bom-composition-rows"></tbody>
+          <tfoot><tr><th scope="row">Total</th><td><span>227.78 g</span><span>100.00 %</span></td><td><span>80.58 g</span><span>35.38 %</span></td><td><span>103.10 g</span><span>45.27 %</span></td><td><span>1.71 g</span><span>0.75 %</span></td><td><span>42.39 g</span><span>18.61 %</span></td></tr></tfoot>
+        </table>
+      </div>
+      <div class="bom-composition-summaries">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Material calculation summary"><table class="bom-composition-table"><thead><tr><th scope="col">Materials</th><th scope="col">Weight</th><th scope="col">Percentage</th></tr></thead><tbody><tr><td>Polyester from recycled bottles</td><td>103.10 g</td><td>45.27 %</td></tr><tr><td>Recycled polyamide</td><td>80.58 g</td><td>35.38 %</td></tr></tbody></table></div>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Process calculation summary"><table class="bom-composition-table"><thead><tr><th scope="col">Process</th><th scope="col">Weight</th><th scope="col">Percentage</th></tr></thead><tbody><tr><td>Greige</td><td>1.71 g</td><td>0.75 %</td></tr></tbody></table></div>
+      </div>
+    </div>
+  </dialog>
   <dialog class="design-sheet" id="design-levers-sheet" aria-labelledby="design-sheet-title">
     <form id="design-levers-form">
       <header class="design-sheet-header"><h2 id="design-sheet-title">Update Design Levers</h2><button type="button" class="design-sheet-close" id="close-design-sheet" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101010" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
@@ -1911,6 +1959,32 @@
         }
         location.hash = `#model-code/${detailModel.id}/${button.dataset.modelSection === "Communication" ? "communication" : "documentation"}`;
       }));
+      const compositionRows = [
+        ["9810039828 - ABELIA RPET EA MM", ["103.11", "45.27"], null, ["91.77", "40.29"], null, ["11.34", "4.98"]],
+        ["9810029987 - SVEN MM UV RPA", ["90.49", "39.73"], ["66.96", "29.40"], null, null, ["23.53", "10.33"]],
+        ["9810037143 - EL WST TUNHOLRMIX PL 40MM", ["18.98", "8.33"], ["8.14", "3.58"], ["6.95", "3.05"], ["1.71", "0.75"], ["2.18", "0.96"]],
+        ["9810051058 - DRW OVALTHK RPA VF 7MM NOTP", ["5.47", "2.40"], ["5.47", "2.40"], null, null, null],
+        ["9810053706 - ZCOIL CE 4MM DSBKPRN ZCCP REC", ["3.60", "1.58"], null, ["1.44", "0.63"], null, ["2.16", "0.95"]],
+        ["9810015677 - THREAD GRAMY ECO TEX rPES- DKT", ["1.85", "0.81"], null, ["1.85", "0.81"], null, null],
+        ["8128712 - CLIP HOOK UTX P415D0T1/K01", ["1.50", "0.66"], null, null, null, ["1.50", "0.66"]],
+        ["9810015887 - THREAD CORESPUN ECO rPES - DKT", ["0.95", "0.42"], null, ["0.95", "0.42"], null, null],
+        ["9810048450 - EL RNDBRD TIGHT RPET PL 2,5MM", ["0.48", "0.21"], null, ["0.14", "0.06"], null, ["0.34", "0.15"]],
+        ["9810034862 - LBL Care(Size) fld 30x100 rPES", ["0.40", "0.18"], null, null, null, ["0.40", "0.18"]],
+        ["8167250 - Pocket Tag RFID", ["0.30", "0.13"], null, null, null, ["0.30", "0.13"]],
+        ["9810034883 - LBL Size unfld 25x60 rPES", ["0.21", "0.09"], null, null, null, ["0.21", "0.09"]],
+        ["9810052868 - HT PU RFL ISO 10MM KPN", ["0.19", "0.08"], null, null, null, ["0.19", "0.08"]],
+        ["9810052863 - HT PU RFL LG 6MM KPN", ["0.18", "0.08"], null, null, null, ["0.18", "0.08"]],
+        ["9810046917 - LBL traceability 30x30 Nyl", ["0.06", "0.03"], null, null, null, ["0.06", "0.03"]],
+      ];
+      document.querySelector("#bom-composition-rows").innerHTML = compositionRows.map(([name, ...values]) =>
+        `<tr><th scope="row">${name}</th>${values.map((value) => `<td><span>${value ? `${value[0]} g` : "-"}</span><span>${value ? `${value[1]} %` : "-"}</span></td>`).join("")}</tr>`
+      ).join("");
+      const compositionSheet = document.querySelector("#bom-composition-sheet");
+      document.querySelectorAll("[data-open-composition]").forEach((button) => button.addEventListener("click", () => {
+        compositionSheet.showModal();
+        compositionSheet.querySelector(".bom-composition-body").scrollTop = 0;
+      }));
+      document.querySelectorAll("[data-close-composition]").forEach((button) => button.addEventListener("click", () => compositionSheet.close()));
       const leverPlusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.2513 7.2513V2.66797H8.7513V7.2513H13.3346V8.7513H8.7513V13.3346H7.2513V8.7513H2.66797V7.2513H7.2513Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
       const leverMinusIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.66797 7.25H13.3346V8.75H2.66797V7.25Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>';
       document.querySelectorAll('.lever-toggle[aria-expanded="false"] > span').forEach((icon) => {
