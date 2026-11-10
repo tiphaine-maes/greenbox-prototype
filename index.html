@@ -56,6 +56,60 @@
       color: #686868;
     }
     .search svg { flex-shrink: 0; }
+    .search input { width: 100%; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: #101010; font-size: 13px; }
+    .search:focus-within { outline: 2px solid #3643BA; }
+    .brand { color: inherit; text-decoration: none; }
+    body.home-view { --sidebar-width: 240px; }
+    body.home-view .layout { --sidebar-width: 240px; }
+    body.home-view .topbar { position: fixed; }
+    body.home-view #sidebar { top: 84px; }
+    body.home-view main { padding: 32px 32px 0; background: #F5F4F5; }
+    body.home-view #sidebar .nav-label, body.home-view #sidebar .nav-help { display: block; }
+    body.home-view #sidebar .nav-item { justify-content: flex-start; padding: 14px 18px; }
+    body.home-view #sidebar .model-nav-heading, body.home-view #sidebar .nav-divider,
+    body.home-view #sidebar #model-subnav, body.home-view #sidebar #model-code-help,
+    body.home-view #sidebar #settings-nav { display: none !important; }
+    body:not(.home-view) .home-nav-help { display: none; }
+    .home-nav-help { margin: 12px 18px; font-size: 12px; color: #616161; }
+    .home-welcome { padding: 28px; border-radius: 8px; background: white; }
+    .home-welcome h1 { margin: 0 0 20px; color: #3643BA; font-size: 22px; font-weight: 600 !important; }
+    .home-welcome-content { display: grid; grid-template-columns: minmax(220px, 1fr) auto; align-items: center; gap: 20px; }
+    .home-welcome-content p { margin: 0; max-width: 600px; font-size: 12px; line-height: 1.5; }
+    .home-welcome-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .home-welcome-actions .action { padding: 10px 16px; font-size: 12px; }
+    .home-welcome details { margin-top: 20px; font-size: 14px; line-height: 1.5; }
+    .home-dashboard { margin-top: 40px; background: #f7f8fa; border: 1px solid #e1e0df; font-size: 11px; }
+    .home-dashboard-title { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; padding: 20px 16px; background: white; }
+    .home-dashboard-title strong { color: #3643BA; font-size: 20px; font-weight: 600 !important; font-style: italic; }
+    .home-dashboard-title h2 { margin: 0; font-size: 24px; font-weight: 600 !important; }
+    .home-dashboard-title small { color: #616161; }
+    .home-dashboard-layout { display: grid; grid-template-columns: 140px minmax(0, 1fr); }
+    .home-dashboard-filters { padding: 16px; background: #eff0fa; }
+    .home-dashboard-filters h3 { margin: 20px 0 10px; font-size: 11px; font-weight: 600 !important; }
+    .home-dashboard-filters p { display: flex; justify-content: space-between; gap: 8px; margin: 10px 0; color: #616161; }
+    .home-dashboard-filters span { padding: 1px 5px; border: 1px solid #c9cbd2; background: #fafafa; }
+    .home-dashboard-content { min-width: 0; padding: 24px; }
+    .home-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .home-kpis div { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 8px; border: 1px solid #e0e1e5; background: white; text-align: center; color: #616161; }
+    .home-kpis strong { font-size: 20px; }
+    .home-chart { padding: 16px; margin-top: 24px; border: 1px solid #e0e1e5; background: white; }
+    .home-chart h3 { margin: 0 0 20px; font-size: 16px; }
+    .home-chart svg { display: block; width: 100%; height: auto; }
+    .home-treemap { display: grid; grid-template-columns: 28fr 20fr 17fr 15fr 20fr; min-height: 180px; color: white; background: #eee; }
+    .home-treemap > div { padding: 10px; border: 1px solid white; background: #4045ac; }
+    .home-treemap > div:nth-child(2) { background: #6269bc; }
+    .home-treemap > div:nth-child(3) { background: #7d83c7; }
+    .home-treemap > div:nth-child(4) { background: #b7badc; color: #101010; }
+    .home-treemap > div:nth-child(5) { background: #dddfe9; color: #101010; }
+    .home-treemap small { display: block; margin: 6px 0; }
+    .home-dashboard-note { padding: 10px 16px; margin: 0; color: #616161; }
+    .home-footer { margin: 40px -32px 0; }
+    @media (max-width: 1100px) {
+      .home-dashboard-layout { grid-template-columns: 110px minmax(0, 1fr); }
+      .home-dashboard-content { padding: 16px; }
+      .home-kpis { gap: 8px; }
+    }
+    @media (max-width: 900px) { .home-welcome-content { grid-template-columns: 1fr; } }
 
     .user { position: relative; margin-left: auto; line-height: 1.35; }
     .user img { display: block; width: 290px; height: 60px; }
@@ -859,7 +913,7 @@
 </head>
 <body class="sidebar-collapsed">
   <header class="topbar">
-    <div class="brand">
+    <a class="brand" href="#home" aria-label="Greenbox home">
       <svg width="202" height="29" viewBox="0 0 202 29" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Greenbox" style="display: block;">
         <rect width="201.707" height="29" fill="white"/>
         <rect width="29" height="29" fill="white"/>
@@ -873,12 +927,12 @@
         <path d="M181.993 14.5005C181.993 17.4972 181.017 19.9912 179.064 21.9825C177.111 23.9545 174.666 24.9405 171.727 24.9405C168.808 24.9405 166.362 23.9545 164.39 21.9825C162.437 19.9912 161.461 17.4972 161.461 14.5005C161.461 11.5039 162.437 9.01955 164.39 7.04755C166.362 5.05621 168.808 4.06055 171.727 4.06055C174.666 4.06055 177.111 5.05621 179.064 7.04755C181.017 9.01955 181.993 11.5039 181.993 14.5005ZM165.869 14.5005C165.869 16.3372 166.42 17.8645 167.522 19.0825C168.643 20.2812 170.045 20.8805 171.727 20.8805C173.409 20.8805 174.801 20.2812 175.903 19.0825C177.024 17.8645 177.585 16.3372 177.585 14.5005C177.585 12.6445 177.024 11.1172 175.903 9.91855C174.801 8.71988 173.409 8.12055 171.727 8.12055C170.045 8.12055 168.643 8.71988 167.522 9.91855C166.42 11.1172 165.869 12.6445 165.869 14.5005Z" fill="black"/>
         <path d="M201.705 24.6505H196.775L192.657 17.6325L188.597 24.6505H183.899L190.221 14.1235L184.334 4.35055H189.177L192.802 10.5565L196.572 4.35055H201.27L195.238 13.9785L201.705 24.6505Z" fill="black"/>
       </svg>
-    </div>
+    </a>
     <div class="search">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M10.2969 3.44922C6.61109 3.44922 3.54688 6.51343 3.54688 10.1992C3.54688 13.885 6.61109 16.9492 10.2969 16.9492C13.9827 16.9492 17.0469 13.885 17.0469 10.1992C17.0469 6.51343 13.9827 3.44922 10.2969 3.44922ZM2.04688 10.1992C2.04688 5.68501 5.78266 1.94922 10.2969 1.94922C14.8111 1.94922 18.5469 5.68501 18.5469 10.1992C18.5469 14.7134 14.8111 18.4492 10.2969 18.4492C5.78266 18.4492 2.04688 14.7134 2.04688 10.1992ZM18.0272 16.9689L21.9272 20.8689L20.8665 21.9295L16.9665 18.0295L18.0272 16.9689Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
       </svg>
-      <span>Search a model code, a conception code...</span>
+      <input id="global-product-search" type="search" aria-label="Search a model code or conception code" placeholder="Search a model code, a conception code...">
     </div>
     <div class="user"><img src="user-menu.svg" width="290" height="60" alt=""><button class="header-favorites" id="header-favorites" type="button" aria-label="Open 15 favorites"><span>15</span></button></div>
   </header>
@@ -891,6 +945,7 @@
         </svg>
         <span class="nav-label">All Model Code</span>
       </a>
+      <p class="home-nav-help">Select a conception code to view details.</p>
       <div class="nav-divider" role="separator"></div>
       <div class="model-nav-heading">
       <a id="model-code-nav" class="nav-item" aria-disabled="true" aria-describedby="model-code-help" data-page="model-code" style="display: flex; align-items: center; gap: 8px;" title="Model Code">
@@ -922,6 +977,27 @@
     </aside>
 
     <main>
+      <section id="home-view" hidden aria-labelledby="home-title">
+        <div class="home-welcome">
+          <h1 id="home-title">Welcome, Tiphaine!</h1>
+          <div class="home-welcome-content"><p>Welcome to the Ecodesign platform with will allow you to declare your products and challenge yourself for the planet! Search your product using the model code or the design code in the search bar at the top of the page.</p><div class="home-welcome-actions"><button type="button" class="action primary" data-home-info="ecodesign">All about Ecodesign</button><button type="button" class="action primary" data-home-info="tutorial">See Greenbox tutorial</button></div></div>
+          <details id="home-ecodesign" hidden><summary>All about Ecodesign</summary><p>Explore your product's environmental impact and its material, process and circularity levers. Compare results by year to support your ecodesign decisions.</p></details>
+          <details id="home-tutorial" hidden><summary>Greenbox tutorial</summary><p>Search for a model or conception code above, select a model, then explore Synthesis, Levers and Design For Circularity. Select a BOM and use Recalculate to refresh the prototype results.</p></details>
+        </div>
+        <section class="home-dashboard" aria-labelledby="home-dashboard-title">
+          <header class="home-dashboard-title"><strong>DECATHLON</strong><h2 id="home-dashboard-title">Overview - Products Sold</h2><small>Products sold between: November 2024 - November 2024 (included)</small></header>
+          <div class="home-dashboard-layout">
+            <div class="home-dashboard-filters" aria-label="Example dashboard filters"><h3>SOLD IN:</h3><p><span>November 2024</span></p><h3>SPORT</h3><p>Univers <span>(Tout)</span></p><p>Dept <span>(Tout)</span></p><p>Subdept <span>(Tout)</span></p><p>Family <span>(Tout)</span></p><h3>PROCESS</h3><p>Univers <span>(Tout)</span></p><p>Dept <span>(Tout)</span></p><p>Subdept <span>(Tout)</span></p><p>Family <span>(Tout)</span></p><h3>PRODUCT</h3><p>Nature <span>(Tout)</span></p><p>Brand <span>(Tout)</span></p><p>Is DKT? <span>(Tout)</span></p><p>From BOM <span>(Tout)</span></p><p>AutoCalc? <span>(Tout)</span></p></div>
+            <div class="home-dashboard-content">
+              <div class="home-kpis"><div>% Ecodesign Gross Sales<strong>53.6%</strong></div><div>% CM Ecodesigned<strong>18.6%</strong></div><div>% CM Ecodesigned with Proof<strong>78.5%</strong></div><div>% CM Ecodesigned From BOM<strong>23.1%</strong></div></div>
+              <div class="home-chart"><h3>Sport Unv</h3><svg id="home-sport-chart" viewBox="0 0 780 200" role="img" aria-label="Example comparison of ecodesign sales and model codes by sport"></svg></div>
+              <div class="home-chart"><h3>% of Gross Sales per Action Name</h3><div class="home-treemap"><div>Recycled polyester<small>MATERIAL</small>28%</div><div>Dope dyed<small>PROCESS</small>20%</div><div>Designed to reduce environmental impact<small>ENVIRONMENTAL IMPACT</small>17%</div><div>Repairability<small>LONG LASTING</small>5%<hr>Greige<small>PROCESS</small>4%</div><div>Other ecodesign actions</div></div></div>
+            </div>
+          </div>
+          <p class="home-dashboard-note">Prototype dashboard — illustrative data, filters shown for reference.</p>
+        </section>
+        <footer class="favorites-footer home-footer"><div><div class="favorites-brand">◧ GREENBOX</div><p>Ecodesign made simple and empowering</p></div><div><h2>Need help?</h2><p>Report incident</p></div><div><h2>Greenbox</h2><p>Consult Ecodesign chart</p></div><div><h2>Language</h2><div class="favorites-language"><span>🇬🇧 &nbsp; English</span><span aria-hidden="true">⌄</span></div></div></footer>
+      </section>
       <section id="favorites-view" hidden aria-labelledby="favorites-title">
         <h1 class="favorites-title" id="favorites-title">14 favorites</h1>
         <div class="favorites-list" id="favorites-list"></div>
@@ -2493,7 +2569,8 @@
         }
       });
       function navigateView() {
-        if (!location.hash) history.replaceState(null, "", "#all-model-code");
+        if (!location.hash) history.replaceState(null, "", "#home");
+        const homeVisible = location.hash === "#home";
         const favoritesVisible = location.hash === "#favorites";
         const detailMatch = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
         const requestedModel = detailMatch ? models.find((model) => model.id === Number(detailMatch[1])) : null;
@@ -2506,20 +2583,22 @@
         const placeholderVisible = communicationVisible || documentationVisible;
         const synthesisVisible = detailVisible && !leversVisible && !circularityVisible && !placeholderVisible;
         const modelsVisible = location.hash === "#all-model-code";
-        if (!detailVisible && !modelsVisible && !favoritesVisible && location.hash !== "#settings") {
-          history.replaceState(null, "", "#all-model-code");
+        if (!detailVisible && !modelsVisible && !favoritesVisible && !homeVisible && location.hash !== "#settings") {
+          history.replaceState(null, "", "#home");
           navigateView();
           return;
         }
         document.querySelector("#model-detail-view").hidden = !detailVisible;
+        document.querySelector("#home-view").hidden = !homeVisible;
+        document.body.classList.toggle("home-view", homeVisible);
         document.querySelector("#favorites-view").hidden = !favoritesVisible;
         document.querySelector("#favorites-footer").hidden = !favoritesVisible;
         productHeading.querySelector("h1").textContent = detailVisible ? `${detailModel.code} - ${detailModel.name}` : productTitle;
         document.querySelector(detailVisible ? "#detail-heading-slot" : "#models-view").prepend(productHeading);
         document.querySelector("#models-view").hidden = !modelsVisible;
-        document.querySelector("#settings-view").hidden = modelsVisible || detailVisible || favoritesVisible;
-        document.querySelector(".footer").hidden = modelsVisible || detailVisible || favoritesVisible;
-        document.querySelector(".year-bar").hidden = favoritesVisible;
+        document.querySelector("#settings-view").hidden = modelsVisible || detailVisible || favoritesVisible || homeVisible;
+        document.querySelector(".footer").hidden = modelsVisible || detailVisible || favoritesVisible || homeVisible;
+        document.querySelector(".year-bar").hidden = favoritesVisible || homeVisible;
         document.body.classList.toggle("models-view", modelsVisible || detailVisible);
         document.body.classList.toggle("favorites-view", favoritesVisible);
         document.body.classList.toggle("synthesis-view", detailVisible);
@@ -2550,7 +2629,7 @@
           document.querySelector("#model-code-help").hidden = true;
         }
         document.querySelectorAll("[data-page]").forEach((item) => {
-          const active = !favoritesVisible && item.dataset.page === (detailVisible ? "model-code" : modelsVisible ? "all-model-code" : "settings");
+          const active = !favoritesVisible && !homeVisible && item.dataset.page === (detailVisible ? "model-code" : modelsVisible ? "all-model-code" : "settings");
           item.classList.toggle("active", active);
           if (active && !detailVisible) item.setAttribute("aria-current", "page");
           else item.removeAttribute("aria-current");
@@ -2563,7 +2642,7 @@
         pageAnimations.forEach((animation) => animation.cancel());
         pageAnimations = [];
         if (previousViewHash !== null && previousViewHash !== location.hash && !reducedMotion.matches) {
-          const view = document.querySelector(detailVisible ? "#model-detail-view" : favoritesVisible ? "#favorites-view" : modelsVisible ? "#models-view" : "#settings-view");
+          const view = document.querySelector(homeVisible ? "#home-view" : detailVisible ? "#model-detail-view" : favoritesVisible ? "#favorites-view" : modelsVisible ? "#models-view" : "#settings-view");
           pageAnimations = [...view.children]
             .filter((element) => !element.hidden && element !== productHeading && element.id !== "detail-heading-slot")
             .map((element) => element.animate(
@@ -2578,6 +2657,38 @@
         }
       }
       window.addEventListener("hashchange", navigateView);
+      document.querySelector("#global-product-search").addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        const query = event.target.value.trim().toLowerCase();
+        if (!query) return;
+        const match = models.find((model) => model.code === query);
+        if (match) {
+          location.hash = `#model-code/${match.id}`;
+        } else {
+          modelSearch.value = query === "351243" || productTitle.toLowerCase().includes(query) ? "" : query;
+          renderModels();
+          location.hash = "#all-model-code";
+        }
+      });
+      document.querySelectorAll("[data-home-info]").forEach((button) => button.addEventListener("click", () => {
+        const details = document.querySelector(`#home-${button.dataset.homeInfo}`);
+        details.open = !details.open;
+        details.hidden = !details.open;
+        button.setAttribute("aria-expanded", String(details.open));
+      }));
+      const homeSports = [
+        ["9072-NATURE HIKING", 82.2, 49.5, 71.2, 34.0],
+        ["9073-SNOW HIKING", 77.1, 45.3, 81.1, 41.3],
+        ["9091-OLYMPICS GAMES PARIS 2024", 67.8, 71.4, 80.0, 0],
+        ["5-MOUNTAIN HIKING", 65.5, 44.7, 78.6, 8.5],
+        ["24-WINTER SPORTS", 66.2, 18.0, 97.0, 40.7],
+        ["4-RUNNING", 62.3, 20.7, 97.5, 53.8],
+        ["6-TRAINING", 60.7, 27.0, 67.9, 24.3],
+        ["10-TEAMSPORTS", 59.8, 19.2, 79.2, 20.8],
+      ];
+      document.querySelector("#home-sport-chart").innerHTML = homeSports.map(([name, ...values], row) =>
+        `<text x="192" y="${row * 20 + 15}" text-anchor="end" fill="#616161" font-size="9">${name}</text>${values.map((value, col) => `<rect x="${200 + col * 145}" y="${row * 20 + 6}" width="${value * 1.05}" height="8" fill="#4045bf"/><text x="${204 + col * 145 + value * 1.05}" y="${row * 20 + 14}" font-size="9" fill="#616161">${value.toFixed(1)}%</text>`).join("")}`
+      ).join("") + ["% Ecodesign Gross Sales", "% CM Ecodesigned", "% CM Eco. with Proof", "% CM Eco. From BOM"].map((label, index) => `<text x="${200 + index * 145}" y="190" font-size="9" fill="#616161">${label}</text>`).join("");
       [bomPicker, document.querySelector("#detail-bom-select"), document.querySelector("#recyclability-bom-select")].forEach(setupBomDropdown);
       renderModels();
       renderImpact();
