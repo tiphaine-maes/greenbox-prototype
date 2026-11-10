@@ -919,7 +919,7 @@
               <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:230px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:92px"></colgroup>
               <thead><tr>
                 <th><input type="checkbox" id="select-all-models" aria-label="Select all visible model codes"></th>
-                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>BOM selected</th><th>Recyclability</th><th>Repairability</th><th>Durability</th><th>Rental</th><th>Design Levers</th><th>Last<br>Modification</th>
+                <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>BOM selected</th><th>Durability</th><th>Repairability</th><th>Recyclability</th><th>Rental</th><th>Design Levers</th><th>Last<br>Modification</th>
               </tr></thead>
               <tbody id="models-body"></tbody>
             </table>
@@ -1790,7 +1790,8 @@
           const bom = model.bomByYear.get(Number(currentYear()));
           const preferred = preferredResults(model, year);
           const hasLevers = model.status !== "Not evaluated";
-          const circularityCells = modelCircularityLevers(model, year).map((lever) => {
+          const circularityColumnOrder = ["Durability", "Repairability", "Recyclability", "Rental"];
+          const circularityCells = modelCircularityLevers(model, year).sort((a, b) => circularityColumnOrder.indexOf(a.name) - circularityColumnOrder.indexOf(b.name)).map((lever) => {
             const evaluated = circularityValue(lever);
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
