@@ -618,10 +618,25 @@
     .synthesis-card progress::-webkit-progress-bar { background: #e1e3fc; }
     .synthesis-card progress::-webkit-progress-value { background: #3643BA; }
     .synthesis-card progress::-moz-progress-bar { background: #3643BA; }
+    .preferred-process-wip .synthesis-metric { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 8px; margin-bottom: 18px; }
+    .preferred-process-wip .synthesis-icon { grid-row: span 2; }
+    .preferred-process-wip .synthesis-metric > .preferred-process-placeholder { display: flex; align-items: center; gap: 4px; color: #616161; font-size: 24px; }
+    .preferred-process-placeholder::before { width: 28px; height: 24px; border-radius: 8px; background: #d9d9d9; content: ""; }
+    .preferred-process-track { grid-column: 2 / -1; height: 6px; border-radius: 2px; background: #d9d9d9; }
+    .preferred-process-coming-soon { align-self: flex-start; padding: 2px 4px; background: #ffd34e; color: #000000; font-size: 12px; }
     .valid-from, .circularity-validity { display: inline-block; color: #017f5c; background: #d4f5eb; font-size: 12px; padding: 3px 4px; }
     .valid-from.stale, .circularity-validity.stale { color: #bf4500; background: #ffe6d8; }
     .metric-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px; margin-top: auto; }
     .metric-card-footer .valid-from { flex-shrink: 0; }
+    .synthesis-circularity { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
+    .synthesis-circularity[hidden] { display: none; }
+    .synthesis-circularity .synthesis-metric { margin-bottom: 18px; }
+    .synthesis-circularity h3 { margin: 0; color: #101010; font-size: 14px; font-weight: 400 !important; }
+    .synthesis-circularity-value { display: inline-grid; place-items: center; margin-left: auto; min-width: 36px; height: 36px; padding: 0 8px; border-radius: 8px; background: var(--grade-color); color: var(--grade-text, white); font-size: 20px; font-weight: 600 !important; }
+    .synthesis-circularity-value.binary { background: #f1f2f5; color: #475163; }
+    .synthesis-circularity-value.binary.yes { background: #edf9f5; color: #017f5c; }
+    .synthesis-circularity .metric-card-footer { flex-wrap: wrap; }
+    @media (max-width: 900px) { .synthesis-circularity { grid-template-columns: 1fr; } }
     @media (max-width: 1350px) { .metric-card-footer .all-levers { padding-inline: 8px; } }
     @media (max-width: 1100px) { .synthesis-view .synthesis-cards { grid-template-columns: 1fr; } }
     .all-levers { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 6px 16px; border: 1px solid #aaa; border-radius: 24px; color: #101010; background: white; font-size: 13px; text-decoration: none; }
@@ -942,8 +957,9 @@
         <div class="circularity-cards" id="circularity-content" hidden aria-label="Design For Circularity results"></div>
         <div class="synthesis-cards">
           <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
-          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><strong>0%</strong></div><progress value="0" max="100" aria-label="Preferred process: 0 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
+          <article class="synthesis-card preferred-process-wip" aria-label="Preferred Process: methodology in progress, coming soon"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><span class="preferred-process-placeholder" aria-hidden="true">%</span><div class="preferred-process-track" aria-hidden="true"></div></div><span class="preferred-process-coming-soon">Coming Soon</span></article>
         </div>
+        <div class="synthesis-circularity" id="synthesis-circularity" hidden aria-label="Circularity summary"></div>
         <div id="levers-content" hidden>
           <section class="levers-card" aria-labelledby="material-levers-title">
             <h3 id="material-levers-title">Material Levers <span>2 Levers</span></h3>
@@ -1673,6 +1689,14 @@
       function renderCircularity(year) {
         const yearLevers = modelCircularityLevers(detailModel, year);
         const icon = (path) => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+        document.querySelector("#synthesis-circularity").innerHTML = yearLevers.filter((lever) => lever.name !== "Rental").map((lever) => {
+          const value = circularityValue(lever);
+          const binary = typeof lever.answer === "boolean";
+          return `<article class="synthesis-card" data-summary-lever="${lever.name}" aria-label="${lever.name}: ${value || "Not evaluated"}">
+            <div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">${icon(lever.icon)}</span><h3>${lever.name}</h3>${value ? `<span class="synthesis-circularity-value${binary ? ` binary${lever.answer ? " yes" : ""}` : ""}"${binary ? "" : ` style="--grade-color:${lever.color};--grade-text:${["C", "D"].includes(lever.grade) ? "#272a3b" : "white"}"`}>${value}</span>` : evaluationSticker("Not evaluated")}</div>
+            <div class="metric-card-footer">${value ? `<span class="circularity-validity">Valid from ${lever.validYear}</span>` : ""}<a class="all-levers" href="#model-code/${detailModel.id}/circularity">${icon('<circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/>')}Design For Circularity</a></div>
+          </article>`;
+        }).join("");
         document.querySelector("#circularity-content").innerHTML = yearLevers.map((lever) => `
           <article class="circularity-card${circularityValue(lever) ? "" : " not-evaluated"}" aria-label="${lever.name}: ${circularityValue(lever) ? `${circularityValue(lever)}, ` : ""}${lever.state}">
             <header class="circularity-card-header"><div class="circularity-card-heading"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3></div>${circularityValue(lever) ? '<div class="circularity-modified" aria-label="Last modified">TMAES26<time datetime="2027-03-17">17/03/27</time></div>' : ""}</header>
@@ -1696,7 +1720,7 @@
       }
       function updateCircularityValidity(year) {
         modelCircularityLevers(detailModel, year).forEach((lever, index) => {
-          const surfaces = [document.querySelector("#circularity-content").children[index], document.querySelector("#circularity-levers-body").children[index]];
+          const surfaces = [document.querySelector("#circularity-content").children[index], document.querySelector("#circularity-levers-body").children[index], document.querySelector(`[data-summary-lever="${lever.name}"]`)].filter(Boolean);
           surfaces.forEach((surface) => {
             const badge = surface.querySelector(".circularity-validity");
             if (badge) {
@@ -1722,7 +1746,7 @@
       }
       function renderDetail() {
         if (!detailModel) return;
-        document.querySelectorAll(".all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
+        document.querySelectorAll(".synthesis-cards .all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         document.querySelector("#go-to-circularity").href = `#model-code/${detailModel.id}/circularity`;
         const year = Number(currentYear());
         renderCircularity(year);
@@ -1740,7 +1764,7 @@
         const bom = detailModel.bomByYear.get(year);
         const preferred = preferredResults(detailModel, year);
         document.querySelectorAll(".synthesis-cards > .synthesis-card").forEach((card, index) => {
-          if (index > 1) return;
+          if (index > 0) return;
           const value = preferred ? preferred[index === 0 ? "material" : "process"] : null;
           card.querySelector("strong").textContent = value == null ? "--" : `${value}%`;
           const progress = card.querySelector("progress");
@@ -2391,6 +2415,7 @@
         document.body.classList.toggle("placeholder-view", placeholderVisible);
         document.querySelector("#levers-content").hidden = !leversVisible;
         document.querySelector("#circularity-content").hidden = !circularityVisible;
+        document.querySelector("#synthesis-circularity").hidden = !synthesisVisible;
         document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity" : leversVisible ? "Levers" : "Synthesis";
         document.querySelector("#detail-notice").hidden = true;
         document.querySelector("#synthesis-nav").classList.toggle("active", synthesisVisible);
