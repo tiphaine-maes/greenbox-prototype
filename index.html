@@ -744,7 +744,7 @@
     .levers-view .all-levers { display: none; }
     .synthesis-impact { margin-bottom: 20px; }
     .env-impact-unavailable { display: none; }
-    .settings-incomplete .synthesis-impact, .settings-incomplete .env-impact-value { display: none; }
+    .settings-incomplete .env-impact-value { display: none; }
     .settings-incomplete .env-impact-unavailable { display: inline; }
     .impact-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; }
     .impact-summary strong { color: #3643BA; font-size: 36px; }
@@ -1556,6 +1556,7 @@
       sharingError.textContent = invalidShares.some(Boolean) ? "Enter valid sharing percentages between 0% and 100%." : `Total assigned: ${total.toLocaleString("en-GB", { maximumFractionDigits: 2 })}%. The total must equal 100%; ${totalGuidance}.`;
       saveButton.disabled = missingReference || !sharingComplete;
       document.body.classList.toggle("settings-incomplete", saveButton.disabled);
+      renderImpact();
       document.querySelector("#recalculate").disabled = saveButton.disabled || !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
       document.querySelector("#detail-recalculate").disabled = saveButton.disabled || !detailModel?.bomByYear.has(Number(currentYear()));
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
@@ -1727,6 +1728,7 @@
       document.querySelector(".synthesis-bottom .synthesis-card:first-child h3 .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Communication"] .synthesis-icon').innerHTML.replaceAll('fill="#616161"', 'fill="#3643BA"');
       document.querySelector(".synthesis-bottom .synthesis-card:last-child h3 .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Documents"] .synthesis-icon').innerHTML.replace('fill="#616161"', 'fill="#3643BA"');
       function renderImpact() {
+        const hasResults = !saveButton.disabled;
         const bike = activeProduct.code === "342976";
         const productIndicators = bike ? gravelIndicators : indicators;
         const selector = document.querySelector("#impact-indicator");
@@ -1737,12 +1739,12 @@
         const indicator = productIndicators.find((item) => item.id === selected);
         document.querySelector("#impact-indicator-title").textContent = `${selected === "climate" ? "CO2 · " : ""}${indicator.name}`;
         document.querySelector("#impact-indicator-unit").textContent = indicator.unit;
-        document.querySelector("#impact-indicator-value").textContent = indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : selected === "climate" ? 1 : 3 });
-        document.querySelector("#climate-position").hidden = bike || selected !== "climate";
+        document.querySelector("#impact-indicator-value").textContent = hasResults ? indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : selected === "climate" ? 1 : 3 }) : "--";
+        document.querySelector("#climate-position").hidden = !hasResults || bike || selected !== "climate";
         const magnitude = indicator.values.reduce((sum, value) => sum + Math.abs(value), 0);
-        document.querySelector("#lifecycle-bar").innerHTML = indicator.values.map((value, index) => `<span${value < 0 ? ' class="negative"' : ""} style="--phase-width:${magnitude ? Math.abs(value) / magnitude * 100 : 0}%;--phase-color:${phaseColors[index]}"></span>`).join("");
-        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${value.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : 2 })}</strong></span>`).join("");
-        document.querySelector("#impact-body").innerHTML = productIndicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${value.toFixed(3)}</td>`).join("")}<td>${item.total.toFixed(3)}</td></tr>`).join("");
+        document.querySelector("#lifecycle-bar").innerHTML = hasResults ? indicator.values.map((value, index) => `<span${value < 0 ? ' class="negative"' : ""} style="--phase-width:${magnitude ? Math.abs(value) / magnitude * 100 : 0}%;--phase-color:${phaseColors[index]}"></span>`).join("") : "";
+        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${hasResults ? value.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : 2 }) : "--"}</strong></span>`).join("");
+        document.querySelector("#impact-body").innerHTML = productIndicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${hasResults ? value.toFixed(3) : "--"}</td>`).join("")}<td>${hasResults ? item.total.toFixed(3) : "--"}</td></tr>`).join("");
         document.querySelector("#impact-table-details").hidden = !impactExpanded;
         document.querySelector("#impact-more span").textContent = impactExpanded ? "See less" : "See more";
         document.querySelector("#impact-more").setAttribute("aria-expanded", String(impactExpanded));
