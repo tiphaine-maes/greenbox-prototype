@@ -1496,6 +1496,32 @@
           "Silica-based rubber from rice husks": 3,
           "Recycled rubber": 1,
         },
+        composition: {
+          name: "SS26 YUEDE - 361118 - MTC-X SNEAKERS U",
+          total: ["1099.37", "100.00"],
+          materials: ["Silica-based rubber from rice husks", "EVA from sugarcane", "Recycled rubber", "Recycled polypropylene", "Polyester from recycled bottles", "Other materials"],
+          totals: [["34.80", "3.17"], ["42.28", "3.85"], ["5.77", "0.53"], ["10.69", "0.97"], ["507.76", "46.19"], ["498.07", "45.31"]],
+          rows: [
+            ["9810026808 - FID_KNIT_2DCK MERRYMESH /R", ["224.00", "20.38"], null, null, null, null, ["224.00", "20.38"], null],
+            ["9810008781 - FID_KNIT INTERLOCK 160 /R", ["179.74", "16.35"], null, null, null, null, ["179.74", "16.35"], null],
+            ["9810033228 - FID_VN PY 30BSKM CMEVATR9-10-3", ["174.00", "15.83"], null, ["42.28", "3.85"], null, null, null, ["131.72", "11.98"]],
+            ["9810035412 - FID_VN-FT-20BIO-RB BKR 3015-4", ["174.00", "15.83"], ["34.80", "3.17"], null, null, null, null, ["139.20", "12.66"]],
+            ["9810048145 - FID_NUB_DRACUS TS 12/14", ["108.64", "9.88"], null, null, null, null, null, ["108.64", "9.88"]],
+            ["9810028415 - FID_KNIT_2DWK GALATIA/ R", ["58.80", "5.35"], null, null, null, null, ["58.80", "5.35"], null],
+            ["9810046824 - FID_SPL CHEWBACCA TS 14/16", ["54.56", "4.96"], null, null, null, null, null, ["54.56", "4.96"]],
+            ["9810028456 - FID_TP_TX_E418R RPET (ECO) 0.55", ["45.66", "4.15"], null, null, null, ["10.69", "0.97"], ["2.74", "0.25"], ["32.24", "2.93"]],
+            ["9810039753 - FID_F_EF9RE_CHIYA T50L_112CM", ["19.91", "1.81"], null, null, ["5.77", "0.53"], null, null, ["14.13", "1.29"]],
+            ["9810000091 - FID_HC_TEXON RITE/MERIT_DC_1.5M", ["14.40", "1.31"], null, null, null, null, ["4.64", "0.42"], ["9.76", "0.89"]],
+            ["9810034987 - FID_SI_HY_DTE 280 ECO 0.9MM", ["11.60", "1.06"], null, null, null, null, ["11.60", "1.06"], null],
+            ["9810037091 - FID_KNIT_2D LJ-A0279-P/R", ["10.61", "0.97"], null, null, null, null, ["10.61", "0.97"], null],
+            ["9810015145 - FID_COAT_LX SUEDE 0.8MM/R", ["9.86", "0.90"], null, null, null, null, ["5.92", "0.54"], ["3.95", "0.36"]],
+            ["9810033418 - FID_COAT_DL806 0.6MM/R VE", ["6.44", "0.59"], null, null, null, null, ["3.86", "0.35"], ["2.58", "0.23"]],
+            ["9810045378 - FID_KNIT_2D GRID DOMA /R", ["5.19", "0.47"], null, null, null, null, ["5.19", "0.47"], null],
+            ["9810048655 - PINS FLT ROUND 12MM ORBIT", ["1.14", "0.10"], null, null, null, null, null, ["1.14", "0.10"]],
+            ["9810035094 - FID_REINF_HYC 0.6MM", ["0.82", "0.07"], null, null, null, null, ["0.65", "0.06"], ["0.16", "0.01"]],
+          ],
+          summaryOrder: [3, 0, 2, 4, 1],
+        },
         modelDefinitions: [
           ["8930252", "MTC-X SNEAKERS U BROWN", "#817067"],
           ["8930250", "MTC-X SNEAKERS U BLACK", "#3D3B3F"],
@@ -2488,6 +2514,104 @@
       productCompositionBody.className = "bom-composition-body";
       productCompositionBody.hidden = true;
       compositionSheet.append(productCompositionBody);
+      function renderSuppliedComposition(container, data) {
+        container.replaceChildren();
+        const metadata = document.createElement("div");
+        metadata.className = "bom-composition-meta";
+        const details = document.createElement("div");
+        [
+          ["Conception code:", `${activeProduct.code} - ${activeProduct.name}`],
+          ["Model code:", `${detailModel.code} - ${detailModel.name}`],
+          ["Name of the BOM:", data.name],
+        ].forEach(([label, value]) => {
+          const paragraph = document.createElement("p");
+          const strong = document.createElement("strong");
+          strong.textContent = label;
+          paragraph.append(strong, document.createTextNode(` ${value}`));
+          details.append(paragraph);
+        });
+        const weight = document.createElement("div");
+        weight.className = "bom-composition-weight";
+        ["Total BOM weight", `${data.total[0]} g`].forEach((text) => {
+          const span = document.createElement("span");
+          span.textContent = text;
+          weight.append(span);
+        });
+        metadata.append(details, weight);
+        container.append(metadata);
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-wrap";
+        wrapper.tabIndex = 0;
+        wrapper.setAttribute("role", "region");
+        wrapper.setAttribute("aria-label", "BOM component composition");
+        const table = document.createElement("table");
+        table.className = "bom-composition-table";
+        const head = table.createTHead();
+        const top = head.insertRow();
+        ["Components", "Weight", ...data.materials].forEach((text, index) => {
+          const th = document.createElement("th");
+          th.textContent = text;
+          if (index < 2) { th.rowSpan = 2; th.scope = "col"; }
+          else th.scope = "colgroup";
+          top.append(th);
+        });
+        const sub = head.insertRow();
+        data.materials.forEach(() => {
+          const th = document.createElement("th");
+          th.scope = "col";
+          th.textContent = "Other process";
+          sub.append(th);
+        });
+        function appendCompositionRow(section, name, values) {
+          const row = section.insertRow();
+          const heading = document.createElement("th");
+          heading.scope = "row";
+          heading.textContent = name;
+          row.append(heading);
+          values.forEach((value) => {
+            const cell = row.insertCell();
+            [value ? `${value[0]} g` : "-", value ? `${value[1]} %` : "-"].forEach((text) => {
+              const span = document.createElement("span");
+              span.textContent = text;
+              cell.append(span);
+            });
+          });
+        }
+        const body = table.createTBody();
+        data.rows.forEach(([name, ...values]) => appendCompositionRow(body, name, values));
+        appendCompositionRow(table.createTFoot(), "Total", [data.total, ...data.totals]);
+        wrapper.append(table);
+        container.append(wrapper);
+        const summaries = document.createElement("div");
+        summaries.className = "bom-composition-summaries";
+        ["Materials", "Process"].forEach((type) => {
+          const wrap = document.createElement("div");
+          wrap.className = "table-wrap";
+          const summary = document.createElement("table");
+          summary.className = "bom-composition-table";
+          const header = summary.createTHead().insertRow();
+          [type, "Weight", "Percentage"].forEach((text) => {
+            const th = document.createElement("th");
+            th.scope = "col";
+            th.textContent = text;
+            header.append(th);
+          });
+          const rows = summary.createTBody();
+          if (type === "Materials") {
+            data.summaryOrder.forEach((index) => {
+              const row = rows.insertRow();
+              [data.materials[index], `${data.totals[index][0]} g`, `${data.totals[index][1]} %`].forEach((text) => row.insertCell().textContent = text);
+            });
+          } else {
+            const cell = rows.insertRow().insertCell();
+            cell.colSpan = 3;
+            cell.textContent = "There are no Ecodesign process";
+          }
+          wrap.append(summary);
+          summaries.append(wrap);
+        });
+        container.append(summaries);
+      }
       let compositionAnimation = null;
       let compositionClosing = false;
       function closeCompositionSheet() {
@@ -2517,7 +2641,9 @@
         originalCompositionBody.style.display = configured ? "none" : "";
         productCompositionBody.hidden = !configured;
         productCompositionBody.style.display = configured ? "" : "none";
-        if (configured) {
+        if (activeProduct.composition) {
+          renderSuppliedComposition(productCompositionBody, activeProduct.composition);
+        } else if (configured) {
           productCompositionBody.replaceChildren();
           const metadata = document.createElement("div");
           metadata.className = "bom-composition-meta";
