@@ -68,7 +68,6 @@
     .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
     .bike-product .settings-warning,
     .bike-product .synthesis-bottom,
-    .bike-product .synthesis-cards,
     .bike-product .models-title .calculation,
     .bike-product #levers-content > .levers-card:not(:has(#circularity-levers-title)) { display: none; }
     .brand { color: inherit; text-decoration: none; }
@@ -930,7 +929,7 @@
 </head>
 <body class="sidebar-collapsed">
   <header class="topbar">
-    <a class="brand" href="#home" aria-label="Greenbox home">
+    <div class="brand">
       <svg width="202" height="29" viewBox="0 0 202 29" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Greenbox" style="display: block;">
         <rect width="201.707" height="29" fill="white"/>
         <rect width="29" height="29" fill="white"/>
@@ -944,7 +943,7 @@
         <path d="M181.993 14.5005C181.993 17.4972 181.017 19.9912 179.064 21.9825C177.111 23.9545 174.666 24.9405 171.727 24.9405C168.808 24.9405 166.362 23.9545 164.39 21.9825C162.437 19.9912 161.461 17.4972 161.461 14.5005C161.461 11.5039 162.437 9.01955 164.39 7.04755C166.362 5.05621 168.808 4.06055 171.727 4.06055C174.666 4.06055 177.111 5.05621 179.064 7.04755C181.017 9.01955 181.993 11.5039 181.993 14.5005ZM165.869 14.5005C165.869 16.3372 166.42 17.8645 167.522 19.0825C168.643 20.2812 170.045 20.8805 171.727 20.8805C173.409 20.8805 174.801 20.2812 175.903 19.0825C177.024 17.8645 177.585 16.3372 177.585 14.5005C177.585 12.6445 177.024 11.1172 175.903 9.91855C174.801 8.71988 173.409 8.12055 171.727 8.12055C170.045 8.12055 168.643 8.71988 167.522 9.91855C166.42 11.1172 165.869 12.6445 165.869 14.5005Z" fill="black"/>
         <path d="M201.705 24.6505H196.775L192.657 17.6325L188.597 24.6505H183.899L190.221 14.1235L184.334 4.35055H189.177L192.802 10.5565L196.572 4.35055H201.27L195.238 13.9785L201.705 24.6505Z" fill="black"/>
       </svg>
-    </a>
+    </div>
     <div class="search">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M10.2969 3.44922C6.61109 3.44922 3.54688 6.51343 3.54688 10.1992C3.54688 13.885 6.61109 16.9492 10.2969 16.9492C13.9827 16.9492 17.0469 13.885 17.0469 10.1992C17.0469 6.51343 13.9827 3.44922 10.2969 3.44922ZM2.04688 10.1992C2.04688 5.68501 5.78266 1.94922 10.2969 1.94922C14.8111 1.94922 18.5469 5.68501 18.5469 10.1992C18.5469 14.7134 14.8111 18.4492 10.2969 18.4492C5.78266 18.4492 2.04688 14.7134 2.04688 10.1992ZM18.0272 16.9689L21.9272 20.8689L20.8665 21.9295L16.9665 18.0295L18.0272 16.9689Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
@@ -1980,11 +1979,6 @@
         renderCircularity(year);
         updateCircularityValidity(year);
         const design = detailModel.designLeversByYear.get(year);
-        const missingDesignLevers = [
-          !design && "Minimal Waste Design",
-          design?.efficiency == null && "Efficiency",
-        ].filter(Boolean);
-        document.querySelector("#design-levers-warning").hidden = missingDesignLevers.length === 0;
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
