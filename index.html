@@ -1491,6 +1491,7 @@
           process: [],
         },
         preferredMaterialLevers: ["Polyester from recycled bottles"],
+        preferredResults: { material: 45, process: 0 },
         communicatedMaterialLevers: ["Polyester from recycled bottles"],
         materialLeversValidFrom: 2026,
         materialLeverShares: {
@@ -1777,7 +1778,7 @@
       });
       additionalProducts.forEach((product) => product.modelDefinitions.forEach(([code, name, color]) => models.push({
         id: models.length, productCode: product.code, code, name, color, status: "Not evaluated", selected: false,
-        bomByYear: new Map(), calculatedYears: new Set(), preferredResultsByYear: new Map(),
+        bomByYear: new Map(), calculatedYears: new Set(), preferredResultsByYear: new Map(product.preferredResults ? [[2026, { ...product.preferredResults }]] : []),
         calculationDates: new Map(), designLeversByYear: new Map(), circularityByYear: new Map(),
       })));
       additionalProducts.filter((product) => product.repairability).forEach((product) => {
