@@ -2060,6 +2060,9 @@
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
         selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
         document.querySelector("#recalculate").disabled = !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
+        const calculationDates = productModels().map((model) => model.calculationDates.get(year)).filter(Boolean);
+        const lastCalculation = activeProduct.calculationDates?.get(year) || calculationDates[calculationDates.length - 1];
+        document.querySelector("#last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
         renderDetail();
       }
       let activeLeverTooltip = null;
@@ -2446,9 +2449,12 @@
       function markCalculated(model) {
         const year = Number(currentYear());
         model.calculatedYears.add(year);
-        model.preferredResultsByYear.set(year, preferredResults(model, year) || { material: 73, process: 0 });
+        const preferred = preferredResults(model, year);
+        if (preferred || model.productCode === "351243") model.preferredResultsByYear.set(year, preferred || { material: 73, process: 0 });
         const now = new Date();
         model.calculationDates.set(year, `${now.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" })} - ${now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`);
+        if (!activeProduct.calculationDates) activeProduct.calculationDates = new Map();
+        activeProduct.calculationDates.set(year, model.calculationDates.get(year));
       }
       document.querySelector("#detail-bom-select").addEventListener("change", (event) => {
         if (!detailModel) return;
@@ -2572,11 +2578,13 @@
         if (!id) return;
         productModels().filter((model) => !selectedOnly || model.selected).forEach((model) => {
           model.bomByYear.set(year, { id, method: selectedOnly ? "MANUAL" : "AUTO" });
-          model.calculatedYears.delete(Number(currentYear()));
-          model.calculationDates.delete(Number(currentYear()));
+          markCalculated(model);
         });
+        productModels().forEach((model) => model.selected = false);
+        bomPicker.value = "";
+        document.querySelector("#models-notice").hidden = true;
+        document.querySelector("#models-notice").textContent = "";
         renderModels();
-        showModelsNotice(`Preview: ${bomLabel(year, id)} applied to the selected scope.`);
       }
       document.querySelector("#apply-all").addEventListener("click", () => applyBom(false));
       applySelected.addEventListener("click", () => applyBom(true));
