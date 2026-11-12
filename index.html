@@ -126,6 +126,14 @@
     .user { position: relative; margin-left: auto; line-height: 1.35; }
     .user img { display: block; width: 290px; height: 60px; }
     .user small { display: block; color: #555; }
+    .profile-language-toggle { position: absolute; inset: 0 0 0 80px; border: 0; background: transparent; cursor: pointer; border-radius: 4px; }
+    .profile-language-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 2px; }
+    .profile-language-menu { position: absolute; top: calc(100% + 12px); right: 0; width: 360px; max-width: calc(100vw - 32px); padding: 16px; border: 1px solid #e1e0df; border-radius: 12px; background: white; box-shadow: 0 16px 32px #142b4226; z-index: 100; }
+    .profile-language-menu[hidden] { display: none; }
+    .profile-language-options { display: flex; align-items: center; gap: 20px; margin: 0; padding: 20px; border: 0; background: #e6f4fa; }
+    .profile-language-label { display: flex; align-items: center; gap: 12px; margin-right: auto; font-size: 16px; }
+    .profile-language-menu label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    .profile-language-menu input { width: 20px; height: 20px; margin: 0; accent-color: #007dbc; cursor: pointer; }
     .header-favorites { position: absolute; top: 3px; left: 0; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
     .header-favorites:focus-visible { outline: 2px solid #3944c4; outline-offset: 2px; }
     .header-favorites span { position: absolute; top: 30px; right: 0; display: grid; width: 20px; height: 20px; place-items: center; border-radius: 50%; background: #3643ba; color: white; font-size: 11px; font-weight: 600; }
@@ -979,7 +987,11 @@
       </svg>
       <div class="search-field"><input id="global-product-search" type="search" aria-label="Search a model code or conception code" aria-describedby="global-search-error" placeholder="Search a model code, a conception code..."><span class="search-error" id="global-search-error" role="status" hidden></span></div>
     </div>
-    <div class="user"><img src="user-menu.svg" width="290" height="60" alt=""><button class="header-favorites" id="header-favorites" type="button" aria-label="Open 15 favorites"><span>15</span></button></div>
+    <div class="user"><img src="user-menu.svg" width="290" height="60" alt=""><button class="header-favorites" id="header-favorites" type="button" aria-label="Open 15 favorites"><span>15</span></button><button type="button" class="profile-language-toggle" id="profile-language-toggle" aria-label="Tiphaine M. — Language" aria-expanded="false" aria-controls="profile-language-menu"></button>
+      <div class="profile-language-menu" id="profile-language-menu" hidden>
+        <div class="profile-language-options" role="radiogroup" aria-labelledby="profile-language-label"><span class="profile-language-label" id="profile-language-label"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>Language</span></span><label><input type="radio" name="interface-language" value="fr" aria-label="French">FR</label><label><input type="radio" name="interface-language" value="en" aria-label="English" checked>EN</label></div>
+      </div>
+    </div>
   </header>
 
   <div class="layout">
@@ -3470,5 +3482,6 @@
 
     updateValidation();
   </script>
+  <script src="interface-language.js"></script>
 </body>
 </html>
