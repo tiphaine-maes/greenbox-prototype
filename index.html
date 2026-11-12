@@ -2146,7 +2146,7 @@
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
-            <td style="border-left:5px solid ${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
+            <td style="border-left:1px solid ${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td><span class="env-impact-value">${model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
