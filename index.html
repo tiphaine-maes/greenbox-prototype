@@ -1044,7 +1044,7 @@
         <p class="models-notice" id="models-notice" role="status" hidden></p>
         <div class="bom-actions">
           <div class="bom-action">
-            <div><span class="bom-description">Apply the reference BOM to all model code</span><div class="bom-label-row"><a href="#reference-bom" id="reference-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a><span class="reference-bom-tag" id="reference-bom-tag">Reference BOM</span></div></div>
+            <div><span class="bom-description">Apply the reference BOM to all model code</span><div class="bom-label-row"><a href="#reference-bom" id="reference-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a><span id="no-reference-bom" hidden>No reference BOM</span><span class="reference-bom-tag" id="reference-bom-tag">Reference BOM</span></div></div>
             <button type="button" class="action compact" id="apply-all">Apply all</button>
           </div>
           <div class="bom-action">
@@ -2036,6 +2036,7 @@
         const hasReferenceBom = Boolean(referenceBom(year));
         document.querySelector("#reference-bom").textContent = hasReferenceBom ? bomLabel(year, referenceBom(year)) : "";
         document.querySelector("#reference-bom").hidden = !hasReferenceBom;
+        document.querySelector("#no-reference-bom").hidden = hasReferenceBom;
         document.querySelector("#reference-bom-tag").hidden = !hasReferenceBom;
         document.querySelector("#apply-all").disabled = !hasReferenceBom;
         modelsBody.innerHTML = visible.map((model) => {
