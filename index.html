@@ -2724,7 +2724,7 @@
         document.querySelector("#shared-design-levers").hidden = !(leversVisible || circularityVisible);
         document.querySelector("#circularity-content").hidden = !circularityVisible;
         document.querySelector("#synthesis-circularity").hidden = !synthesisVisible;
-        document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity" : leversVisible ? "Levers" : "Synthesis";
+        document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity" : leversVisible ? "Material & Process Levers" : "Synthesis";
         document.querySelector("#detail-notice").hidden = true;
         document.querySelector("#synthesis-nav").classList.toggle("active", synthesisVisible);
         if (synthesisVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
