@@ -506,12 +506,11 @@
     .circularity-card-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .circularity-card-header h3 { margin: 0; font-size: var(--vp-core-font-size-200, 1rem); font-style: normal; font-weight: 600 !important; line-height: 150%; }
     .circularity-card-header .synthesis-icon { width: 40px; height: 40px; }
-    .circularity-card-header .circularity-validity { margin-left: auto; white-space: nowrap; }
+    .circularity-card-header .circularity-validity { white-space: nowrap; }
     .circularity-modified { margin-left: auto; text-align: right; font-size: 12px; line-height: 150%; color: #101010; }
     .circularity-modified time { display: block; color: #616161; }
     .circularity-card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: auto; padding-top: 20px; border-top: 1px solid #E1E0DF; }
     .circularity-card-footer .circularity-validity { white-space: nowrap; }
-    .circularity-card-footer .circularity-modified { margin-left: 0; text-align: left; }
     .circularity-card-body { padding-bottom: 24px; }
     .circularity-question { margin: 20px 0; font-size: 14px; line-height: 150%; }
     .circularity-answer { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 8px; background: #f1f2f5; color: #475163; font-size: 20px; font-weight: 600 !important; }
@@ -1980,14 +1979,6 @@
             <footer class="circularity-card-footer">${circularityValue(lever) ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}<button type="button" class="action compact circularity-update" data-update-circularity="${lever.name}">${circularityValue(lever) ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11.179 2.57848C11.5076 2.24988 12.0242 2.24988 12.3528 2.57848L13.4194 3.64514C13.748 3.97374 13.748 4.49032 13.4194 4.81892L8.647 9.59136L5.8221 10.1758L6.40656 7.35091L11.179 2.57848ZM11.7659 3.4058L7.32521 7.84648L7.10967 8.88824L8.15144 8.67271L12.5921 4.23203L11.7659 3.4058ZM3.73611 3.73558C3.72583 3.74586 3.69922 3.77899 3.69922 3.86536V12.132C3.69922 12.2184 3.72583 12.2515 3.73611 12.2618C3.74638 12.2721 3.77951 12.2987 3.86589 12.2987H12.1326C12.2189 12.2987 12.2521 12.2721 12.2623 12.2618C12.2726 12.2515 12.2992 12.2184 12.2992 12.132V8.7987H13.2992V12.132C13.2992 12.4457 13.1925 12.7459 12.9694 12.9689C12.7464 13.192 12.4462 13.2987 12.1326 13.2987H3.86589C3.55226 13.2987 3.25205 13.192 3.029 12.9689C2.80594 12.7459 2.69922 12.4457 2.69922 12.132V3.86536C2.69922 3.55174 2.80594 3.25153 3.029 3.02848C3.25205 2.80542 3.55226 2.6987 3.86589 2.6987H7.19922V3.6987H3.86589C3.77951 3.6987 3.74638 3.72531 3.73611 3.73558Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/></svg>' : icon('<path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5C16.6944 20.5 20.5 16.6944 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12.75 7.00736V11.25H16.9926V12.75H12.75V16.9926H11.25V12.75H7.00736V11.25H11.25V7.00736H12.75Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010" stroke="none"/>')}${circularityValue(lever) ? `Update ${lever.name}` : `Evaluate ${lever.name}`}</button></footer>
           </article>`).join("");
         const repairabilityButton = document.querySelector('[data-update-circularity="Repairability"]');
-        document.querySelectorAll(".circularity-card").forEach((card) => {
-          const modified = card.querySelector(".circularity-modified");
-          const validity = card.querySelector(".circularity-validity");
-          if (modified && validity) {
-            card.querySelector(".circularity-card-header").append(validity);
-            card.querySelector(".circularity-card-footer").prepend(modified);
-          }
-        });
         repairabilityButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8.49999 2L8.5 8.79289L10.3333 6.95956L11.0404 7.66667L7.99999 10.7071L4.95956 7.66667L5.66667 6.95956L7.5 8.7929L7.49999 2L8.49999 2ZM3 9.33333V12.8333C3 12.9254 3.07462 13 3.16667 13H12.8333C12.9254 13 13 12.9254 13 12.8333V9.33333H14V12.8333C14 13.4777 13.4777 14 12.8333 14H3.16667C2.52233 14 2 13.4777 2 12.8333V9.33333H3Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/></svg>Import Repairability';
         document.querySelector("#circularity-levers-body").innerHTML = yearLevers.map((lever) => `<tr><td>${lever.name}</td><td>${evaluationSticker(lever.state)}</td><td class="lever-percent">${circularityValue(lever)}</td><td><span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span></td><td>${circularityValue(lever) ? '<span class="impact-caption">TMAES26<br>23/10/2026</span>' : ""}</td><td>${circularityValue(lever) ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
       }
