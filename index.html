@@ -1339,8 +1339,8 @@
           <div class="repairability-import-heading"><h3>Evaluation</h3><button type="button" disabled title="Evaluation URL not provided">Evaluation details &#8599;</button></div>
           <span>Name</span><strong class="repairability-import-name">Aircomfort avec kit répa</strong>
           <dl class="repairability-import-metrics">
-            <div><dt>Validated evaluation covered failures %</dt><dd><span class="repairability-import-icon" aria-hidden="true">%</span><div><strong>82</strong>percent</div></dd></div>
-            <div><dt>Validated evaluation repairability index</dt><dd><span class="repairability-import-icon" id="repairability-import-icon" aria-hidden="true"></span><div><strong>6.98</strong>/10</div></dd></div>
+            <div><dt>Validated evaluation covered failures %</dt><dd><span class="repairability-import-icon" aria-hidden="true">%</span><div><strong id="repairability-covered-failures">82</strong>percent</div></dd></div>
+            <div><dt>Validated evaluation repairability index</dt><dd><span class="repairability-import-icon" id="repairability-import-icon" aria-hidden="true"></span><div><strong id="repairability-index">6.98</strong>/10</div></dd></div>
           </dl>
         </section>
       </div>
@@ -1616,7 +1616,7 @@
         designLeversByYear: new Map([[2026, { minimalWaste: false, efficiency: 4, modified: "06/11/26", minimalWasteCommunicated: false }]]),
       }));
       models[0].circularityByYear = new Map([
-        ["Repairability", new Map([[2026, { grade: "B", color: "#70b900" }]])],
+        ["Repairability", new Map([[2026, { importExample: { diagnostic: "Airbed", evaluation: "Aircomfort avec kit répa", coveredFailures: 82, index: 6.98 } }]])],
       ]);
       models.push({
         id: 18, productCode: "342976", status: "Not evaluated", code: "8766974", name: "GRVL AF APEX MONO",
@@ -1920,12 +1920,27 @@
         const detail = details[grade];
         return `<div class="recyclability-details"><p>${detail.lead} ${detail.definition}${detail.note ? `<em>${detail.note}</em>` : ""}</p><p>${detail.target} potentially recyclable</p></div>`;
       }
+      function repairabilityGrade(index, coveredFailures) {
+        if (!Number.isFinite(index) || index < 0 || index > 10 || !Number.isFinite(coveredFailures) || coveredFailures < 0 || coveredFailures > 100) {
+          throw new RangeError("Repairability requires an index from 0 to 10 and covered failures from 0 to 100.");
+        }
+        if (coveredFailures >= 80 && index >= 8) return "A";
+        if (coveredFailures >= 80 && index >= 4) return "B";
+        if (coveredFailures >= 50 && index >= 6) return "C";
+        if (index >= 4 || coveredFailures >= 50) return "D";
+        return "E";
+      }
       function modelCircularityLevers(model, year) {
         return circularityLevers.map((lever) => {
           const evaluations = model.circularityByYear?.get(lever.name);
           const validYear = evaluations ? Math.max(...[...evaluations.keys()].filter((value) => value <= year)) : -Infinity;
           if (evaluations?.has(validYear)) {
-            const evaluation = evaluations.get(validYear);
+            let evaluation = evaluations.get(validYear);
+            if (lever.name === "Repairability" && evaluation.importExample) {
+              const { index, coveredFailures } = evaluation.importExample;
+              const grade = repairabilityGrade(index, coveredFailures);
+              evaluation = { ...evaluation, grade, color: { A: "#3944c4", B: "#70b900", C: "#ffc400", D: "#ff8000", E: "#ff2400" }[grade] };
+            }
             return { ...lever, ...evaluation, validYear, state: evaluation.grade ? circularityEvaluationState(evaluation.grade) : evaluation.answer ? "Validated" : "Evaluated", communicated: false };
           }
           return year < 2026 || model.status === "Not evaluated"
@@ -2306,6 +2321,9 @@
         if (name === "Repairability") {
           document.querySelector("#circularity-sheet-title").textContent = "Import Repairability";
           document.querySelector("#repairability-import-icon").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">${circularityLevers.find((lever) => lever.name === "Repairability").icon}</svg>`;
+          const imported = modelCircularityLevers(detailModel, year).find((lever) => lever.name === name).importExample || { coveredFailures: 82, index: 6.98 };
+          document.querySelector("#repairability-covered-failures").textContent = imported.coveredFailures;
+          document.querySelector("#repairability-index").textContent = imported.index;
         }
         circularitySheet.classList.toggle("recyclability-sheet", name === "Recyclability");
         circularitySheet.classList.toggle("wide-circularity-sheet", ["Repairability", "Recyclability"].includes(name));
@@ -2446,11 +2464,11 @@
           modifiedISO: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`,
         };
         if (name === "Repairability") {
-          const current = modelCircularityLevers(model, year).find((lever) => lever.name === name);
+          const coveredFailures = Number(document.querySelector("#repairability-covered-failures").textContent);
+          const index = Number(document.querySelector("#repairability-index").textContent);
+          repairabilityGrade(index, coveredFailures);
           Object.assign(evaluation, {
-            grade: current.grade,
-            color: current.color,
-            importExample: { diagnostic: "Airbed", evaluation: "Aircomfort avec kit répa", coveredFailures: 82, index: 6.98 },
+            importExample: { diagnostic: "Airbed", evaluation: "Aircomfort avec kit répa", coveredFailures, index },
           });
         } else if (name === "Recyclability") {
           const grade = modelCircularityLevers(model, year).find((lever) => lever.name === name).grade;
