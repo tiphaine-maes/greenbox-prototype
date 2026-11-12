@@ -1845,6 +1845,17 @@
         { id: "ozone", name: "Ozone depletion", unit: "kg CFC11 eq", values: [0, 0, 0, -0, 0, -0], total: 0 },
         { id: "photochemical", name: "Photochemical ozone formation human health", unit: "kg NMVOC eq", values: [0.646, 0, 0.052, 0.065, 0, -0.070], total: 0.694 },
       ];
+      products.find((product) => product.code === "361118").impactIndicators = [
+        { id: "score", name: "Score", unit: "µPoint", values: [2530.042, 101.401, 73.767, 89.997, 15.566, 3.762], total: 2814.535 },
+        { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [15.846, 0.700, 0.420, 0.876, 0.130, 0.534], total: 18.506 },
+        { id: "fresh", name: "Fresh eutroph.", unit: "g P eq.", values: [1.882, 0.059, 0.048, 0.002, 0.026, 0.010], total: 2.027 },
+        { id: "marine", name: "Marine eutroph.", unit: "g N eq.", values: [74.191, 1.559, 3.124, 2.090, 0.358, 0.007], total: 81.329 },
+        { id: "terrestrial", name: "Eutrophication terrestrial", unit: "mol N eq", values: [0.686, 0.010, 0.032, 0.023, 0.001, -0.000], total: 0.752 },
+        { id: "resource", name: "Resource use (minerals and metals)", unit: "g Sb eq.", values: [0.268, 0.002, 0.001, 0.001, 0.003, 0.000], total: 0.274 },
+        { id: "fossil", name: "Fossils resources", unit: "MJ", values: [188.143, 7.610, 3.534, 15.091, 1.235, -7.020], total: 208.593 },
+        { id: "particulate", name: "Particle Matter", unit: "disease incidence", values: [0.004, 0.000, 0.000, 0.000, 0.000, -0.000], total: 0.004 },
+        { id: "water", name: "Water use", unit: "m3 world eq", values: [6.636, 2.298, 0.469, 0.191, 0.180, 0.068], total: 9.842 },
+      ];
       document.querySelector(".synthesis-impact h3 .synthesis-icon").innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M6.74883 5.36847C4.79738 6.91287 3.55078 9.30423 3.55078 12.0008C3.55078 15.9623 6.24126 19.2651 9.90448 20.1915L9.20773 16.5684L7.55078 14.9114V12.6901L9.59012 10.6508H13.9508V7.45078H13.4114L11.8114 9.05078H7.60519L6.74883 5.36847ZM8.08729 4.5017L8.79638 7.55078H11.1901L12.7901 5.95078H15.4508V12.1508H10.2114L9.05078 13.3114V14.2901L10.5938 15.8332L11.4788 20.4351C11.6514 20.4455 11.8255 20.4508 12.0008 20.4508C12.9551 20.4508 13.8713 20.2946 14.7252 20.0064L15.6067 15.3342L17.1508 13.7901V10.1508H20.2498C19.4119 6.36249 16.0506 3.55078 12.0008 3.55078C10.5862 3.55078 9.25566 3.89382 8.08729 4.5017ZM20.4438 11.6508H18.6508V14.4114L16.9948 16.0674L16.3987 19.2271C18.8331 17.7483 20.4508 15.0725 20.4508 12.0008C20.4508 11.8835 20.4484 11.7668 20.4438 11.6508ZM16.0451 21.101C19.5314 19.5573 21.9508 16.0731 21.9508 12.0008C21.9508 6.48657 17.515 2.05078 12.0008 2.05078C6.48657 2.05078 2.05078 6.48657 2.05078 12.0008C2.05078 17.515 6.48657 21.9508 12.0008 21.9508C13.4177 21.9508 14.7634 21.6579 15.9809 21.1291L16.0378 21.1398L16.0451 21.101Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
       </svg>`;
@@ -1868,9 +1879,10 @@
         if (!summary.children.length) summary.textContent = "--";
       }
       function renderImpact() {
-        const hasResults = !saveButton.disabled && !activeProduct.demo;
+        const hasResults = !saveButton.disabled && (!activeProduct.demo || Boolean(activeProduct.impactIndicators));
         const bike = activeProduct.code === "342976";
-        const productIndicators = bike ? gravelIndicators : indicators;
+        const productIndicators = activeProduct.impactIndicators || (bike ? gravelIndicators : indicators);
+        const precise = bike || Boolean(activeProduct.impactIndicators);
         const selector = document.querySelector("#impact-indicator");
         const previous = selector.value;
         selector.replaceChildren(...productIndicators.map((item) => new Option(`${item.name} (${item.unit})`, item.id)));
@@ -1879,11 +1891,11 @@
         const indicator = productIndicators.find((item) => item.id === selected);
         document.querySelector("#impact-indicator-title").textContent = `${selected === "climate" ? "CO2 · " : ""}${indicator.name}`;
         document.querySelector("#impact-indicator-unit").textContent = indicator.unit;
-        document.querySelector("#impact-indicator-value").textContent = hasResults ? indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : selected === "climate" ? 1 : 3 }) : "--";
-        document.querySelector("#climate-position").hidden = !hasResults || bike || selected !== "climate";
+        document.querySelector("#impact-indicator-value").textContent = hasResults ? indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: precise ? 3 : selected === "climate" ? 1 : 3 }) : "--";
+        document.querySelector("#climate-position").hidden = !hasResults || bike || activeProduct.demo || selected !== "climate";
         const magnitude = indicator.values.reduce((sum, value) => sum + Math.abs(value), 0);
         document.querySelector("#lifecycle-bar").innerHTML = hasResults ? indicator.values.map((value, index) => `<span${value < 0 ? ' class="negative"' : ""} style="--phase-width:${magnitude ? Math.abs(value) / magnitude * 100 : 0}%;--phase-color:${phaseColors[index]}"></span>`).join("") : "";
-        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${hasResults ? value.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : 2 }) : "--"}</strong></span>`).join("");
+        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${hasResults ? value.toLocaleString("fr-FR", { maximumFractionDigits: precise ? 3 : 2 }) : "--"}</strong></span>`).join("");
         document.querySelector("#impact-body").innerHTML = productIndicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${hasResults ? value.toFixed(3) : "--"}</td>`).join("")}<td>${hasResults ? item.total.toFixed(3) : "--"}</td></tr>`).join("");
         document.querySelector("#impact-table-details").hidden = !impactExpanded;
         document.querySelector("#impact-more span").textContent = impactExpanded ? "See less" : "See more";
@@ -2246,7 +2258,7 @@
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="--model-color:${model.color || (model.productCode === "342976" ? "#deccb7" : modelColors[model.id])}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td><span class="model-code">${model.code}</span><span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td><span class="env-impact-value">${activeProduct.demo ? "--" : model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
+            <td><span class="env-impact-value">${activeProduct.impactIndicators?.find((item) => item.id === "climate")?.total ?? (activeProduct.demo ? "--" : model.productCode === "351243" ? "4.65" : "138.875")}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
             <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">${activeProduct.demo ? activatedDesignLevers.length : 2} Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul>${(activeProduct.demo ? activatedDesignLevers.map((lever) => lever.name) : ["Minimal Waste Design", "Efficiency"]).map((name) => `<li>${name}</li>`).join("")}</ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBom(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
