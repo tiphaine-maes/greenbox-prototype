@@ -1132,7 +1132,7 @@
         <div id="shared-design-levers" hidden>
           <h2 class="design-levers-section-heading">Design Levers</h2>
           <section class="levers-card" aria-labelledby="design-levers-title">
-            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>2 Levers</span></h3><button type="button" class="action compact design-actions" id="edit-design-levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Update design levers</button></div>
+            <div class="levers-card-heading"><h3 id="design-levers-title">Design Levers <span>3 Levers</span></h3><button type="button" class="action compact design-actions" id="edit-design-levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>Update design levers</button></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:54%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
               <thead><tr><th>Lever Name</th><th>Value</th><th>Communication<br>State</th><th>Last<br>Modification</th><th>Temporality</th></tr></thead>
@@ -1273,6 +1273,7 @@
         <fieldset><legend>Minimal Waste Design</legend><div class="design-sheet-radios"><label><input type="radio" name="minimal-waste" value="yes" required>Yes</label><label><input type="radio" name="minimal-waste" value="no">No</label></div></fieldset>
         <label for="design-efficiency">Efficiency (%)</label>
         <input type="number" id="design-efficiency" min="0" max="100" step="any" placeholder="Enter a percentage %">
+        <fieldset><legend>PFC free</legend><div class="design-sheet-radios"><label><input type="radio" name="pfc-free" value="yes">Yes</label><label><input type="radio" name="pfc-free" value="no">No</label></div></fieldset>
       </div>
       <footer class="design-sheet-footer"><button type="button" class="action" id="cancel-design-sheet">Cancel</button><button type="submit" class="action primary">Save</button></footer>
     </form>
@@ -1981,6 +1982,7 @@
         document.querySelector("#design-levers-body").innerHTML = [
           { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
           { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
+          { name: "PFC free", value: design?.pfcFree == null ? "" : design.pfcFree ? "Yes" : "No", communicated: false },
         ].map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td><span class="design-lever-name">${lever.value === "" ? document.querySelector("#design-levers-warning svg").outerHTML : ""}${lever.name}</span></td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const preferred = preferredResults(detailModel, year);
@@ -2532,6 +2534,7 @@
         designForm.reset();
         if (values) designForm.querySelector(`[name="minimal-waste"][value="${values.minimalWaste ? "yes" : "no"}"]`).checked = true;
         efficiencyInput.value = values?.efficiency ?? "";
+        if (values?.pfcFree != null) designForm.querySelector(`[name="pfc-free"][value="${values.pfcFree ? "yes" : "no"}"]`).checked = true;
         designSheet.showModal();
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) designSheet.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
       });
@@ -2551,10 +2554,12 @@
         const { model, year } = designEditTarget;
         const previous = model.designLeversByYear.get(year);
         const minimalWaste = designForm.querySelector('[name="minimal-waste"]:checked').value === "yes";
+        const pfcFree = designForm.querySelector('[name="pfc-free"]:checked');
         model.designLeversByYear.set(year, {
           minimalWaste,
           minimalWasteCommunicated: previous?.minimalWaste === minimalWaste && previous.minimalWasteCommunicated,
           efficiency: efficiencyInput.value === "" ? null : efficiencyInput.valueAsNumber,
+          pfcFree: pfcFree ? pfcFree.value === "yes" : null,
           modified: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" }),
         });
         renderDetail();
