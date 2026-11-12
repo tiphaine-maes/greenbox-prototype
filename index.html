@@ -1770,6 +1770,9 @@
       models[0].circularityByYear = new Map([
         ["Repairability", new Map([[2026, { importExample: { diagnostic: "Airbed", evaluation: "Aircomfort avec kit répa", coveredFailures: 82, index: 6.98 } }]])],
       ]);
+      models.find((model) => model.code === "8969698").circularityByYear = new Map([
+        ["Repairability", new Map([[2026, { grade: "D", color: "#ff8000" }]])],
+      ]);
       models.push({
         id: 18, productCode: "342976", status: "Not evaluated", code: "8766974", name: "GRVL AF APEX MONO",
         selected: false, bomByYear: new Map([[2026, { id: "001", method: "AUTO" }]]), calculatedYears: new Set(),
