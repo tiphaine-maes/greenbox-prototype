@@ -480,6 +480,8 @@
     .models-table th { position: sticky; top: 96px; z-index: 2; border-bottom: 1px solid #E1E0DF; box-shadow: inset 0 -1px #E1E0DF; }
     .horizontal-scroll .models-table th { position: relative; top: var(--table-header-offset, 0px); }
     .models-table td { height: 84px; background: white; padding: 12px 10px; }
+    .models-table td:first-child { position: relative; }
+    .models-table td:first-child::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 1px; background: var(--model-color); }
     .models-table tbody tr:has([data-model-id]) { cursor: pointer; }
     .models-table tbody tr:has([data-model-id]):hover td { background: rgba(54, 67, 186, 0.05); }
     .models-table tbody tr:has([data-model-id]):focus-visible td { background: rgba(54, 67, 186, 0.05); }
@@ -2146,7 +2148,7 @@
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
-            <td style="border-left:1px solid ${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
+            <td style="--model-color:${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td><span class="env-impact-value">${model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
