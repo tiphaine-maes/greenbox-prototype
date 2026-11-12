@@ -1845,6 +1845,16 @@
         { id: "ozone", name: "Ozone depletion", unit: "kg CFC11 eq", values: [0, 0, 0, -0, 0, -0], total: 0 },
         { id: "photochemical", name: "Photochemical ozone formation human health", unit: "kg NMVOC eq", values: [0.646, 0, 0.052, 0.065, 0, -0.070], total: 0.694 },
       ];
+      products.find((product) => product.code === "306855").impactIndicators = [
+        { id: "score", name: "Score", unit: "µPoint", values: [105563.956, 0, 1465.441, 2646.961, 0, -15869.513], total: 93806.846 },
+        { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [359.748, 0, 8.878, 15.306, 0, -42.377], total: 341.555 },
+        { id: "fresh", name: "Fresh eutroph.", unit: "g P eq.", values: [172.666, 0, 0.186, 0.018, 0, -25.124], total: 147.745 },
+        { id: "marine", name: "Marine eutroph.", unit: "g N eq.", values: [560.730, 0, 26.904, 100.243, 0, -55.472], total: 632.405 },
+        { id: "terrestrial", name: "Eutrophication terrestrial", unit: "mol N eq", values: [6.040, 0, 0.275, 1.101, 0, -0.601], total: 6.815 },
+        { id: "resource", name: "Resource use (minerals and metals)", unit: "g Sb eq.", values: [46.951, 0, 0.004, 0, 0, -4.086], total: 42.869 },
+        { id: "fossil", name: "Fossils resources", unit: "MJ", values: [4473.218, 0, 104.292, 200.285, 0, -661.492], total: 4116.304 },
+        { id: "particulate", name: "Particle Matter", unit: "disease incidence", values: [0.041, 0, 0.004, 0.005, 0, -0.005], total: 0.046 },
+      ];
       products.find((product) => product.code === "338118").impactIndicators = [
         { id: "score", name: "Score", unit: "µPoint", values: [194.239, 0, 15.411, 6.936, 0, 0.498], total: 217.083 },
         { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [1.305, 0, 0.098, 0.058, 0, 0.052], total: 1.513 },
