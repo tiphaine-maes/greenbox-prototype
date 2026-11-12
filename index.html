@@ -3195,7 +3195,7 @@
         else if (!selected && index !== -1) favoriteProducts.splice(index, 1);
         renderFavorites();
       });
-      const favoriteProducts = [products[1], products[0], ...additionalProducts].map((product) => [product.code, product.name]);
+      const favoriteProducts = [products[1], ...additionalProducts].map((product) => [product.code, product.name]);
       const favoritesList = document.querySelector("#favorites-list");
       const favoriteFilledPath = document.querySelector(".favorite path").getAttribute("d");
       const favoriteOutlinePath = "M12.1539 5.58653C12.8984 4.74269 14.8846 2.94376 17.5287 3.78507L17.5385 3.78819C18.9591 4.26172 20.5884 5.66056 20.9411 7.87607C21.3092 9.97937 20.6499 14.4308 12.4329 20.2131L12.0013 20.5169L11.5697 20.2131C3.35275 14.4308 2.69342 9.97946 3.06154 7.87613C3.41418 5.66059 5.0435 4.2618 6.46413 3.78825L6.48782 3.78036L6.51199 3.77405C9.23723 3.06312 11.1116 4.74937 11.9316 5.56943L11.952 5.5898L12.0437 5.69674L12.1539 5.58653ZM17.069 5.21289C15.3358 4.66447 13.9342 5.82965 13.2657 6.59364L13.2493 6.61244L11.9589 7.90279L10.8509 6.61006C10.0718 5.83471 8.76102 4.75021 6.91521 5.21915C5.94208 5.55311 4.78972 6.54865 4.54213 8.11674L4.54001 8.13013C4.31491 9.40569 4.45329 13.2308 12.0013 18.6788C19.5493 13.2308 19.6878 9.40567 19.4627 8.1301L19.4604 8.11676C19.2112 6.53875 18.0459 5.54055 17.069 5.21289Z";
