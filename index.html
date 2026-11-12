@@ -1741,10 +1741,6 @@
         { code: "342976", name: "GRVL AF SRAM APEX", image: "gravel-preview.png", route: "#all-model-code/342976", nature: "11706 - Gravel bike", process: "48 - Bikes", modified: "TMAES26 \u00a0 23/10/2026" },
         ...additionalProducts,
       ];
-      const demoContext = document.createElement("p");
-      demoContext.className = "prototype-context";
-      demoContext.textContent = "User-test demo — specifications and BOM references are fictitious. Lever applicability and shared forms are test hypotheses, not validated industry rules. No environmental calculation service is connected; unavailable results remain --.";
-      document.querySelector(".product-heading").after(demoContext);
       document.querySelectorAll("#design-levers-form, #circularity-form").forEach((form) => {
         const note = document.createElement("p");
         note.className = "prototype-context";
@@ -2968,8 +2964,6 @@
         });
         document.body.classList.toggle("bike-product", activeProduct.code === "342976" && (modelsVisible || detailVisible));
         document.body.classList.toggle("demo-product", Boolean(activeProduct.demo));
-        demoContext.hidden = !activeProduct.demo || homeVisible || favoritesVisible;
-        document.querySelector(modelsVisible ? "#models-view > .models-title" : detailVisible ? "#model-detail-view > .models-title" : "#settings-view > h1").after(demoContext);
         document.querySelectorAll("[data-demo-form-note], [data-demo-levers-note]").forEach((note) => note.hidden = !activeProduct.demo);
         document.querySelectorAll("#material-levers-title span, #process-levers-title span").forEach((count) => {
           if (!count.dataset.original) count.dataset.original = count.textContent;
