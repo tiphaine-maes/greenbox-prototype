@@ -65,6 +65,7 @@
     .search-error::before { content: "!"; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 14px; height: 14px; margin-top: 1px; border: 1px solid currentColor; border-radius: 50%; font-size: 11px; }
     .search-error[hidden] { display: none; }
     .search:has(input[aria-invalid="true"]) { outline: 2px solid #3643BA; }
+    .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
     .brand { color: inherit; text-decoration: none; }
     body.home-view { --sidebar-width: 240px; }
     body.home-view .layout { --sidebar-width: 240px; }
