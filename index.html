@@ -1491,6 +1491,8 @@
           process: [],
         },
         preferredMaterialLevers: ["Polyester from recycled bottles"],
+        communicatedMaterialLevers: ["Polyester from recycled bottles"],
+        materialLeversValidFrom: 2026,
         materialLeverShares: {
           "Polyester from recycled bottles": 45,
           "Silica-based rubber from rice husks": 3,
@@ -2316,6 +2318,19 @@
                 tag.className = "preferred-tag";
                 tag.textContent = "Preferred Material";
                 row.cells[1].append(tag);
+              }
+              if (type === "material") {
+                const communicated = activeProduct.communicatedMaterialLevers?.includes(name);
+                const tag = document.createElement("span");
+                tag.className = `communication-tag${communicated ? "" : " neutral"}`;
+                tag.textContent = communicated ? "Communicated" : "Not communicated";
+                row.cells[3].replaceChildren(tag);
+                if (activeProduct.materialLeversValidFrom != null) {
+                  const validity = document.createElement("span");
+                  validity.className = `circularity-validity${Number(currentYear()) > activeProduct.materialLeversValidFrom ? " stale" : ""}`;
+                  validity.textContent = `Valid from ${activeProduct.materialLeversValidFrom}`;
+                  row.cells[4].replaceChildren(validity);
+                }
               }
             });
           }
