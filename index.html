@@ -68,7 +68,7 @@
     .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
     .bike-product .synthesis-bottom,
     .bike-product .models-title .calculation,
-    .bike-product #levers-content > .levers-card:not(:has(#circularity-levers-title)) { display: none; }
+    .bike-product #levers-content > .levers-card:not(:has(#circularity-levers-title, #material-levers-title, #process-levers-title)) { display: none; }
     .brand { color: inherit; text-decoration: none; }
     body.home-view { --sidebar-width: 240px; }
     body.home-view .layout { --sidebar-width: 240px; }
@@ -2281,7 +2281,7 @@
           const card = heading.closest(".levers-card");
           const wrapper = card.querySelector(".table-wrap");
           const original = wrapper.querySelector("table");
-          const names = activeProduct.levers?.[type];
+          const names = activeProduct.levers?.[type] ?? (activeProduct.code === "351243" ? undefined : []);
           const configured = names !== undefined;
           card.classList.toggle("configured-levers-card", configured);
           wrapper.classList.toggle("configured-levers", configured);
@@ -2297,7 +2297,8 @@
           }
           table.hidden = !configured;
           table.style.display = configured ? "" : "none";
-          card.querySelector("[data-demo-levers-note]").hidden = configured || !activeProduct.demo;
+          card.querySelector("[data-demo-levers-note]").hidden = true;
+          card.querySelector("[data-open-composition]").style.display = configured && !names.length ? "none" : "";
           if (!configured) return;
           heading.querySelector("span").textContent = `${names.length} Lever${names.length === 1 ? "" : "s"}`;
           const body = table.querySelector("tbody");
