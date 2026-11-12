@@ -743,6 +743,9 @@
     .all-levers:hover { background: #f5f4f5; }
     .levers-view .all-levers { display: none; }
     .synthesis-impact { margin-bottom: 20px; }
+    .env-impact-unavailable { display: none; }
+    .settings-incomplete .synthesis-impact, .settings-incomplete .env-impact-value { display: none; }
+    .settings-incomplete .env-impact-unavailable { display: inline; }
     .impact-summary { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; margin-bottom: 20px; }
     .impact-summary strong { color: #3643BA; font-size: 36px; }
     .impact-caption { display: block; font-size: 12px; color: #616161; }
@@ -1552,6 +1555,9 @@
       sharingError.hidden = sharingComplete;
       sharingError.textContent = invalidShares.some(Boolean) ? "Enter valid sharing percentages between 0% and 100%." : `Total assigned: ${total.toLocaleString("en-GB", { maximumFractionDigits: 2 })}%. The total must equal 100%; ${totalGuidance}.`;
       saveButton.disabled = missingReference || !sharingComplete;
+      document.body.classList.toggle("settings-incomplete", saveButton.disabled);
+      document.querySelector("#recalculate").disabled = saveButton.disabled || !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
+      document.querySelector("#detail-recalculate").disabled = saveButton.disabled || !detailModel?.bomByYear.has(Number(currentYear()));
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
       document.querySelector("#functional-warning-icon").hidden = !missingReference;
       document.querySelector("#sharing-warning-icon").hidden = sharingComplete;
@@ -2096,7 +2102,7 @@
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td>${model.productCode === "351243" ? "4.65" : "138.875"}</td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
+            <td><span class="env-impact-value">${model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
             <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">2 Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul><li>Minimal Waste Design</li><li>Efficiency</li></ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBom(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
@@ -2111,7 +2117,7 @@
         applySelected.disabled = selectedCount === 0 || !bomPicker.value;
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
         selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
-        document.querySelector("#recalculate").disabled = !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
+        document.querySelector("#recalculate").disabled = saveButton.disabled || !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
         const calculationDates = productModels().map((model) => model.calculationDates.get(year)).filter(Boolean);
         const lastCalculation = activeProduct.calculationDates?.get(year) || calculationDates[calculationDates.length - 1];
         document.querySelector("#last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
@@ -2515,6 +2521,7 @@
       });
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
       function markCalculated(model) {
+        if (saveButton.disabled) return;
         const year = Number(currentYear());
         model.calculatedYears.add(year);
         const preferred = preferredResults(model, year);
