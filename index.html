@@ -66,7 +66,6 @@
     .search-error[hidden] { display: none; }
     .search:has(input[aria-invalid="true"]) { outline: 2px solid #3643BA; }
     .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
-    .bike-product .product-meta,
     .bike-product .settings-warning,
     .bike-product .synthesis-bottom,
     .bike-product .synthesis-cards,
@@ -1603,8 +1602,8 @@
         preferredResultsByYear: new Map(), calculationDates: new Map(), designLeversByYear: new Map(),
       });
       const products = [
-        { code: "351243", name: "SHORT RUN CORE W", image: "product-preview.png", route: "#all-model-code" },
-        { code: "342976", name: "GRVL AF SRAM APEX", image: "gravel-preview.png", route: "#all-model-code/342976" },
+        { code: "351243", name: "SHORT RUN CORE W", image: "product-preview.png", route: "#all-model-code", nature: "25055 - Shorts", process: "21 - Synthetic Knit", modified: "TMAES26 \u00a0 23/10/2026" },
+        { code: "342976", name: "GRVL AF SRAM APEX", image: "gravel-preview.png", route: "#all-model-code/342976", nature: "11706 - Gravel bike", process: "48 - Bikes", modified: "TMAES26 \u00a0 23/10/2026" },
       ];
       let activeProduct = products[0];
       function productModels() {
@@ -2689,6 +2688,10 @@
         productHeading.querySelector("h1").textContent = detailVisible ? `${detailModel.code} - ${detailModel.name}` : `${activeProduct.code} - ${activeProduct.name}`;
         productHeading.querySelector("img").src = activeProduct.image;
         productHeading.querySelector("img").alt = activeProduct.name;
+        const productMetadata = productHeading.querySelectorAll(".product-meta strong");
+        [activeProduct.nature, activeProduct.process, activeProduct.modified].forEach((value, index) => {
+          productMetadata[index].textContent = value;
+        });
         document.body.classList.toggle("bike-product", activeProduct.code === "342976" && (modelsVisible || detailVisible));
         document.querySelector('[data-page="all-model-code"]').href = activeProduct.route;
         document.querySelector("#clear-model").href = activeProduct.route;
