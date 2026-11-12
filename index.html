@@ -66,7 +66,6 @@
     .search-error[hidden] { display: none; }
     .search:has(input[aria-invalid="true"]) { outline: 2px solid #3643BA; }
     .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
-    .bike-product .settings-warning,
     .bike-product .synthesis-bottom,
     .bike-product .models-title .calculation,
     .bike-product #levers-content > .levers-card:not(:has(#circularity-levers-title)) { display: none; }
@@ -1543,9 +1542,11 @@
       settingsNavWarning.hidden = !saveButton.disabled;
       document.querySelector("#settings-nav").setAttribute("aria-label", saveButton.disabled ? `Settings: incomplete for ${currentYear()}` : "Settings");
       document.querySelector("#settings-nav").title = saveButton.disabled ? `Settings incomplete for ${currentYear()}` : "Settings";
-      settingsWarning.hidden = !saveButton.disabled || location.hash !== "#all-model-code";
+      const showsSettingsWarning = /^#all-model-code(?:\/\d+)?$/.test(location.hash) || /^#model-code\/\d+$/.test(location.hash);
+      settingsWarning.hidden = !saveButton.disabled || !showsSettingsWarning;
       const inSettings = location.hash === "#settings";
-      document.querySelector("#settings-warning-title").textContent = `${inSettings ? "Settings incomplete for" : "Complete your settings for"} ${currentYear()}`;
+      const incompleteSettings = missingReference && !sharingComplete ? "the sharing and the functional unit" : missingReference ? "the functional unit" : "the sharing";
+      document.querySelector("#settings-warning-title").textContent = `Complete ${incompleteSettings} in the settings`;
       document.querySelector("#go-to-settings").textContent = inSettings ? "Complete fields" : "Go to settings";
     }
 
@@ -2733,6 +2734,7 @@
         document.querySelector("#circularity-content").hidden = !circularityVisible;
         document.querySelector("#synthesis-circularity").hidden = !synthesisVisible;
         document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity Levers" : leversVisible ? "Material & Process Levers" : "Synthesis";
+        document.querySelector(detailVisible ? "#model-detail-view > .models-title" : "#models-view > .models-title").after(settingsWarning);
         document.querySelector("#detail-notice").hidden = true;
         document.querySelector("#synthesis-nav").classList.toggle("active", synthesisVisible);
         if (synthesisVisible) document.querySelector("#synthesis-nav").setAttribute("aria-current", "page");
