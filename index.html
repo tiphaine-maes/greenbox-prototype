@@ -1387,6 +1387,7 @@
           </dl>
         </section>
       </div>
+      <p class="prototype-context" id="repairability-import-modification" hidden></p>
       <div class="design-sheet-fields" id="circularity-binary-fields" hidden>
         <fieldset>
           <legend id="circularity-binary-question"></legend>
@@ -1512,6 +1513,10 @@
       {
         code: "306855", name: "RUN500 110 BR", universe: "Hard equipment", image: "treadmill-preview.png",
         process: "54 - Metal", nature: "26353 - Treadmill", unit: "HARD TREADMILL",
+        repairability: {
+          importExample: { diagnostic: "RUN500", evaluation: "RUN500_306855", coveredFailures: 100, index: 9.27 },
+          modified: "20/12/2023", modifiedISO: "2023-12-20", modifiedBy: "Gregory M",
+        },
         modelDefinitions: [
           ["8542707", "Run 500 220V EN", "#FFFFFF"],
           ["8542708", "RUN500 220V CN", "#FFFFFF"],
@@ -1736,6 +1741,11 @@
         bomByYear: new Map(), calculatedYears: new Set(), preferredResultsByYear: new Map(),
         calculationDates: new Map(), designLeversByYear: new Map(), circularityByYear: new Map(),
       })));
+      additionalProducts.filter((product) => product.repairability).forEach((product) => {
+        models.filter((model) => model.productCode === product.code).forEach((model) => {
+          model.circularityByYear.set("Repairability", new Map([[2023, structuredClone(product.repairability)]]));
+        });
+      });
       const products = [
         { code: "351243", name: "SHORT RUN CORE W", image: "product-preview.png", route: "#all-model-code", nature: "25055 - Shorts", process: "21 - Synthetic Knit", modified: "TMAES26 \u00a0 23/10/2026" },
         { code: "342976", name: "GRVL AF SRAM APEX", image: "gravel-preview.png", route: "#all-model-code/342976", nature: "11706 - Gravel bike", process: "48 - Bikes", modified: "TMAES26 \u00a0 23/10/2026" },
@@ -2195,13 +2205,15 @@
               badge.classList.toggle("stale", year > lever.validYear);
             }
             if (lever.modified) {
+              const author = surface.querySelector(".circularity-modified");
+              if (author) author.firstChild.textContent = lever.modifiedBy || "TMAES26";
               const time = surface.querySelector("time");
               if (time) {
                 time.textContent = lever.modified;
                 time.dateTime = lever.modifiedISO;
               }
               const caption = surface.querySelector(".impact-caption");
-              if (caption) caption.innerHTML = `TMAES26<br>${lever.modified}`;
+              if (caption) caption.innerHTML = `${lever.modifiedBy || "TMAES26"}<br>${lever.modified}`;
             }
           });
         });
@@ -2520,7 +2532,9 @@
         const binary = ["Durability", "Rental"].includes(name);
         circularityEditTarget = { model: detailModel, year, name };
         circularityForm.reset();
-        const demoRepairability = Boolean(activeProduct.demo) && name === "Repairability";
+        const repairability = modelCircularityLevers(detailModel, year).find((lever) => lever.name === "Repairability");
+        const suppliedRepairability = Boolean(activeProduct.repairability);
+        const demoRepairability = Boolean(activeProduct.demo) && !suppliedRepairability && name === "Repairability";
         ["#demo-covered-failures", "#demo-repairability-index"].forEach((selector) => {
           const input = document.querySelector(selector);
           input.hidden = !demoRepairability;
@@ -2528,20 +2542,25 @@
           input.required = demoRepairability;
         });
         document.querySelectorAll(".repairability-import-name").forEach((label, index) => {
-          label.textContent = activeProduct.demo ? "--" : index === 0 ? "Airbed" : "Aircomfort avec kit répa";
+          label.textContent = repairability.importExample?.[index === 0 ? "diagnostic" : "evaluation"] || (activeProduct.demo ? "--" : index === 0 ? "Airbed" : "Aircomfort avec kit répa");
         });
-        document.querySelector("#repairability-import-fields > .impact-caption").textContent = activeProduct.demo
+        document.querySelector("#repairability-import-fields > .impact-caption").textContent = suppliedRepairability
+          ? "Evaluation supplied for this prototype; no external service is connected."
+          : activeProduct.demo
           ? "Manual demo entry only. No diagnostic or evaluation has been imported; the shared grading rubric is a test hypothesis."
           : "Prototype example from the supplied form; no external service is connected.";
         document.querySelector("#repairability-covered-failures").hidden = demoRepairability;
         document.querySelector("#repairability-index").hidden = demoRepairability;
+        const modification = document.querySelector("#repairability-import-modification");
+        modification.hidden = name !== "Repairability" || !repairability.modified;
+        modification.textContent = repairability.modified ? `Last modification: ${repairability.modified} by ${repairability.modifiedBy || "TMAES26"}` : "";
         document.querySelector("#circularity-sheet-title").textContent = `Update ${name}`;
         document.querySelector("#repairability-import-fields").hidden = name !== "Repairability";
         if (name === "Repairability") {
-          document.querySelector("#circularity-sheet-title").textContent = "Import Repairability";
+          document.querySelector("#circularity-sheet-title").textContent = suppliedRepairability ? "Repairability Index" : "Import Repairability";
           document.querySelector("#repairability-import-icon").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">${circularityLevers.find((lever) => lever.name === "Repairability").icon}</svg>`;
           const imported = modelCircularityLevers(detailModel, year).find((lever) => lever.name === name).importExample;
-          document.querySelector("#repairability-covered-failures").textContent = imported?.coveredFailures ?? 82;
+          document.querySelector("#repairability-covered-failures").textContent = suppliedRepairability ? imported.coveredFailures.toFixed(2) : imported?.coveredFailures ?? 82;
           document.querySelector("#repairability-index").textContent = imported?.index ?? 6.98;
           document.querySelector("#demo-covered-failures").value = imported?.coveredFailures ?? "";
           document.querySelector("#demo-repairability-index").value = imported?.index ?? "";
@@ -2694,11 +2713,14 @@
           modifiedISO: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`,
         };
         if (name === "Repairability") {
-          const coveredFailures = Number(activeProduct.demo ? document.querySelector("#demo-covered-failures").value : document.querySelector("#repairability-covered-failures").textContent);
-          const index = Number(activeProduct.demo ? document.querySelector("#demo-repairability-index").value : document.querySelector("#repairability-index").textContent);
+          const supplied = products.find((product) => product.code === model.productCode).repairability;
+          const manual = activeProduct.demo && !supplied;
+          const coveredFailures = Number(manual ? document.querySelector("#demo-covered-failures").value : document.querySelector("#repairability-covered-failures").textContent);
+          const index = Number(manual ? document.querySelector("#demo-repairability-index").value : document.querySelector("#repairability-index").textContent);
           repairabilityGrade(index, coveredFailures);
           Object.assign(evaluation, {
-            importExample: { diagnostic: activeProduct.demo ? "" : "Airbed", evaluation: activeProduct.demo ? "" : "Aircomfort avec kit répa", coveredFailures, index },
+            ...(supplied ? structuredClone(supplied) : {}),
+            importExample: { diagnostic: supplied?.importExample.diagnostic || (activeProduct.demo ? "" : "Airbed"), evaluation: supplied?.importExample.evaluation || (activeProduct.demo ? "" : "Aircomfort avec kit répa"), coveredFailures, index },
           });
         } else if (name === "Recyclability") {
           const grade = modelCircularityLevers(model, year).find((lever) => lever.name === name).grade;
