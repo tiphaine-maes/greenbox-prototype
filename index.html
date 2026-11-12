@@ -604,6 +604,7 @@
     .circularity-link svg { width: 16px; height: 16px; flex-shrink: 0; }
     .design-actions { display: inline-flex; align-items: center; gap: 6px; background: #3643BA; border-color: #3643BA; color: white; }
     .design-sheet { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(600px, 100%); max-width: 100%; height: 100dvh; max-height: 100dvh; padding: 0; border: 0; background: white; color: #101010; }
+    .design-sheet.wide-circularity-sheet { width: min(900px, 100%); }
     .design-sheet::backdrop { background: rgb(0 0 0 / 55%); }
     .design-sheet form { display: flex; flex-direction: column; height: 100%; }
     .design-sheet-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; }
@@ -2302,6 +2303,7 @@
           document.querySelector("#repairability-import-icon").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">${circularityLevers.find((lever) => lever.name === "Repairability").icon}</svg>`;
         }
         circularitySheet.classList.toggle("recyclability-sheet", name === "Recyclability");
+        circularitySheet.classList.toggle("wide-circularity-sheet", ["Repairability", "Recyclability"].includes(name));
         recyclabilityFields.hidden = name !== "Recyclability";
         circularityBinaryFields.hidden = !binary;
         document.querySelector("#recyclability-result-view").hidden = true;
