@@ -1598,6 +1598,9 @@
         calculationDates: new Map([[2026, "23/10/2026"]]),
         designLeversByYear: new Map([[2026, { minimalWaste: false, efficiency: 4, modified: "06/11/26", minimalWasteCommunicated: false }]]),
       }));
+      models[0].circularityByYear = new Map([
+        ["Repairability", new Map([[2026, { grade: "B", color: "#008665" }]])],
+      ]);
       models.push({
         id: 18, productCode: "342976", status: "Not evaluated", code: "8766974", name: "GRVL AF APEX MONO",
         selected: false, bomByYear: new Map([[2026, { id: "001", method: "AUTO" }]]), calculatedYears: new Set(),
