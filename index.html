@@ -68,7 +68,6 @@
     .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
     .bike-product .product-meta,
     .bike-product .settings-warning,
-    .bike-product .synthesis-impact,
     .bike-product .synthesis-bottom,
     .bike-product .synthesis-cards,
     .bike-product .models-title .calculation,
@@ -1178,6 +1177,7 @@
             <option>BOTTOM SHORT WOMAN</option>
             <option>TOP T-SHIRT WOMAN</option>
             <option>JACKET WOMAN</option>
+            <option>BIKES - ROAD</option>
           </select>
         </div>
         <div class="field">
@@ -1186,6 +1186,7 @@
           <p class="error" id="reference-error">Enter a reference to complete the functional unit.</p>
         </div>
         <p class="hint">You can use this file to calculate the reference factor&nbsp; ›</p>
+        <div id="bike-use-type" hidden><h3>Use Type</h3><p class="hint">There is no use type associated with this Functional Unit</p></div>
       </section>
 
       <section class="card" id="sharing-card">
@@ -1404,6 +1405,36 @@
     const sharingByYear = {
       2026: ["100%", "", "", ""],
     };
+    const functionalUnit = document.querySelector("#functional-unit");
+    const sharingRows = [...document.querySelectorAll("#sharing-card tbody tr")];
+    const originalSpecification = sharingRows[0].cells[3].textContent;
+    const originalSourcing = sharingRows[0].cells[4].textContent;
+    const productSettings = new Map([
+      ["351243", { unit: "BOTTOM SHORT WOMAN", reference: "1", sharing: sharingByYear }],
+      ["342976", { unit: "BIKES - ROAD", reference: "1", sharing: { 2026: ["100", "", "", ""] } }],
+    ]);
+    let settingsProductCode = "351243";
+    function saveProductSettings() {
+      const settings = productSettings.get(settingsProductCode);
+      settings.unit = functionalUnit.value;
+      settings.reference = reference.value;
+      settings.sharing[currentYear()] = shares.map((input) => input.value);
+    }
+    function loadProductSettings(code) {
+      if (settingsProductCode === code) return;
+      saveProductSettings();
+      settingsProductCode = code;
+      const settings = productSettings.get(code);
+      functionalUnit.value = settings.unit;
+      reference.value = settings.reference;
+      shares.forEach((input, index) => input.value = settings.sharing[currentYear()]?.[index] || "");
+      const bike = code === "342976";
+      sharingRows.forEach((row, index) => row.hidden = bike && index > 0);
+      sharingRows[0].cells[3].textContent = bike ? "001 - 342976 - FP_1831 2024-Annual-RIVERSIDE (DP Portugal - RTE SA) | EDS" : originalSpecification;
+      sharingRows[0].cells[4].textContent = bike ? "DP Portugal" : originalSourcing;
+      document.querySelector("#bike-use-type").hidden = !bike;
+      document.querySelector("#functional-card > .hint").hidden = bike;
+    }
     const warningSvg = document.querySelector("#design-levers-warning svg").outerHTML;
     const settingsWarning = document.createElement("div");
     settingsWarning.className = "settings-warning";
@@ -1452,7 +1483,7 @@
     }
 
     function saveCurrentSharing() {
-      sharingByYear[currentYear()] = shares.map((input) => input.value);
+      saveProductSettings();
     }
 
     shares.forEach((input, index) => {
@@ -1464,7 +1495,7 @@
       button.addEventListener("click", () => {
         saveCurrentSharing();
         years.forEach((year) => year.setAttribute("aria-pressed", String(year === button)));
-        const valuesForYear = sharingByYear[button.textContent] || [];
+        const valuesForYear = productSettings.get(settingsProductCode).sharing[button.textContent] || [];
         shares.forEach((input, index) => {
           input.value = valuesForYear[index] || "";
         });
@@ -1479,7 +1510,8 @@
 
     function updateValidation() {
       const missingReference = !reference.value.trim();
-      const values = shares.map((input) => {
+      const values = shares.map((input, index) => {
+        if (sharingRows[index].hidden) return null;
         const text = input.value.trim().replace(/%$/, "").trim().replace(",", ".");
         return text === "" ? null : /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) ? Number(text) : NaN;
       });
@@ -1643,22 +1675,47 @@
         { id: "fossil", name: "Fossils resources", unit: "MJ", values: [247.232, 7.610, 9.560, 18.462, 1.033, -11.993], total: 271.904 },
         { id: "particulate", name: "Particulate matter", unit: "Disease Incidence", values: [0.002, 0, 0, 0, 0, 0], total: 0.002 },
       ];
+      const gravelIndicators = [
+        { id: "score", name: "Score", unit: "µPoint", values: [17516.579, 0, 1273.436, 649.576, 0, -3016.896], total: 16422.695 },
+        { id: "climate", name: "Climate change", unit: "kg CO2 eq.", values: [156.929, 0, 8.619, 3.615, 0, -30.288], total: 138.875 },
+        { id: "fresh", name: "Fresh eutroph.", unit: "g P eq.", values: [14.153, 0, 0.426, 0.009, 0, -1.665], total: 12.924 },
+        { id: "marine", name: "Marine eutroph.", unit: "g N eq.", values: [332.545, 0, 20.809, 24.728, 0, -20.317], total: 357.764 },
+        { id: "terrestrial", name: "Eutrophication terrestrial", unit: "mol N eq", values: [2.570, 0, 0.230, 0.272, 0, -0.216], total: 2.855 },
+        { id: "resource", name: "Resource use (minerals and metals)", unit: "g Sb eq.", values: [0.851, 0, 0.033, 0.001, 0, -0.064], total: 0.821 },
+        { id: "fossil", name: "Fossils resources", unit: "MJ", values: [1810.346, 0, 108.344, 47.110, 0, -467.160], total: 1498.639 },
+        { id: "particulate", name: "Particulate Matter", unit: "disease incidence", values: [0.026, 0, 0.003, 0.001, 0, -0.001], total: 0.028 },
+        { id: "water", name: "Water use", unit: "m3 world eq", values: [64.841, 0, 9.754, 0.129, 0, -15.768], total: 58.957 },
+        { id: "acidification", name: "Acidification", unit: "mol H+ eq", values: [1.189, 0, 0.080, 0.086, 0, -0.132], total: 1.224 },
+        { id: "ecotoxicity", name: "Ecotoxicity freshwater", unit: "CTUe", values: [1536.498, 0, 53.891, 38.380, 0, -1891.328], total: -262.559 },
+        { id: "cancer", name: "Human toxicity cancer", unit: "CTUh", values: [0, 0, 0, 0, 0, -0], total: 0 },
+        { id: "non-cancer", name: "Human toxicity non cancer", unit: "CTUh", values: [0, 0, 0, 0, 0, -0], total: 0 },
+        { id: "radiation", name: "Ionising radiation human health", unit: "kBq U235 eq", values: [5.397, 0, 0.246, 0.003, 0, -8.903], total: -3.257 },
+        { id: "land", name: "Land use", unit: "Pt", values: [9964.513, 0, 1002.014, 12.450, 0, -220.060], total: 10758.917 },
+        { id: "ozone", name: "Ozone depletion", unit: "kg CFC11 eq", values: [0, 0, 0, -0, 0, -0], total: 0 },
+        { id: "photochemical", name: "Photochemical ozone formation human health", unit: "kg NMVOC eq", values: [0.646, 0, 0.052, 0.065, 0, -0.070], total: 0.694 },
+      ];
       document.querySelector(".synthesis-impact h3 .synthesis-icon").innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M6.74883 5.36847C4.79738 6.91287 3.55078 9.30423 3.55078 12.0008C3.55078 15.9623 6.24126 19.2651 9.90448 20.1915L9.20773 16.5684L7.55078 14.9114V12.6901L9.59012 10.6508H13.9508V7.45078H13.4114L11.8114 9.05078H7.60519L6.74883 5.36847ZM8.08729 4.5017L8.79638 7.55078H11.1901L12.7901 5.95078H15.4508V12.1508H10.2114L9.05078 13.3114V14.2901L10.5938 15.8332L11.4788 20.4351C11.6514 20.4455 11.8255 20.4508 12.0008 20.4508C12.9551 20.4508 13.8713 20.2946 14.7252 20.0064L15.6067 15.3342L17.1508 13.7901V10.1508H20.2498C19.4119 6.36249 16.0506 3.55078 12.0008 3.55078C10.5862 3.55078 9.25566 3.89382 8.08729 4.5017ZM20.4438 11.6508H18.6508V14.4114L16.9948 16.0674L16.3987 19.2271C18.8331 17.7483 20.4508 15.0725 20.4508 12.0008C20.4508 11.8835 20.4484 11.7668 20.4438 11.6508ZM16.0451 21.101C19.5314 19.5573 21.9508 16.0731 21.9508 12.0008C21.9508 6.48657 17.515 2.05078 12.0008 2.05078C6.48657 2.05078 2.05078 6.48657 2.05078 12.0008C2.05078 17.515 6.48657 21.9508 12.0008 21.9508C13.4177 21.9508 14.7634 21.6579 15.9809 21.1291L16.0378 21.1398L16.0451 21.101Z" fill-rule="evenodd" clip-rule="evenodd" fill="#3643BA"/>
       </svg>`;
       document.querySelector(".synthesis-bottom .synthesis-card:first-child h3 .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Communication"] .synthesis-icon').innerHTML.replaceAll('fill="#616161"', 'fill="#3643BA"');
       document.querySelector(".synthesis-bottom .synthesis-card:last-child h3 .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Documents"] .synthesis-icon').innerHTML.replace('fill="#616161"', 'fill="#3643BA"');
       function renderImpact() {
-        const selected = document.querySelector("#impact-indicator").value;
-        const indicator = indicators.find((item) => item.id === selected);
+        const bike = activeProduct.code === "342976";
+        const productIndicators = bike ? gravelIndicators : indicators;
+        const selector = document.querySelector("#impact-indicator");
+        const previous = selector.value;
+        selector.replaceChildren(...productIndicators.map((item) => new Option(`${item.name} (${item.unit})`, item.id)));
+        selector.value = productIndicators.some((item) => item.id === previous) ? previous : "climate";
+        const selected = selector.value;
+        const indicator = productIndicators.find((item) => item.id === selected);
         document.querySelector("#impact-indicator-title").textContent = `${selected === "climate" ? "CO2 · " : ""}${indicator.name}`;
         document.querySelector("#impact-indicator-unit").textContent = indicator.unit;
-        document.querySelector("#impact-indicator-value").textContent = indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: selected === "climate" ? 1 : 3 });
-        document.querySelector("#climate-position").hidden = selected !== "climate";
+        document.querySelector("#impact-indicator-value").textContent = indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : selected === "climate" ? 1 : 3 });
+        document.querySelector("#climate-position").hidden = bike || selected !== "climate";
         const magnitude = indicator.values.reduce((sum, value) => sum + Math.abs(value), 0);
-        document.querySelector("#lifecycle-bar").innerHTML = indicator.values.map((value, index) => `<span style="--phase-width:${Math.abs(value) / magnitude * 100}%;--phase-color:${phaseColors[index]}"></span>`).join("");
-        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${value.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}</strong></span>`).join("");
-        document.querySelector("#impact-body").innerHTML = indicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${value.toFixed(3)}</td>`).join("")}<td>${item.total.toFixed(3)}</td></tr>`).join("");
+        document.querySelector("#lifecycle-bar").innerHTML = indicator.values.map((value, index) => `<span style="--phase-width:${magnitude ? Math.abs(value) / magnitude * 100 : 0}%;--phase-color:${phaseColors[index]}"></span>`).join("");
+        document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${value.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : 2 })}</strong></span>`).join("");
+        document.querySelector("#impact-body").innerHTML = productIndicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${value.toFixed(3)}</td>`).join("")}<td>${item.total.toFixed(3)}</td></tr>`).join("");
         document.querySelector("#impact-table-details").hidden = !impactExpanded;
         document.querySelector("#impact-more span").textContent = impactExpanded ? "See less" : "See more";
         document.querySelector("#impact-more").setAttribute("aria-expanded", String(impactExpanded));
@@ -1990,7 +2047,7 @@
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="border-left:5px solid ${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td>${model.productCode === "351243" ? "4.65" : "--"}</td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
+            <td>${model.productCode === "351243" ? "4.65" : "138.875"}</td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBom(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
             ${circularityCells}
             <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">2 Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul><li>Minimal Waste Design</li><li>Efficiency</li></ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
@@ -2603,6 +2660,7 @@
           ? products.find((product) => product.code === requestedModel.productCode)
           : productMatch ? products.find((product) => product.code === (productMatch[1] || "351243")) : null;
         if (requestedProduct && requestedProduct !== activeProduct) {
+          loadProductSettings(requestedProduct.code);
           activeProduct = requestedProduct;
           detailModel = null;
           modelSearch.value = "";
@@ -2675,6 +2733,7 @@
           else item.removeAttribute("aria-current");
         });
         renderModels();
+        renderImpact();
         updateValidation();
         window.scrollTo(0, 0);
         updateSidebarTop();
