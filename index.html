@@ -2023,8 +2023,14 @@
         return productModels().filter((model) => `${model.code} ${model.name}`.toLowerCase().includes(query));
       }
       function renderModels() {
-        const visible = visibleModels();
         const year = Number(currentYear());
+        const defaultBom = referenceBom(year);
+        if (defaultBom) {
+          productModels().forEach((model) => {
+            if (!model.bomByYear.has(year)) model.bomByYear.set(year, { id: defaultBom, method: "AUTO" });
+          });
+        }
+        const visible = visibleModels();
         updateBomOptions(bomPicker, year);
         document.querySelector(".compact-year").textContent = currentYear();
         const hasReferenceBom = Boolean(referenceBom(year));
