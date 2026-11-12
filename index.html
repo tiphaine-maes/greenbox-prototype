@@ -1490,6 +1490,7 @@
           material: ["Polyester from recycled bottles", "Recycled polypropylene", "Recycled rubber"],
           process: [],
         },
+        preferredMaterialLevers: ["Polyester from recycled bottles"],
         modelDefinitions: [
           ["8930252", "MTC-X SNEAKERS U BROWN", "#817067"],
           ["8930250", "MTC-X SNEAKERS U BLACK", "#3D3B3F"],
@@ -2275,6 +2276,13 @@
             names.forEach((name) => {
               const row = body.insertRow();
               [name, "--", "--", "--", "--"].forEach((value) => row.insertCell().textContent = value);
+              row.cells[1].textContent = "";
+              if (type === "material" && activeProduct.preferredMaterialLevers?.includes(name)) {
+                const tag = document.createElement("span");
+                tag.className = "preferred-tag";
+                tag.textContent = "Preferred Material";
+                row.cells[1].append(tag);
+              }
             });
           }
         });
