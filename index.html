@@ -1568,8 +1568,7 @@
       const showsSettingsWarning = /^#all-model-code(?:\/\d+)?$/.test(location.hash) || /^#model-code\/\d+$/.test(location.hash);
       settingsWarning.hidden = !saveButton.disabled || !showsSettingsWarning;
       const inSettings = location.hash === "#settings";
-      const incompleteSettings = missingReference && !sharingComplete ? "the sharing and the functional unit" : missingReference ? "the functional unit" : "the sharing";
-      document.querySelector("#settings-warning-title").textContent = `Complete ${incompleteSettings} in the settings`;
+      document.querySelector("#settings-warning-title").textContent = "Complete data sharing in the settings to calculate the environmental impact.";
       document.querySelector("#go-to-settings").textContent = inSettings ? "Complete fields" : "Go to settings";
     }
 
