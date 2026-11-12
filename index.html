@@ -1116,7 +1116,7 @@
               <tbody id="greige-components" hidden><tr class="lever-component"><td>8339050 - EL WST STD CFT MIX PL 40MM</td><td></td><td>1.10 %</td><td colspan="3"></td></tr></tbody>
             </table></div>
           </section>
-          <section class="levers-card" aria-labelledby="circularity-levers-title">
+          <section class="levers-card" aria-labelledby="circularity-levers-title" hidden>
             <div class="levers-card-heading"><h3 id="circularity-levers-title">Design For Circularity Levers <span>4 Levers</span></h3><a class="action compact circularity-link" id="go-to-circularity" href="#model-code/0/circularity"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M13.6641 8.00065C13.6641 4.87104 11.127 2.33398 7.9974 2.33398C4.86778 2.33398 2.33073 4.87104 2.33073 8.00065C2.33073 11.1303 4.86778 13.6673 7.9974 13.6673C11.127 13.6673 13.6641 11.1303 13.6641 8.00065ZM7.9974 1.33398C11.6793 1.33398 14.6641 4.31875 14.6641 8.00065C14.6641 11.6825 11.6793 14.6673 7.9974 14.6673C4.3155 14.6673 1.33073 11.6825 1.33073 8.00065C1.33073 4.31875 4.3155 1.33398 7.9974 1.33398ZM11.3712 8.00065L8.35095 11.0209L7.64384 10.3138L9.45696 8.50065H4.66406V7.50065L9.45696 7.50065L7.64384 5.68754L8.35095 4.98043L11.3712 8.00065Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg>Go to Design for circularity</a></div>
             <div class="table-wrap"><table class="levers-table">
               <colgroup><col style="width:42%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"><col style="width:14%"></colgroup>
@@ -2721,7 +2721,7 @@
         document.body.classList.toggle("circularity-view", circularityVisible);
         document.body.classList.toggle("placeholder-view", placeholderVisible);
         document.querySelector("#levers-content").hidden = !leversVisible;
-        document.querySelector("#shared-design-levers").hidden = !(leversVisible || circularityVisible);
+        document.querySelector("#shared-design-levers").hidden = !circularityVisible;
         document.querySelector("#circularity-content").hidden = !circularityVisible;
         document.querySelector("#synthesis-circularity").hidden = !synthesisVisible;
         document.querySelector("#synthesis-title").textContent = communicationVisible ? "Communication" : documentationVisible ? "Documentation" : circularityVisible ? "Design For Circularity" : leversVisible ? "Material & Process Levers" : "Synthesis";
