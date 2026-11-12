@@ -1392,7 +1392,7 @@
     const sidebar = document.querySelector("#sidebar");
     sidebar.addEventListener("pointerenter", () => document.body.classList.remove("sidebar-collapsed"));
     sidebar.addEventListener("pointerleave", () => {
-      if (!sidebar.matches(":focus-within")) document.body.classList.add("sidebar-collapsed");
+      document.body.classList.add("sidebar-collapsed");
     });
     sidebar.addEventListener("focusin", () => document.body.classList.remove("sidebar-collapsed"));
     sidebar.addEventListener("focusout", (event) => {
