@@ -2646,6 +2646,7 @@
       });
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       let previousViewHash = null;
+      let settingsReturnHash = null;
       let pageAnimations = [];
       reducedMotion.addEventListener("change", () => {
         if (reducedMotion.matches) {
@@ -2689,6 +2690,9 @@
           history.replaceState(null, "", "#home");
           navigateView();
           return;
+        }
+        if (location.hash === "#settings" && previousViewHash !== "#settings") {
+          settingsReturnHash = previousViewHash;
         }
         document.querySelector("#model-detail-view").hidden = !detailVisible;
         document.querySelector("#home-view").hidden = !homeVisible;
@@ -2833,7 +2837,10 @@
       if (saveButton.disabled) {
         document.querySelector("#functional-card").scrollIntoView({ behavior: "smooth" });
         (reference.value.trim() ? shares.find((input) => !input.value.trim()) : reference).focus();
+        return;
       }
+      saveCurrentSharing();
+      if (settingsReturnHash) location.hash = settingsReturnHash;
     });
 
     updateValidation();
