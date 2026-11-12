@@ -66,6 +66,13 @@
     .search-error[hidden] { display: none; }
     .search:has(input[aria-invalid="true"]) { outline: 2px solid #3643BA; }
     .search input[aria-invalid="true"] { border: 0; outline: none; box-shadow: none; }
+    .bike-product .product-meta,
+    .bike-product .settings-warning,
+    .bike-product .synthesis-impact,
+    .bike-product .synthesis-bottom,
+    .bike-product .synthesis-cards,
+    .bike-product .models-title .calculation,
+    .bike-product #levers-content > .levers-card:not(:has(#circularity-levers-title)) { display: none; }
     .brand { color: inherit; text-decoration: none; }
     body.home-view { --sidebar-width: 240px; }
     body.home-view .layout { --sidebar-width: 240px; }
@@ -1550,7 +1557,7 @@
         ["9034123", "SHORT RUN CORE W GREY N06B"],
       ];
       const models = modelNames.map(([code, name], index) => ({
-        id: index, status: modelStates[index], code, name,
+        id: index, productCode: "351243", status: modelStates[index], code, name,
         selected: false,
         bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { id: "004", method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
@@ -1558,13 +1565,25 @@
         calculationDates: new Map([[2026, "12/05/26 - 12:24"]]),
         designLeversByYear: new Map([[2026, { minimalWaste: false, efficiency: 4, modified: "06/11/26", minimalWasteCommunicated: false }]]),
       }));
+      models.push({
+        id: 18, productCode: "342976", status: "Not evaluated", code: "8766974", name: "GRVL AF APEX MONO",
+        selected: false, bomByYear: new Map(), calculatedYears: new Set(),
+        preferredResultsByYear: new Map(), calculationDates: new Map(), designLeversByYear: new Map(),
+      });
+      const products = [
+        { code: "351243", name: "SHORT RUN CORE W", image: "product-preview.png", route: "#all-model-code" },
+        { code: "342976", name: "GRVL AF SRAM APEX", image: "gravel-preview.png", route: "#all-model-code/342976" },
+      ];
+      let activeProduct = products[0];
+      function productModels() {
+        return models.filter((model) => model.productCode === activeProduct.code);
+      }
       const modelsBody = document.querySelector("#models-body");
       const modelSearch = document.querySelector("#model-search");
       const selectAllModels = document.querySelector("#select-all-models");
       const bomPicker = document.querySelector("#bom-picker");
       const applySelected = document.querySelector("#apply-selected");
       const productHeading = document.querySelector(".product-heading");
-      const productTitle = productHeading.querySelector("h1").textContent;
       const modelCodeNav = document.querySelector("#model-code-nav");
       function updateModelNavigation() {
         const selected = Boolean(detailModel);
@@ -1655,9 +1674,11 @@
         return `SS${String(year).slice(-2)} BOM ${id} : 351243 - SHORT RUN 500 W DRY`;
       }
       function updateBomOptions(selector, year) {
-        if (selector.dataset.year === String(year)) return;
-        selector.innerHTML = '<option value="">Select BOM</option>' + bomsByYear.get(year).map((id) => `<option value="${id}">${bomLabel(year, id)}</option>`).join("");
+        if (selector.dataset.year === String(year) && selector.dataset.product === activeProduct.code) return;
+        const available = activeProduct.code === "351243" ? bomsByYear.get(year) : [];
+        selector.innerHTML = '<option value="">Select BOM</option>' + available.map((id) => `<option value="${id}">${bomLabel(year, id)}</option>`).join("");
         selector.dataset.year = String(year);
+        selector.dataset.product = activeProduct.code;
       }
       const bomDropdowns = new Map();
       function closeBomDropdowns() {
@@ -1941,14 +1962,14 @@
       }
       function visibleModels() {
         const query = modelSearch.value.trim().toLowerCase();
-        return models.filter((model) => `${model.code} ${model.name}`.toLowerCase().includes(query));
+        return productModels().filter((model) => `${model.code} ${model.name}`.toLowerCase().includes(query));
       }
       function renderModels() {
         const visible = visibleModels();
         const year = Number(currentYear());
         updateBomOptions(bomPicker, year);
         document.querySelector(".compact-year").textContent = currentYear();
-        const hasReferenceBom = referenceBoms.has(year);
+        const hasReferenceBom = activeProduct.code === "351243" && referenceBoms.has(year);
         document.querySelector("#reference-bom").textContent = hasReferenceBom ? bomLabel(year, referenceBoms.get(year)) : "";
         document.querySelector("#reference-bom").hidden = !hasReferenceBom;
         document.querySelector("#reference-bom-tag").hidden = !hasReferenceBom;
@@ -1962,25 +1983,25 @@
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span class="circularity-score" style="--grade-color:${lever.color}" aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
-            <td style="border-left:5px solid ${modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
+            <td style="border-left:5px solid ${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td>4.65</td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
+            <td>${model.productCode === "351243" ? "4.65" : "--"}</td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBoms.get(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
             ${circularityCells}
             <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">2 Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul><li>Minimal Waste Design</li><li>Efficiency</li></ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
-            <td>TMAES26<span class="model-caption">17/03/27</span></td>
+            <td>${model.productCode === "351243" ? 'TMAES26<span class="model-caption">17/03/27</span>' : "--"}</td>
           </tr>`;
         }).join("");
         if (!visible.length) modelsBody.innerHTML = '<tr><td colspan="11">No model codes match your search.</td></tr>';
-        document.querySelector("#model-count").textContent = `${visible.length} Model Codes`;
-        const selectedCount = models.filter((model) => model.selected).length;
+        document.querySelector("#model-count").textContent = `${visible.length} Model Code${visible.length === 1 ? "" : "s"}`;
+        const selectedCount = productModels().filter((model) => model.selected).length;
         document.querySelector("#selected-count").textContent = `${selectedCount} model code selected`;
         bomPicker.disabled = selectedCount === 0;
         syncBomDropdown(bomPicker);
         applySelected.disabled = selectedCount === 0 || !bomPicker.value;
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
         selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
-        document.querySelector("#recalculate").disabled = !models.some((model) => model.bomByYear.has(Number(currentYear())));
+        document.querySelector("#recalculate").disabled = !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
         renderDetail();
       }
       let activeLeverTooltip = null;
@@ -2039,7 +2060,7 @@
       document.querySelector("#clear-model").addEventListener("click", () => {
         detailModel = null;
         updateModelNavigation();
-        if (location.hash === "#all-model-code") navigateView();
+        if (location.hash.startsWith("#all-model-code")) navigateView();
       });
       document.querySelectorAll("[data-model-section]").forEach((button) => button.addEventListener("click", () => {
         if (!detailModel) return;
@@ -2401,7 +2422,7 @@
         renderDetail();
       });
       document.querySelector("#recalculate").addEventListener("click", () => {
-        models.filter((model) => model.bomByYear.has(Number(currentYear()))).forEach(markCalculated);
+        productModels().filter((model) => model.bomByYear.has(Number(currentYear()))).forEach(markCalculated);
         renderModels();
         renderDetail();
       });
@@ -2491,7 +2512,7 @@
         const year = Number(currentYear());
         const id = selectedOnly ? bomPicker.value : referenceBoms.get(year);
         if (!id) return;
-        models.filter((model) => !selectedOnly || model.selected).forEach((model) => {
+        productModels().filter((model) => !selectedOnly || model.selected).forEach((model) => {
           model.bomByYear.set(year, { id, method: selectedOnly ? "MANUAL" : "AUTO" });
           model.calculatedYears.delete(Number(currentYear()));
           model.calculationDates.delete(Number(currentYear()));
@@ -2513,6 +2534,7 @@
         button.setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
       });
       const favoriteProducts = [
+        ["342976", "GRVL AF SRAM APEX"],
         ["363217", "SHORT 2in1 RUN FLOW W"],
         ["352352", "Yoga Mat Grip"],
         ["352938", "KIPRIDE W"],
@@ -2534,11 +2556,12 @@
           const item = document.createElement("article");
           item.className = "favorite-item";
           const image = document.createElement("img");
-          image.src = "product-preview.png";
+          const product = products.find((candidate) => candidate.code === code);
+          image.src = product ? product.image : "product-preview.png";
           image.alt = "";
           const label = document.createElement("a");
           label.className = "favorite-item-name";
-          label.href = "#all-model-code";
+          label.href = product ? product.route : "#all-model-code";
           const productCode = document.createElement("strong");
           productCode.textContent = code;
           label.append(productCode, document.createTextNode(name));
@@ -2583,6 +2606,17 @@
         const favoritesVisible = location.hash === "#favorites";
         const detailMatch = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
         const requestedModel = detailMatch ? models.find((model) => model.id === Number(detailMatch[1])) : null;
+        const productMatch = location.hash.match(/^#all-model-code(?:\/(\d+))?$/);
+        const requestedProduct = requestedModel
+          ? products.find((product) => product.code === requestedModel.productCode)
+          : productMatch ? products.find((product) => product.code === (productMatch[1] || "351243")) : null;
+        if (requestedProduct && requestedProduct !== activeProduct) {
+          activeProduct = requestedProduct;
+          detailModel = null;
+          modelSearch.value = "";
+          bomPicker.value = "";
+          document.querySelector("#models-notice").hidden = true;
+        }
         if (requestedModel) detailModel = requestedModel;
         const detailVisible = Boolean(requestedModel);
         const leversVisible = detailVisible && detailMatch[2] === "levers";
@@ -2591,7 +2625,7 @@
         const documentationVisible = detailVisible && detailMatch[2] === "documentation";
         const placeholderVisible = communicationVisible || documentationVisible;
         const synthesisVisible = detailVisible && !leversVisible && !circularityVisible && !placeholderVisible;
-        const modelsVisible = location.hash === "#all-model-code";
+        const modelsVisible = Boolean(productMatch && requestedProduct);
         if (!detailVisible && !modelsVisible && !favoritesVisible && !homeVisible && location.hash !== "#settings") {
           history.replaceState(null, "", "#home");
           navigateView();
@@ -2602,7 +2636,12 @@
         document.body.classList.toggle("home-view", homeVisible);
         document.querySelector("#favorites-view").hidden = !favoritesVisible;
         document.querySelector("#favorites-footer").hidden = !favoritesVisible;
-        productHeading.querySelector("h1").textContent = detailVisible ? `${detailModel.code} - ${detailModel.name}` : productTitle;
+        productHeading.querySelector("h1").textContent = detailVisible ? `${detailModel.code} - ${detailModel.name}` : `${activeProduct.code} - ${activeProduct.name}`;
+        productHeading.querySelector("img").src = activeProduct.image;
+        productHeading.querySelector("img").alt = activeProduct.name;
+        document.body.classList.toggle("bike-product", activeProduct.code === "342976" && (modelsVisible || detailVisible));
+        document.querySelector('[data-page="all-model-code"]').href = activeProduct.route;
+        document.querySelector("#clear-model").href = activeProduct.route;
         document.querySelector(detailVisible ? "#detail-heading-slot" : "#models-view").prepend(productHeading);
         document.querySelector("#models-view").hidden = !modelsVisible;
         document.querySelector("#settings-view").hidden = modelsVisible || detailVisible || favoritesVisible || homeVisible;
@@ -2643,7 +2682,7 @@
           if (active && !detailVisible) item.setAttribute("aria-current", "page");
           else item.removeAttribute("aria-current");
         });
-        renderDetail();
+        renderModels();
         updateValidation();
         window.scrollTo(0, 0);
         updateSidebarTop();
@@ -2673,7 +2712,6 @@
         globalSearchError.hidden = true;
         globalSearchError.textContent = "";
       }
-      const conceptionCode = productTitle.split(" - ")[0].trim();
       function showGlobalSearchError() {
         globalSearch.setAttribute("aria-invalid", "true");
         globalSearchError.textContent = "The field must contain a valid model code (R3) or product code (CC)";
@@ -2681,7 +2719,7 @@
       }
       globalSearch.addEventListener("input", () => {
         const query = globalSearch.value.trim().toLowerCase();
-        const possibleMatch = conceptionCode.startsWith(query) || models.some((model) => model.code.startsWith(query));
+        const possibleMatch = products.some((product) => product.code.startsWith(query)) || models.some((model) => model.code.startsWith(query));
         if (!query || possibleMatch) clearGlobalSearchError();
         else showGlobalSearchError();
       });
@@ -2692,12 +2730,13 @@
         const query = event.target.value.trim().toLowerCase();
         if (!query) return;
         const match = models.find((model) => model.code === query);
+        const product = products.find((candidate) => candidate.code === query);
         if (match) {
           location.hash = `#model-code/${match.id}`;
-        } else if (query === conceptionCode) {
+        } else if (product) {
           modelSearch.value = "";
           renderModels();
-          location.hash = "#all-model-code";
+          location.hash = product.route;
         } else {
           showGlobalSearchError();
         }
