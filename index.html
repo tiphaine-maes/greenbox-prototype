@@ -2217,7 +2217,7 @@
             <header class="circularity-card-header"><div class="circularity-card-heading"><span class="synthesis-icon">${icon(lever.icon)}</span><h3>${lever.name}</h3></div>${circularityValue(lever) ? '<div class="circularity-modified" aria-label="Last modified">TMAES26<time datetime="2026-10-23">23/10/2026</time></div>' : ""}</header>
             <div class="circularity-card-body">
             ${["Durability", "Rental"].includes(lever.name) && (lever.name !== "Durability" || typeof lever.answer === "boolean") ? `<p class="circularity-question">${lever.name === "Durability" ? "Does the product meet the durability criteria?" : "Is the product suitable for rental?"}</p>` : ""}
-            <div class="circularity-result${["Durability", "Rental"].includes(lever.name) ? " binary" : ""}">
+            <div class="circularity-result${typeof lever.answer === "boolean" ? " binary" : ""}">
               ${lever.grade ? `<div class="circularity-grade" style="--grade-color:${lever.color};--grade-text:${["C", "D"].includes(lever.grade) ? "#272a3b" : "white"}" aria-hidden="true">${lever.grade}</div>` : ""}
               ${typeof lever.answer === "boolean" ? `<span class="circularity-answer${lever.answer ? " yes" : ""}">${lever.answer ? icon('<path d="m5 12 4 4L19 6"/>') : ""}${circularityValue(lever)}</span>${evaluationSticker(lever.state)}` : `<div>${lever.grade ? `<strong>${circularityGradeLabel(lever.name, lever.grade)}</strong>${["Repairability", "Recyclability"].includes(lever.name) ? circularitySubtitle(lever.name, lever.grade) : ""}` : ""}${evaluationSticker(lever.state)}</div>`}
             </div>
