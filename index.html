@@ -743,6 +743,19 @@
     .all-levers:hover { background: #f5f4f5; }
     .levers-view .all-levers { display: none; }
     .synthesis-impact { margin-bottom: 20px; }
+    .synthesis-results { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 12px; margin-bottom: 20px; }
+    .synthesis-results .synthesis-impact { margin-bottom: 0; }
+    .synthesis-settings { display: flex; flex-direction: column; gap: 16px; }
+    .synthesis-settings h3 { margin-bottom: 0; }
+    .settings-summary-block { padding: 16px; border: 1px solid #E1E0DF; border-radius: 8px; }
+    .settings-summary-block h4 { margin: 0 0 8px; font-size: 14px; font-weight: 600 !important; }
+    .settings-summary-block p { margin: 0; font-size: 12px; color: #616161; overflow-wrap: anywhere; }
+    .settings-sharing-summary { display: grid; gap: 12px; }
+    .settings-sharing-summary > div { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 8px; font-size: 12px; color: #616161; }
+    .synthesis-settings .action { align-self: flex-end; margin-top: auto; text-decoration: none; }
+    .levers-view .synthesis-results, .circularity-view .synthesis-results, .placeholder-view .synthesis-results { display: none; }
+    .synthesis-results .lifecycle-breakdown { flex-direction: column; }
+    @media (max-width: 1100px) { .synthesis-results { grid-template-columns: 1fr; } }
     .env-impact-unavailable { display: none; }
     .settings-incomplete .env-impact-value { display: none; }
     .settings-incomplete .env-impact-unavailable { display: inline; }
@@ -1143,6 +1156,7 @@
             </table></div>
           </section>
         </div>
+        <div class="synthesis-results">
         <article class="synthesis-card synthesis-impact">
           <h3><span class="synthesis-icon" aria-hidden="true">&#9678;</span>Environmental Impact</h3>
           <div class="impact-summary"><div><span id="impact-indicator-title">CO2 · Climate change</span><span class="impact-caption" id="impact-indicator-unit">kg CO2 eq.</span></div><strong id="impact-indicator-value">16,9</strong></div>
@@ -1152,6 +1166,13 @@
           <div class="table-wrap" id="impact-table-details" hidden><table class="impact-table"><thead><tr><th>Lifecycle phase</th><th>Material and<br>production</th><th>Manufacturing</th><th>Packaging</th><th>Distribution</th><th>Use</th><th>End of life</th><th>Total</th></tr></thead><tbody id="impact-body"></tbody></table></div>
           <button type="button" class="action compact center-action" id="impact-more" aria-expanded="false" aria-controls="impact-table-details"><span>See more</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3.64453 6.35348L4.35164 5.64637L7.99809 9.29282L11.6445 5.64637L12.3516 6.35348L7.99809 10.707L3.64453 6.35348Z" fill-rule="evenodd" clip-rule="evenodd" fill="#101010"/></svg></button>
         </article>
+        <article class="synthesis-card synthesis-settings" aria-labelledby="settings-summary-title">
+          <h3 id="settings-summary-title"><span class="synthesis-icon" id="settings-summary-icon" aria-hidden="true"></span>Settings</h3>
+          <section class="settings-summary-block"><h4>Functional Unit</h4><p id="settings-summary-unit"></p></section>
+          <section class="settings-summary-block"><h4>Specifications Sharing</h4><div class="settings-sharing-summary" id="settings-summary-sharing"></div></section>
+          <a class="action compact" href="#settings">Settings</a>
+        </article>
+        </div>
         <div class="synthesis-bottom">
           <article class="synthesis-card"><h3><span class="synthesis-icon" aria-hidden="true">&#9743;</span>Communication</h3><div class="table-wrap"><table><thead><tr><th>Lever Name</th><th>Status</th><th>Legal Phrase / Communication Text</th><th>Blocked countries</th></tr></thead><tbody><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr><tr><td>Lever</td><td>Status</td><td>Texte</td><td>Countries</td></tr></tbody></table></div><button class="action compact center-action" type="button" data-detail-preview="Communication">Toute la communication</button></article>
           <article class="synthesis-card"><h3><span class="synthesis-icon" aria-hidden="true">&#128206;</span>Documents</h3><div class="document-item"><span class="synthesis-icon" aria-hidden="true">&#9783;</span><div>Document name<span class="impact-caption">Type</span></div></div><div class="document-item"><span class="synthesis-icon" aria-hidden="true">&#9783;</span><div>Document name<span class="impact-caption">Type</span></div></div><button class="action compact center-action" type="button" data-detail-preview="Documents">Tous les documents</button></article>
@@ -1557,6 +1578,7 @@
       saveButton.disabled = missingReference || !sharingComplete;
       document.body.classList.toggle("settings-incomplete", saveButton.disabled);
       renderImpact();
+      renderSettingsSummary();
       document.querySelector("#recalculate").disabled = saveButton.disabled || !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
       document.querySelector("#detail-recalculate").disabled = saveButton.disabled || !detailModel?.bomByYear.has(Number(currentYear()));
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
@@ -1726,6 +1748,23 @@
       </svg>`;
       document.querySelector(".synthesis-bottom .synthesis-card:first-child h3 .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Communication"] .synthesis-icon').innerHTML.replaceAll('fill="#616161"', 'fill="#3643BA"');
       document.querySelector(".synthesis-bottom .synthesis-card:last-child h3 .synthesis-icon").innerHTML = document.querySelector('[data-model-section="Documents"] .synthesis-icon').innerHTML.replace('fill="#616161"', 'fill="#3643BA"');
+      function renderSettingsSummary() {
+        document.querySelector("#settings-summary-icon").innerHTML = document.querySelector("#settings-nav svg").outerHTML;
+        document.querySelector("#settings-summary-unit").textContent = reference.value.trim() ? functionalUnit.selectedOptions[0].textContent : "--";
+        const summary = document.querySelector("#settings-summary-sharing");
+        summary.replaceChildren();
+        shares.forEach((input, index) => {
+          if (sharingRows[index].hidden || !input.value.trim()) return;
+          const row = document.createElement("div");
+          const percent = document.createElement("span");
+          percent.textContent = input.getAttribute("aria-invalid") === "true" ? "--" : `${input.value.trim().replace(/%$/, "")}%`;
+          const description = document.createElement("p");
+          description.textContent = `${sharingRows[index].cells[3].textContent.trim()} — ${sharingRows[index].cells[4].textContent.trim()}`;
+          row.append(percent, description);
+          summary.append(row);
+        });
+        if (!summary.children.length) summary.textContent = "--";
+      }
       function renderImpact() {
         const hasResults = !saveButton.disabled;
         const bike = activeProduct.code === "342976";
