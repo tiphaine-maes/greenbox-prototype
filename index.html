@@ -2264,6 +2264,7 @@
         return model.preferredResultsByYear.get(validYear) || null;
       }
       function designLeverResults(model, year) {
+        if (model.productCode !== "351243") return [];
         return [
           { key: "minimalWaste", name: "Minimal Waste Design" },
           { key: "efficiency", name: "Efficiency" },
@@ -2346,7 +2347,10 @@
         const year = Number(currentYear());
         renderCircularity(year);
         updateCircularityValidity(year);
-        document.querySelector("#design-levers-body").innerHTML = designLeverResults(detailModel, year).map((lever) => `<tr><td><span class="design-lever-name">${lever.name}</span></td><td class="lever-percent">${lever.value !== "" ? lever.value : evaluationSticker("Not activated")}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : "--"}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${lever.modified}</span>` : "--"}</td><td>${lever.value !== "" ? `<span class="circularity-validity${year > lever.validYear ? " stale" : ""}">Valid from ${lever.validYear}</span>` : "--"}</td></tr>`).join("");
+        const designLevers = designLeverResults(detailModel, year);
+        document.querySelector("#design-levers-title span").textContent = `${designLevers.length} Levers`;
+        document.querySelector("#edit-design-levers").hidden = !designLevers.length;
+        document.querySelector("#design-levers-body").innerHTML = designLevers.length ? designLevers.map((lever) => `<tr><td><span class="design-lever-name">${lever.name}</span></td><td class="lever-percent">${lever.value !== "" ? lever.value : evaluationSticker("Not activated")}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : "--"}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${lever.modified}</span>` : "--"}</td><td>${lever.value !== "" ? `<span class="circularity-validity${year > lever.validYear ? " stale" : ""}">Valid from ${lever.validYear}</span>` : "--"}</td></tr>`).join("") : '<tr><td colspan="5">No Design Levers</td></tr>';
         const bom = detailModel.bomByYear.get(year);
         const preferred = preferredResults(detailModel, year);
         document.querySelectorAll(".synthesis-cards > .synthesis-card").forEach((card, index) => {
@@ -3105,7 +3109,7 @@
         }
       }
       document.querySelector("#edit-design-levers").addEventListener("click", () => {
-        if (!detailModel) return;
+        if (!detailModel || detailModel.productCode !== "351243") return;
         const year = Number(currentYear());
         designEditTarget = { model: detailModel, year };
         const results = designLeverResults(detailModel, year);
