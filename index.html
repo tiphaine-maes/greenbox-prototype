@@ -2673,7 +2673,18 @@
         globalSearchError.hidden = true;
         globalSearchError.textContent = "";
       }
-      globalSearch.addEventListener("input", clearGlobalSearchError);
+      const conceptionCode = productTitle.split(" - ")[0].trim();
+      function showGlobalSearchError() {
+        globalSearch.setAttribute("aria-invalid", "true");
+        globalSearchError.textContent = "The field must contain a valid model code (R3) or product code (CC)";
+        globalSearchError.hidden = false;
+      }
+      globalSearch.addEventListener("input", () => {
+        const query = globalSearch.value.trim().toLowerCase();
+        const possibleMatch = conceptionCode.startsWith(query) || models.some((model) => model.code.startsWith(query));
+        if (!query || possibleMatch) clearGlobalSearchError();
+        else showGlobalSearchError();
+      });
       globalSearch.addEventListener("keydown", (event) => {
         if (event.key !== "Enter") return;
         event.preventDefault();
@@ -2683,14 +2694,12 @@
         const match = models.find((model) => model.code === query);
         if (match) {
           location.hash = `#model-code/${match.id}`;
-        } else if (query === productTitle.split(" - ")[0].trim()) {
+        } else if (query === conceptionCode) {
           modelSearch.value = "";
           renderModels();
           location.hash = "#all-model-code";
         } else {
-          globalSearch.setAttribute("aria-invalid", "true");
-          globalSearchError.textContent = "The field must contain a valid model code (R3) or product code (CC)";
-          globalSearchError.hidden = false;
+          showGlobalSearchError();
         }
       });
       document.querySelectorAll("[data-home-info]").forEach((button) => button.addEventListener("click", () => {
