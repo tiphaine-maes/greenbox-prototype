@@ -1487,10 +1487,15 @@
         code: "361118", name: "MTC-X SNEAKERS U", universe: "Footwear", image: "footwear-preview.png",
         process: "26 - Footwear", nature: "11713 - Trainers", unit: "SHOES WALKING MAN",
         levers: {
-          material: ["Polyester from recycled bottles", "Recycled polypropylene", "Recycled rubber"],
+          material: ["Polyester from recycled bottles", "Silica-based rubber from rice husks", "Recycled rubber"],
           process: [],
         },
         preferredMaterialLevers: ["Polyester from recycled bottles"],
+        materialLeverShares: {
+          "Polyester from recycled bottles": 45,
+          "Silica-based rubber from rice husks": 3,
+          "Recycled rubber": 1,
+        },
         modelDefinitions: [
           ["8930252", "MTC-X SNEAKERS U BROWN", "#817067"],
           ["8930250", "MTC-X SNEAKERS U BLACK", "#3D3B3F"],
@@ -2276,6 +2281,9 @@
             names.forEach((name) => {
               const row = body.insertRow();
               [name, "--", "--", "--", "--"].forEach((value) => row.insertCell().textContent = value);
+              const share = type === "material" ? activeProduct.materialLeverShares?.[name] : null;
+              row.cells[2].textContent = share == null ? "--" : `${share} %`;
+              row.cells[2].className = "lever-percent";
               row.cells[1].textContent = "";
               if (type === "material" && activeProduct.preferredMaterialLevers?.includes(name)) {
                 const tag = document.createElement("span");
@@ -2527,7 +2535,7 @@
           });
           const note = document.createElement("p");
           note.className = "bom-composition-example";
-          note.textContent = "Component weights and calculation details have not been provided. No preferred percentage has been calculated.";
+          note.textContent = "Declared material percentages are shown below. Component weights in grams and calculation details have not been provided.";
           productCompositionBody.append(metadata, note);
           ["material", "process"].forEach((type) => {
             const title = document.createElement("h3");
@@ -2552,7 +2560,8 @@
             }
             names.forEach((name) => {
               const row = body.insertRow();
-              [name, "--", "--"].forEach((text) => row.insertCell().textContent = text);
+              const share = type === "material" ? activeProduct.materialLeverShares?.[name] : null;
+              [name, "--", share == null ? "--" : `${share} %`].forEach((text) => row.insertCell().textContent = text);
             });
             wrapper.append(table);
             productCompositionBody.append(title, wrapper);
