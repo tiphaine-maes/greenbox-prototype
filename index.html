@@ -615,7 +615,7 @@
     .design-sheet legend, .design-sheet-fields > label { margin-bottom: 16px; color: #101010; font-size: 14px; }
     .design-sheet-radios { display: flex; gap: 24px; margin-top: 16px; }
     .design-sheet-radios label { display: flex; align-items: center; gap: 12px; margin: 0; color: #101010; }
-    .design-sheet-radios input { width: 20px; height: 20px; margin: 0; accent-color: #3643BA; }
+    .design-sheet-radios input, .recyclability-binary input { appearance: auto; flex: 0 0 20px; width: 20px; height: 20px; padding: 0; margin: 0; accent-color: #3643BA; }
     .design-sheet-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 20px 24px; border-top: 1px solid #E1E0DF; }
     .recyclability-section { margin: 0 0 28px; }
     .recyclability-section h3 { margin: 0 0 16px; padding-bottom: 4px; border-bottom: 1px solid #E1E0DF; font-size: 16px; font-weight: 600 !important; }
@@ -649,8 +649,6 @@
     .recyclability-toggle[aria-checked="true"]::after { position: absolute; top: 8px; left: 25px; width: 8px; height: 4px; transform: rotate(-45deg); border-bottom: 2px solid #3643ba; border-left: 2px solid #3643ba; content: ""; }
     .recyclability-binary { display: flex; align-items: center; gap: 6px; }
     .recyclability-binary label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; border: 1px solid #dedede; border-radius: 8px; font-size: 14px; }
-    .recyclability-binary input { appearance: none; width: 16px; height: 16px; margin: 0; border: 1px solid #949494; border-radius: 50%; background: #fff; }
-    .recyclability-binary input:checked { border: 1px solid #3643ba; background: #3643ba; box-shadow: inset 0 0 0 3px #fff; }
     .recyclability-stepper { display: inline-flex; width: 108px; height: 36px; align-items: center; justify-content: space-between; padding: 0 5px; border: 1px solid #aaa; border-radius: 24px; }
     .recyclability-stepper button { width: 26px; height: 30px; border: 0; background: transparent; color: #101010; font-size: 15px; cursor: pointer; }
     .recyclability-stepper output { min-width: 20px; font-size: 14px; text-align: center; font-variant-numeric: tabular-nums; }
@@ -1995,6 +1993,18 @@
         const validYear = Math.max(...[...model.preferredResultsByYear.keys()].filter((resultYear) => resultYear <= year));
         return model.preferredResultsByYear.get(validYear) || null;
       }
+      function designLeverResults(model, year) {
+        return [
+          { key: "minimalWaste", name: "Minimal Waste Design" },
+          { key: "efficiency", name: "Efficiency" },
+          { key: "pfcFree", name: "PFC free" },
+        ].map((lever) => {
+          const validYear = Math.max(...[...model.designLeversByYear.keys()].filter((value) => value <= year && model.designLeversByYear.get(value)[lever.key] != null));
+          const data = model.designLeversByYear.get(validYear);
+          const answer = data?.[lever.key];
+          return { ...lever, answer, validYear, modified: data?.modified, communicated: lever.key === "minimalWaste" && data?.minimalWasteCommunicated, value: answer == null ? "" : lever.key === "efficiency" ? `${answer} %` : answer ? "Yes" : "No" };
+        });
+      }
       function renderDetail() {
         if (!detailModel) return;
         document.querySelectorAll(".synthesis-cards .all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
@@ -2002,12 +2012,7 @@
         const year = Number(currentYear());
         renderCircularity(year);
         updateCircularityValidity(year);
-        const design = detailModel.designLeversByYear.get(year);
-        document.querySelector("#design-levers-body").innerHTML = [
-          { name: "Minimal Waste Design", value: design ? (design.minimalWaste ? "Yes" : "No") : "", communicated: design?.minimalWasteCommunicated },
-          { name: "Efficiency", value: design?.efficiency != null ? `${design.efficiency} %` : "", communicated: false },
-          { name: "PFC free", value: design?.pfcFree == null ? "" : design.pfcFree ? "Yes" : "No", communicated: false },
-        ].map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td><span class="design-lever-name">${lever.value === "" ? document.querySelector("#design-levers-warning svg").outerHTML : ""}${lever.name}</span></td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${design.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity">Valid from ${year}</span>` : ""}</td></tr>`).join("");
+        document.querySelector("#design-levers-body").innerHTML = designLeverResults(detailModel, year).map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td><span class="design-lever-name">${lever.value === "" ? document.querySelector("#design-levers-warning svg").outerHTML : ""}${lever.name}</span></td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${lever.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity${year > lever.validYear ? " stale" : ""}">Valid from ${lever.validYear}</span>` : ""}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const preferred = preferredResults(detailModel, year);
         document.querySelectorAll(".synthesis-cards > .synthesis-card").forEach((card, index) => {
@@ -2567,9 +2572,10 @@
         if (!detailModel) return;
         const year = Number(currentYear());
         designEditTarget = { model: detailModel, year };
-        const values = detailModel.designLeversByYear.get(year);
+        const results = designLeverResults(detailModel, year);
+        const values = Object.fromEntries(results.map((lever) => [lever.key, lever.answer]));
         designForm.reset();
-        if (values) designForm.querySelector(`[name="minimal-waste"][value="${values.minimalWaste ? "yes" : "no"}"]`).checked = true;
+        if (values.minimalWaste != null) designForm.querySelector(`[name="minimal-waste"][value="${values.minimalWaste ? "yes" : "no"}"]`).checked = true;
         efficiencyInput.value = values?.efficiency ?? "";
         if (values?.pfcFree != null) designForm.querySelector(`[name="pfc-free"][value="${values.pfcFree ? "yes" : "no"}"]`).checked = true;
         designSheet.showModal();
