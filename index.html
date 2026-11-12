@@ -482,6 +482,11 @@
     .models-table td { height: 84px; background: white; padding: 12px 10px; }
     .models-table td:first-child { position: relative; }
     .models-table td:first-child::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--model-color); }
+    .prototype-context { margin: 0 0 20px; padding: 12px 16px; border: 1px solid #E1E0DF; border-radius: 8px; background: white; color: #616161; font-size: 12px; line-height: 1.5; }
+    .design-sheet .prototype-context { margin: 0 24px 20px; }
+    .demo-product #levers-content .table-wrap,
+    .demo-product #levers-content [data-open-composition],
+    .demo-product .synthesis-bottom { display: none; }
     .models-table tbody tr:has([data-model-id]) { cursor: pointer; }
     .models-table tbody tr:has([data-model-id]):hover td { background: rgba(54, 67, 186, 0.05); }
     .models-table tbody tr:has([data-model-id]):focus-visible td { background: rgba(54, 67, 186, 0.05); }
@@ -1211,6 +1216,10 @@
             <option>TOP T-SHIRT WOMAN</option>
             <option>JACKET WOMAN</option>
             <option>BIKES - ROAD</option>
+            <option>READY TO EAT / DRINK</option>
+            <option>BALLS - FOOTBALL</option>
+            <option>HELMET BIKE AND SKATE ADULT</option>
+            <option>SHOES WALKING MAN</option>
           </select>
         </div>
         <div class="field">
@@ -1372,8 +1381,8 @@
           <div class="repairability-import-heading"><h3>Evaluation</h3><button type="button" disabled title="Evaluation URL not provided">Evaluation details &#8599;</button></div>
           <span>Name</span><strong class="repairability-import-name">Aircomfort avec kit répa</strong>
           <dl class="repairability-import-metrics">
-            <div><dt>Validated evaluation covered failures %</dt><dd><span class="repairability-import-icon" aria-hidden="true">%</span><div><strong id="repairability-covered-failures">82</strong>percent</div></dd></div>
-            <div><dt>Validated evaluation repairability index</dt><dd><span class="repairability-import-icon" id="repairability-import-icon" aria-hidden="true"></span><div><strong id="repairability-index">6.98</strong>/10</div></dd></div>
+            <div><dt>Validated evaluation covered failures %</dt><dd><span class="repairability-import-icon" aria-hidden="true">%</span><div><strong id="repairability-covered-failures">82</strong><input id="demo-covered-failures" type="number" min="0" max="100" step="any" aria-label="Demo covered failures percentage" placeholder="Enter %" hidden disabled>percent</div></dd></div>
+            <div><dt>Validated evaluation repairability index</dt><dd><span class="repairability-import-icon" id="repairability-import-icon" aria-hidden="true"></span><div><strong id="repairability-index">6.98</strong><input id="demo-repairability-index" type="number" min="0" max="10" step="any" aria-label="Demo repairability index" placeholder="Enter index" hidden disabled>/10</div></dd></div>
           </dl>
         </section>
       </div>
@@ -1458,10 +1467,60 @@
     const sharingRows = [...document.querySelectorAll("#sharing-card tbody tr")];
     const originalSpecification = sharingRows[0].cells[3].textContent;
     const originalSourcing = sharingRows[0].cells[4].textContent;
+    const additionalProducts = [
+      {
+        code: "357408", name: "ADULT HELMET CABANAS", universe: "Hard equipment", image: "helmet-preview.png",
+        process: "120 - Protection", nature: "25368 - Helmet", unit: "HELMET BIKE AND SKATE ADULT",
+        modelDefinitions: [
+          ["9001195", "URBAN HELMET 500 BOWL 1.4 Blue WEB", "#0E3A8E"],
+          ["9039496", "ADULT HELMET CABANAS", "#2C2D3D"],
+          ["8937970", "URBAN HELMET 500 BOWL 1.4 BEIGE", "#CFC2B1"],
+          ["8937972", "URBAN HELMET 500 BOWL 1.4 BLACK", "#2C2B2E"],
+          ["8938002", "URBAN HELMET 500 BOWL 1.4 YELLOW", "#FEE790"],
+          ["8938465", "URBAN HELMET 500 BOWL 1.4 BROWN", "#7B7063"],
+        ],
+      },
+      {
+        code: "361118", name: "MTC-X SNEAKERS U", universe: "Footwear", image: "footwear-preview.png",
+        process: "26 - Footwear", nature: "11713 - Trainers", unit: "SHOES WALKING MAN",
+        modelDefinitions: [
+          ["8930252", "MTC-X SNEAKERS U BROWN", "#817067"],
+          ["8930250", "MTC-X SNEAKERS U BLACK", "#3D3B3F"],
+          ["9037539", "MTC-X SNEAKERS U CHOCOLATE", "#6D403B"],
+        ],
+      },
+      {
+        code: "331004", name: "TRAINING BALL", universe: "Ball", image: "ball-preview.png",
+        process: "84 - Balls", nature: "10374 - Football", unit: "BALLS - FOOTBALL",
+        modelDefinitions: [
+          ["9027446", "TRAINING BALL S5 NEW YEAR", "#00000A"],
+          ["8789906", "TRAINING BALL SIZE 3", "#F7F7FF"],
+          ["8789908", "TRAINING BALL SIZE 4", "#F7F7FF"],
+          ["8789910", "TRAINING BALL SIZE 5", "#F7F7FF"],
+          ["8789911", "TRAINING BALL HIGH VISIBILITY SIZE 5", "#FF2C41"],
+        ],
+      },
+      {
+        code: "338118", name: "ULTRA FB X5", universe: "Nutrition", image: "nutrition-preview.png",
+        process: "181 - Food & Chemistry", nature: "25334 - Fruits bar", unit: "READY TO EAT / DRINK",
+        modelDefinitions: [
+          ["8734993", "ENERGY DATE BAR BANANA", "#FFFFFF"],
+          ["8734994", "ENERGY DATE BAR RED FRUITS", "#FFFFFF"],
+        ],
+      },
+    ].map((product) => ({
+      ...product, demo: true, route: `#all-model-code/${product.code}`, modified: "--",
+      bomName: `${product.code} - ${product.name} (Demo)`,
+      availableBoms: new Map([[2026, ["001", "002"]], [2027, ["001", "002"]]]),
+      referenceBoms: new Map([[2026, "001"], [2027, "002"]]),
+    }));
     const productSettings = new Map([
       ["351243", { unit: "BOTTOM SHORT WOMAN", reference: "1", sharing: sharingByYear }],
       ["342976", { unit: "BIKES - ROAD", reference: "1", sharing: { 2026: ["100", "", "", ""] } }],
     ]);
+    additionalProducts.forEach((product) => productSettings.set(product.code, {
+      unit: product.unit, reference: "1", sharing: { 2026: ["100", "", "", ""] },
+    }));
     let settingsProductCode = "351243";
     function saveProductSettings() {
       const settings = productSettings.get(settingsProductCode);
@@ -1478,11 +1537,14 @@
       reference.value = settings.reference;
       shares.forEach((input, index) => input.value = settings.sharing[currentYear()]?.[index] || "");
       const bike = code === "342976";
-      sharingRows.forEach((row, index) => row.hidden = bike && index > 0);
-      sharingRows[0].cells[3].textContent = bike ? "001 - 342976 - FP_1831 2024-Annual-RIVERSIDE (DP Portugal - RTE SA) | EDS" : originalSpecification;
-      sharingRows[0].cells[4].textContent = bike ? "DP Portugal" : originalSourcing;
+      const product = additionalProducts.find((candidate) => candidate.code === code);
+      sharingRows.forEach((row, index) => row.hidden = (bike || Boolean(product)) && index > 0);
+      sharingRows[0].cells[3].textContent = product ? `SS${currentYear().slice(-2)} - ${product.code} - ${product.name} | Demo specification` : bike ? "001 - 342976 - FP_1831 2024-Annual-RIVERSIDE (DP Portugal - RTE SA) | EDS" : originalSpecification;
+      sharingRows[0].cells[4].textContent = product ? "Demo sourcing" : bike ? "DP Portugal" : originalSourcing;
+      sharingRows.forEach((row) => row.cells[1].textContent = currentYear());
+      sharingRows[0].cells[3].textContent = sharingRows[0].cells[3].textContent.replace(/SS\d{2}/g, `SS${currentYear().slice(-2)}`);
       document.querySelector("#bike-use-type").hidden = !bike;
-      document.querySelector("#functional-card > .hint").hidden = bike;
+      document.querySelector("#functional-card > .hint").hidden = bike || Boolean(product);
     }
     const warningSvg = document.querySelector("#design-levers-warning svg").outerHTML;
     const settingsWarning = document.createElement("div");
@@ -1660,10 +1722,36 @@
         selected: false, bomByYear: new Map([[2026, { id: "001", method: "AUTO" }]]), calculatedYears: new Set(),
         preferredResultsByYear: new Map(), calculationDates: new Map(), designLeversByYear: new Map(),
       });
+      additionalProducts.forEach((product) => product.modelDefinitions.forEach(([code, name, color]) => models.push({
+        id: models.length, productCode: product.code, code, name, color, status: "Not evaluated", selected: false,
+        bomByYear: new Map(), calculatedYears: new Set(), preferredResultsByYear: new Map(),
+        calculationDates: new Map(), designLeversByYear: new Map(), circularityByYear: new Map(),
+      })));
       const products = [
         { code: "351243", name: "SHORT RUN CORE W", image: "product-preview.png", route: "#all-model-code", nature: "25055 - Shorts", process: "21 - Synthetic Knit", modified: "TMAES26 \u00a0 23/10/2026" },
         { code: "342976", name: "GRVL AF SRAM APEX", image: "gravel-preview.png", route: "#all-model-code/342976", nature: "11706 - Gravel bike", process: "48 - Bikes", modified: "TMAES26 \u00a0 23/10/2026" },
+        ...additionalProducts,
       ];
+      const demoContext = document.createElement("p");
+      demoContext.className = "prototype-context";
+      demoContext.textContent = "User-test demo — specifications and BOM references are fictitious. Lever applicability and shared forms are test hypotheses, not validated industry rules. No environmental calculation service is connected; unavailable results remain --.";
+      document.querySelector(".product-heading").after(demoContext);
+      document.querySelectorAll("#design-levers-form, #circularity-form").forEach((form) => {
+        const note = document.createElement("p");
+        note.className = "prototype-context";
+        note.dataset.demoFormNote = "";
+        note.hidden = true;
+        note.textContent = "Test hypothesis — this shared form has not been validated for this industry. Enter demo data only. No real calculation or import service is connected.";
+        form.querySelector("header").after(note);
+      });
+      ["material", "process"].forEach((type) => {
+        const note = document.createElement("p");
+        note.className = "prototype-context";
+        note.dataset.demoLeversNote = "";
+        note.textContent = "No material or process data provided for this demo product. No preferred percentage has been calculated.";
+        note.hidden = true;
+        document.querySelector(`#${type}-levers-title`).closest(".levers-card").append(note);
+      });
       let activeProduct = products[0];
       function productModels() {
         return models.filter((model) => model.productCode === activeProduct.code);
@@ -1775,7 +1863,7 @@
         if (!summary.children.length) summary.textContent = "--";
       }
       function renderImpact() {
-        const hasResults = !saveButton.disabled;
+        const hasResults = !saveButton.disabled && !activeProduct.demo;
         const bike = activeProduct.code === "342976";
         const productIndicators = bike ? gravelIndicators : indicators;
         const selector = document.querySelector("#impact-indicator");
@@ -1805,15 +1893,16 @@
       const referenceBoms = new Map([[2026, "004"], [2027, "002"]]);
       const gravelReferenceBoms = new Map([[2026, "001"]]);
       function referenceBom(year) {
-        return (activeProduct.code === "342976" ? gravelReferenceBoms : referenceBoms).get(year);
+        return (activeProduct.referenceBoms || (activeProduct.code === "342976" ? gravelReferenceBoms : referenceBoms)).get(year);
       }
       function bomLabel(year, id) {
+        if (activeProduct.bomName) return `SS${String(year).slice(-2)} BOM ${id} : ${activeProduct.bomName}`;
         if (activeProduct.code === "342976") return `SS${String(year).slice(-2)} BOM ${id} : 342976 - GRVL XPLR 520`;
         return `SS${String(year).slice(-2)} BOM ${id} : 351243 - SHORT RUN 500 W DRY`;
       }
       function updateBomOptions(selector, year) {
         if (selector.dataset.year === String(year) && selector.dataset.product === activeProduct.code) return;
-        const available = activeProduct.code === "351243" ? bomsByYear.get(year) : gravelReferenceBoms.has(year) ? [gravelReferenceBoms.get(year)] : [];
+        const available = activeProduct.availableBoms?.get(year) || (activeProduct.code === "351243" ? bomsByYear.get(year) : gravelReferenceBoms.has(year) ? [gravelReferenceBoms.get(year)] : []);
         selector.innerHTML = '<option value="">Select BOM</option>' + available.map((id) => `<option value="${id}">${bomLabel(year, id)}</option>`).join("");
         selector.dataset.year = String(year);
         selector.dataset.product = activeProduct.code;
@@ -1997,7 +2086,7 @@
               const grade = repairabilityGrade(index, coveredFailures);
               evaluation = { ...evaluation, grade, color: { A: "#3944c4", B: "#70b900", C: "#ffc400", D: "#ff8000", E: "#ff2400" }[grade] };
             }
-            return { ...lever, ...evaluation, validYear, state: evaluation.grade ? circularityEvaluationState(evaluation.grade) : evaluation.answer ? "Validated" : "Evaluated", communicated: false };
+            return { ...lever, ...evaluation, validYear, state: evaluation.grade ? circularityEvaluationState(evaluation.grade) : typeof evaluation.answer === "boolean" ? (evaluation.answer ? "Validated" : "Evaluated") : "Not evaluated", communicated: false };
           }
           return year < 2026 || model.status === "Not evaluated"
           ? { ...lever, grade: "", answer: undefined, state: "Not evaluated", color: undefined, communicated: false }
@@ -2143,17 +2232,18 @@
         modelsBody.innerHTML = visible.map((model) => {
           const bom = model.bomByYear.get(Number(currentYear()));
           const preferred = preferredResults(model, year);
-          const hasLevers = model.status !== "Not evaluated";
+          const activatedDesignLevers = designLeverResults(model, year).filter((lever) => lever.value !== "");
+          const hasLevers = activeProduct.demo ? activatedDesignLevers.length > 0 : model.status !== "Not evaluated";
           const circularityCells = modelCircularityLevers(model, year).filter((lever) => lever.name !== "Rental").map((lever) => {
             const evaluated = circularityValue(lever);
             return `<td>${evaluated ? typeof lever.answer === "boolean" ? `<span>${circularityValue(lever)}</span>` : `<span aria-label="${lever.name}: ${lever.grade}, ${circularityEvaluationState(lever.grade)}">${lever.grade}</span>` : evaluationSticker("Not evaluated")}</td>`;
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
-            <td style="--model-color:${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
+            <td style="--model-color:${model.color || (model.productCode === "342976" ? "#deccb7" : modelColors[model.id])}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td><span class="model-code">${model.code}</span><span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td><span class="env-impact-value">${model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
+            <td><span class="env-impact-value">${activeProduct.demo ? "--" : model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
-            <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">2 Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul><li>Minimal Waste Design</li><li>Efficiency</li></ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
+            <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">${activeProduct.demo ? activatedDesignLevers.length : 2} Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul>${(activeProduct.demo ? activatedDesignLevers.map((lever) => lever.name) : ["Minimal Waste Design", "Efficiency"]).map((name) => `<li>${name}</li>`).join("")}</ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBom(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
           </tr>`;
         }).join("");
@@ -2372,14 +2462,31 @@
         const binary = ["Durability", "Rental"].includes(name);
         circularityEditTarget = { model: detailModel, year, name };
         circularityForm.reset();
+        const demoRepairability = Boolean(activeProduct.demo) && name === "Repairability";
+        ["#demo-covered-failures", "#demo-repairability-index"].forEach((selector) => {
+          const input = document.querySelector(selector);
+          input.hidden = !demoRepairability;
+          input.disabled = !demoRepairability;
+          input.required = demoRepairability;
+        });
+        document.querySelectorAll(".repairability-import-name").forEach((label, index) => {
+          label.textContent = activeProduct.demo ? "--" : index === 0 ? "Airbed" : "Aircomfort avec kit répa";
+        });
+        document.querySelector("#repairability-import-fields > .impact-caption").textContent = activeProduct.demo
+          ? "Manual demo entry only. No diagnostic or evaluation has been imported; the shared grading rubric is a test hypothesis."
+          : "Prototype example from the supplied form; no external service is connected.";
+        document.querySelector("#repairability-covered-failures").hidden = demoRepairability;
+        document.querySelector("#repairability-index").hidden = demoRepairability;
         document.querySelector("#circularity-sheet-title").textContent = `Update ${name}`;
         document.querySelector("#repairability-import-fields").hidden = name !== "Repairability";
         if (name === "Repairability") {
           document.querySelector("#circularity-sheet-title").textContent = "Import Repairability";
           document.querySelector("#repairability-import-icon").innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">${circularityLevers.find((lever) => lever.name === "Repairability").icon}</svg>`;
-          const imported = modelCircularityLevers(detailModel, year).find((lever) => lever.name === name).importExample || { coveredFailures: 82, index: 6.98 };
-          document.querySelector("#repairability-covered-failures").textContent = imported.coveredFailures;
-          document.querySelector("#repairability-index").textContent = imported.index;
+          const imported = modelCircularityLevers(detailModel, year).find((lever) => lever.name === name).importExample;
+          document.querySelector("#repairability-covered-failures").textContent = imported?.coveredFailures ?? 82;
+          document.querySelector("#repairability-index").textContent = imported?.index ?? 6.98;
+          document.querySelector("#demo-covered-failures").value = imported?.coveredFailures ?? "";
+          document.querySelector("#demo-repairability-index").value = imported?.index ?? "";
         }
         circularitySheet.classList.toggle("recyclability-sheet", name === "Recyclability");
         circularitySheet.classList.toggle("wide-circularity-sheet", ["Repairability", "Recyclability"].includes(name));
@@ -2387,6 +2494,7 @@
         circularityBinaryFields.hidden = !binary;
         document.querySelector("#recyclability-result-view").hidden = true;
         document.querySelector("#calculate-recyclability-index").hidden = name !== "Recyclability";
+        document.querySelector("#calculate-recyclability-index").textContent = activeProduct.demo ? "Save declaration" : "Calculate Index";
         document.querySelector("#save-circularity-sheet").hidden = !binary && name !== "Repairability";
         circularityForm.querySelectorAll('[name="circularity-answer"]').forEach((input) => {
           input.disabled = !binary;
@@ -2407,15 +2515,19 @@
           const savedYear = saved ? Math.max(...[...saved.keys()].filter((value) => value <= year)) : -Infinity;
           const data = saved?.get(savedYear);
           renderRecyclabilityDuplicateTargets(detailModel, year, selectedBom, data?.duplicateTargets || []);
-          const defaults = { threads: true, interlining: false, cuts: 0, layers: "single", smallSolventPrints: 1, largeSolventPrints: 0, largeWaterPrints: 0 };
+          const defaults = activeProduct.demo
+            ? { threads: null, interlining: null, cuts: null, layers: null, smallSolventPrints: null, largeSolventPrints: null, largeWaterPrints: null }
+            : { threads: true, interlining: false, cuts: 0, layers: "single", smallSolventPrints: 1, largeSolventPrints: 0, largeWaterPrints: 0 };
+          if (activeProduct.demo) circularityForm.querySelectorAll('[name="recyclability-layers"]').forEach((radio) => radio.checked = false);
           Object.entries({ ...defaults, ...data?.form }).forEach(([key, value]) => {
             const toggle = circularityForm.querySelector(`[data-recycle-toggle="${key}"]`);
             if (toggle) {
-              toggle.setAttribute("aria-checked", String(value));
-              document.querySelector(`[data-recycle-toggle-label="${key}"]`).textContent = value ? "YES" : "NO";
+              toggle.setAttribute("role", activeProduct.demo ? "checkbox" : "switch");
+              toggle.setAttribute("aria-checked", value == null ? "mixed" : String(value));
+              document.querySelector(`[data-recycle-toggle-label="${key}"]`).textContent = value == null ? "--" : value ? "YES" : "NO";
             }
             const stepper = circularityForm.querySelector(`[data-recyclability-stepper="${key}"] output`);
-            if (stepper) stepper.textContent = value;
+            if (stepper) stepper.textContent = value ?? "--";
             const radio = circularityForm.querySelector(`[name="recyclability-layers"][value="${value}"]`);
             if (radio) radio.checked = true;
           });
@@ -2424,7 +2536,7 @@
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) circularitySheet.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], { duration: 260, easing: "cubic-bezier(.22, 1, .36, 1)" });
       });
       function updateRecyclabilityBomData() {
-        const hasBom = Boolean(recyclabilityBomSelect.value);
+        const hasBom = Boolean(recyclabilityBomSelect.value) && !activeProduct.demo;
         document.querySelector("#recyclability-material").textContent = hasBom ? "PET" : "—";
         document.querySelector("#recyclability-material-share").textContent = hasBom ? "89 %" : "—";
         document.querySelector("#recyclability-coating").textContent = hasBom ? "No" : "—";
@@ -2433,7 +2545,7 @@
         const list = document.querySelector("#recyclability-duplicate-list");
         const selected = new Set(selectedTargets.map(String));
         const targets = selectedBom ? models.filter((candidate) =>
-          candidate.id !== model.id && candidate.bomByYear.get(year)?.id === selectedBom
+          candidate.id !== model.id && candidate.productCode === model.productCode && candidate.bomByYear.get(year)?.id === selectedBom
         ).slice(0, 8) : [];
         list.replaceChildren(...targets.map((candidate) => {
           const label = document.createElement("label");
@@ -2460,6 +2572,10 @@
         }
       });
       document.querySelector("#calculate-recyclability-index").addEventListener("click", () => {
+        if (activeProduct.demo) {
+          circularityForm.requestSubmit();
+          return;
+        }
         recyclabilityFields.hidden = true;
         document.querySelector("#recyclability-result-view").hidden = false;
         document.querySelector("#calculate-recyclability-index").hidden = true;
@@ -2494,7 +2610,7 @@
           const button = event.target.closest("[data-step]");
           if (!button) return;
           const output = stepper.querySelector("output");
-          output.textContent = Math.max(0, Number(output.textContent) + Number(button.dataset.step));
+          output.textContent = Math.max(0, (Number(output.textContent) || 0) + Number(button.dataset.step));
         });
       });
       circularitySheet.addEventListener("cancel", (event) => {
@@ -2511,7 +2627,7 @@
         if (!circularityEditTarget || circularityClosing || !circularityForm.reportValidity()) return;
         const { model, year, name } = circularityEditTarget;
         if (!["Durability", "Rental", "Recyclability", "Repairability"].includes(name)) return;
-        if (name === "Recyclability" && document.querySelector("#recyclability-result-view").hidden) return;
+        if (name === "Recyclability" && !activeProduct.demo && document.querySelector("#recyclability-result-view").hidden) return;
         const now = new Date();
         if (!model.circularityByYear) model.circularityByYear = new Map();
         if (!model.circularityByYear.has(name)) model.circularityByYear.set(name, new Map());
@@ -2520,11 +2636,11 @@
           modifiedISO: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`,
         };
         if (name === "Repairability") {
-          const coveredFailures = Number(document.querySelector("#repairability-covered-failures").textContent);
-          const index = Number(document.querySelector("#repairability-index").textContent);
+          const coveredFailures = Number(activeProduct.demo ? document.querySelector("#demo-covered-failures").value : document.querySelector("#repairability-covered-failures").textContent);
+          const index = Number(activeProduct.demo ? document.querySelector("#demo-repairability-index").value : document.querySelector("#repairability-index").textContent);
           repairabilityGrade(index, coveredFailures);
           Object.assign(evaluation, {
-            importExample: { diagnostic: "Airbed", evaluation: "Aircomfort avec kit répa", coveredFailures, index },
+            importExample: { diagnostic: activeProduct.demo ? "" : "Airbed", evaluation: activeProduct.demo ? "" : "Aircomfort avec kit répa", coveredFailures, index },
           });
         } else if (name === "Recyclability") {
           const grade = modelCircularityLevers(model, year).find((lever) => lever.name === name).grade;
@@ -2534,18 +2650,18 @@
             answer: undefined,
             bomId: recyclabilityBomSelect.value,
             form: Object.fromEntries([
-              ...[...circularityForm.querySelectorAll("[data-recycle-toggle]")].map((toggle) => [toggle.dataset.recycleToggle, toggle.getAttribute("aria-checked") === "true"]),
-              ...[...circularityForm.querySelectorAll("[data-recyclability-stepper]")].map((stepper) => [stepper.dataset.recyclabilityStepper, Number(stepper.querySelector("output").textContent)]),
-              ["layers", circularityForm.querySelector('[name="recyclability-layers"]:checked')?.value || "single"],
+              ...[...circularityForm.querySelectorAll("[data-recycle-toggle]")].map((toggle) => [toggle.dataset.recycleToggle, toggle.getAttribute("aria-checked") === "mixed" ? null : toggle.getAttribute("aria-checked") === "true"]),
+              ...[...circularityForm.querySelectorAll("[data-recyclability-stepper]")].map((stepper) => [stepper.dataset.recyclabilityStepper, stepper.querySelector("output").textContent === "--" ? null : Number(stepper.querySelector("output").textContent)]),
+              ["layers", circularityForm.querySelector('[name="recyclability-layers"]:checked')?.value || (activeProduct.demo ? null : "single")],
             ]),
-            index: 8.8,
-            processingScores: { mechanical: 7.7, chemical: 8.7, thermal: 8.8 },
+            index: activeProduct.demo ? null : 8.8,
+            processingScores: activeProduct.demo ? {} : { mechanical: 7.7, chemical: 8.7, thermal: 8.8 },
             duplicateTargets,
           });
           if (recyclabilityBomSelect.value) model.bomByYear.set(year, { id: recyclabilityBomSelect.value, method: "MANUAL" });
           duplicateTargets.forEach((targetId) => {
             const target = models.find((candidate) => candidate.id === targetId);
-            if (!target) return;
+            if (!target || target.productCode !== model.productCode || target.bomByYear.get(year)?.id !== recyclabilityBomSelect.value) return;
             if (!target.circularityByYear) target.circularityByYear = new Map();
             if (!target.circularityByYear.has(name)) target.circularityByYear.set(name, new Map());
             const targetGrade = modelCircularityLevers(target, year).find((lever) => lever.name === name).grade;
@@ -2567,6 +2683,7 @@
         renderDetail();
         circularityTrigger = document.querySelector(`[data-update-circularity="${name}"]`);
         closeCircularitySheet();
+        if (activeProduct.demo && name === "Recyclability") showDetailNotice("Demo declaration saved. No recyclability grade or index has been calculated; the evaluation remains Not evaluated.");
       });
       // Recalculation is simulated locally; the prototype's metric values stay unchanged.
       function markCalculated(model) {
@@ -2650,6 +2767,7 @@
         const results = designLeverResults(detailModel, year);
         const values = Object.fromEntries(results.map((lever) => [lever.key, lever.answer]));
         designForm.reset();
+        designForm.querySelector('[name="minimal-waste"][value="yes"]').required = !activeProduct.demo;
         if (values.minimalWaste != null) designForm.querySelector(`[name="minimal-waste"][value="${values.minimalWaste ? "yes" : "no"}"]`).checked = true;
         efficiencyInput.value = values?.efficiency ?? "";
         if (values?.pfcFree != null) designForm.querySelector(`[name="pfc-free"][value="${values.pfcFree ? "yes" : "no"}"]`).checked = true;
@@ -2671,7 +2789,8 @@
         if (!designEditTarget || sheetAnimation || !designForm.reportValidity()) return;
         const { model, year } = designEditTarget;
         const previous = model.designLeversByYear.get(year);
-        const minimalWaste = designForm.querySelector('[name="minimal-waste"]:checked').value === "yes";
+        const minimalWasteInput = designForm.querySelector('[name="minimal-waste"]:checked');
+        const minimalWaste = minimalWasteInput ? minimalWasteInput.value === "yes" : null;
         const pfcFree = designForm.querySelector('[name="pfc-free"]:checked');
         model.designLeversByYear.set(year, {
           minimalWaste,
@@ -2724,13 +2843,12 @@
       document.querySelector(".favorite").addEventListener("click", (event) => {
         const button = event.currentTarget;
         const selected = button.getAttribute("aria-pressed") !== "true";
-        button.setAttribute("aria-pressed", String(selected));
-        button.setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
+        const index = favoriteProducts.findIndex(([code]) => code === activeProduct.code);
+        if (selected && index === -1) favoriteProducts.push([activeProduct.code, activeProduct.name]);
+        else if (!selected && index !== -1) favoriteProducts.splice(index, 1);
+        renderFavorites();
       });
-      const favoriteProducts = [
-        ["342976", "GRVL AF SRAM APEX"],
-        ["351243", "SHORT RUN CORE W"],
-      ];
+      const favoriteProducts = [products[1], products[0], ...additionalProducts].map((product) => [product.code, product.name]);
       const favoritesList = document.querySelector("#favorites-list");
       function renderFavorites() {
         favoritesList.replaceChildren(...favoriteProducts.map(([code, name]) => {
@@ -2762,6 +2880,12 @@
         document.querySelector("#favorites-title").textContent = `${count} favorites`;
         document.querySelector("#header-favorites span").textContent = String(count);
         document.querySelector("#header-favorites").setAttribute("aria-label", `Open ${count} favorites`);
+        updateFavoriteButton();
+      }
+      function updateFavoriteButton() {
+        const selected = favoriteProducts.some(([code]) => code === activeProduct.code);
+        document.querySelector(".favorite").setAttribute("aria-pressed", String(selected));
+        document.querySelector(".favorite").setAttribute("aria-label", selected ? "Remove from favorites" : "Add to favorites");
       }
       renderFavorites();
       document.querySelector("#header-favorites").addEventListener("click", () => {
@@ -2802,6 +2926,7 @@
           document.querySelector("#models-notice").hidden = true;
         }
         if (requestedModel) detailModel = requestedModel;
+        updateFavoriteButton();
         const detailVisible = Boolean(requestedModel);
         const leversVisible = detailVisible && detailMatch[2] === "levers";
         const circularityVisible = detailVisible && detailMatch[2] === "circularity";
@@ -2833,6 +2958,14 @@
           productMetadata[index].textContent = value;
         });
         document.body.classList.toggle("bike-product", activeProduct.code === "342976" && (modelsVisible || detailVisible));
+        document.body.classList.toggle("demo-product", Boolean(activeProduct.demo));
+        demoContext.hidden = !activeProduct.demo || homeVisible || favoritesVisible;
+        document.querySelector(modelsVisible ? "#models-view > .models-title" : detailVisible ? "#model-detail-view > .models-title" : "#settings-view > h1").after(demoContext);
+        document.querySelectorAll("[data-demo-form-note], [data-demo-levers-note]").forEach((note) => note.hidden = !activeProduct.demo);
+        document.querySelectorAll("#material-levers-title span, #process-levers-title span").forEach((count) => {
+          if (!count.dataset.original) count.dataset.original = count.textContent;
+          count.textContent = activeProduct.demo ? "No data provided" : count.dataset.original;
+        });
         document.querySelector('[data-page="all-model-code"]').href = activeProduct.route;
         document.querySelector("#clear-model").href = activeProduct.route;
         document.querySelector(detailVisible ? "#detail-heading-slot" : "#models-view").prepend(productHeading);
