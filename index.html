@@ -484,7 +484,7 @@
     .models-table td:first-child::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--model-color); }
     .prototype-context { margin: 0 0 20px; padding: 12px 16px; border: 1px solid #E1E0DF; border-radius: 8px; background: white; color: #616161; font-size: 12px; line-height: 1.5; }
     .design-sheet .prototype-context { margin: 0 24px 20px; }
-    .demo-product #levers-content .table-wrap,
+    .demo-product #levers-content .table-wrap:not(.configured-levers),
     .demo-product #levers-content [data-open-composition],
     .demo-product .synthesis-bottom { display: none; }
     .models-table tbody tr:has([data-model-id]) { cursor: pointer; }
@@ -1485,6 +1485,10 @@
       {
         code: "361118", name: "MTC-X SNEAKERS U", universe: "Footwear", image: "footwear-preview.png",
         process: "26 - Footwear", nature: "11713 - Trainers", unit: "SHOES WALKING MAN",
+        levers: {
+          material: ["Polyester from recycled bottles", "Recycled polypropylene", "Recycled rubber"],
+          process: [],
+        },
         modelDefinitions: [
           ["8930252", "MTC-X SNEAKERS U BROWN", "#817067"],
           ["8930250", "MTC-X SNEAKERS U BLACK", "#3D3B3F"],
@@ -2235,8 +2239,47 @@
           return { ...lever, answer, validYear, modified: data?.modified, communicated: lever.key === "minimalWaste" && data?.minimalWasteCommunicated, value: answer == null ? "" : lever.key === "efficiency" ? `${answer} %` : answer ? "Yes" : "No" };
         });
       }
+      function renderProductLevers() {
+        ["material", "process"].forEach((type) => {
+          const heading = document.querySelector(`#${type}-levers-title`);
+          const card = heading.closest(".levers-card");
+          const wrapper = card.querySelector(".table-wrap");
+          const original = wrapper.querySelector("table");
+          const names = activeProduct.levers?.[type];
+          const configured = names !== undefined;
+          wrapper.classList.toggle("configured-levers", configured);
+          original.hidden = configured;
+          original.style.display = configured ? "none" : "";
+          let table = wrapper.querySelector("[data-product-levers]");
+          if (!table) {
+            table = document.createElement("table");
+            table.className = "levers-table";
+            table.dataset.productLevers = "";
+            table.append(original.querySelector("colgroup").cloneNode(true), original.querySelector("thead").cloneNode(true), document.createElement("tbody"));
+            wrapper.append(table);
+          }
+          table.hidden = !configured;
+          table.style.display = configured ? "" : "none";
+          card.querySelector("[data-demo-levers-note]").hidden = configured || !activeProduct.demo;
+          if (!configured) return;
+          heading.querySelector("span").textContent = `${names.length} Lever${names.length === 1 ? "" : "s"}`;
+          const body = table.querySelector("tbody");
+          body.replaceChildren();
+          if (!names.length) {
+            const cell = body.insertRow().insertCell();
+            cell.colSpan = 5;
+            cell.textContent = `no ${type} levers`;
+          } else {
+            names.forEach((name) => {
+              const row = body.insertRow();
+              [name, "--", "--", "--", "--"].forEach((value) => row.insertCell().textContent = value);
+            });
+          }
+        });
+      }
       function renderDetail() {
         if (!detailModel) return;
+        renderProductLevers();
         document.querySelectorAll(".synthesis-cards .all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
         document.querySelector("#go-to-circularity").href = `#model-code/${detailModel.id}/circularity`;
         const year = Number(currentYear());
