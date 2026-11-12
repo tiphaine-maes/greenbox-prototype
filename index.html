@@ -1359,7 +1359,7 @@
         <section class="recyclability-streams" aria-label="Scores by processing stream">
           <article class="recyclability-stream"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.6 2.8-.2-.1a1.7 1.7 0 0 0-1.8.2l-.2.1h-3.2l-.1-.2a1.7 1.7 0 0 0-1.6-1l-.2.1-2.8-1.6.1-.2a1.7 1.7 0 0 0-.2-1.8l-.1-.2v-3.2l.2-.1a1.7 1.7 0 0 0 1-1.6l-.1-.2 1.6-2.8.2.1a1.7 1.7 0 0 0 1.8-.2l.2-.1h3.2l.1.2a1.7 1.7 0 0 0 1.6 1l.2-.1 2.8 1.6-.1.2a1.7 1.7 0 0 0 .2 1.8l.1.2v3.2z"/></svg></span>Mechanical score</div><div class="recyclability-stream-score">7.7 <small>/10</small></div></article>
           <article class="recyclability-stream"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4 17h16L12 3z"/><path d="M12 9v4m0 2v.1"/></svg></span>Chemical score</div><div class="recyclability-stream-score">8.7 <small>/10</small></div></article>
-          <article class="recyclability-stream selected"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3c0 3 3 3 3 6s-3 3-3 6 3 3 3 6M15 3c0 3 3 3 3 6s-3 3-3 6 3 3 3 6"/></svg></span>Thermal score</div><div class="recyclability-stream-score">7.8 <small>/10</small></div></article>
+          <article class="recyclability-stream selected"><div class="recyclability-stream-label"><span class="recyclability-stream-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3c0 3 3 3 3 6s-3 3-3 6 3 3 3 6M15 3c0 3 3 3 3 6s-3 3-3 6 3 3 3 6"/></svg></span>Thermal score</div><div class="recyclability-stream-score">8.8 <small>/10</small></div></article>
         </section>
         <h3 class="recyclability-result-heading">Duplicate this evaluation</h3>
         <p class="recyclability-duplicate-copy">Duplicate the responses provided for other template BOMs in the selected BOM. The values calculated from this BOM will be similar.</p>
@@ -2483,7 +2483,7 @@
               ["layers", circularityForm.querySelector('[name="recyclability-layers"]:checked')?.value || "single"],
             ]),
             index: 8.8,
-            processingScores: { mechanical: 7.7, chemical: 8.7, thermal: 7.8 },
+            processingScores: { mechanical: 7.7, chemical: 8.7, thermal: 8.8 },
             duplicateTargets,
           });
           if (recyclabilityBomSelect.value) model.bomByYear.set(year, { id: recyclabilityBomSelect.value, method: "MANUAL" });
