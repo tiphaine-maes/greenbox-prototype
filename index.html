@@ -753,6 +753,9 @@
     .median-warning { color: #bf4500; background: #ffe6d8; padding: 3px 4px; }
     .lifecycle-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin: 20px 16px; }
     .lifecycle-bar span { flex-basis: var(--phase-width); background: var(--phase-color); }
+    .lifecycle-bar span.negative { background: white; box-shadow: inset 0 0 0 2px var(--phase-color); }
+    .lifecycle-bar span.negative:first-child { border-radius: 8px 0 0 8px; }
+    .lifecycle-bar span.negative:last-child { border-radius: 0 8px 8px 0; }
     .lifecycle-breakdown { display: flex; justify-content: space-between; gap: 24px; margin: 0 16px 24px; }
     .lifecycle-legend { display: flex; flex-wrap: wrap; gap: 20px; }
     .lifecycle-legend span { font-size: 12px; color: #616161; }
@@ -1712,7 +1715,7 @@
         document.querySelector("#impact-indicator-value").textContent = indicator.total.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : selected === "climate" ? 1 : 3 });
         document.querySelector("#climate-position").hidden = bike || selected !== "climate";
         const magnitude = indicator.values.reduce((sum, value) => sum + Math.abs(value), 0);
-        document.querySelector("#lifecycle-bar").innerHTML = indicator.values.map((value, index) => `<span style="--phase-width:${magnitude ? Math.abs(value) / magnitude * 100 : 0}%;--phase-color:${phaseColors[index]}"></span>`).join("");
+        document.querySelector("#lifecycle-bar").innerHTML = indicator.values.map((value, index) => `<span${value < 0 ? ' class="negative"' : ""} style="--phase-width:${magnitude ? Math.abs(value) / magnitude * 100 : 0}%;--phase-color:${phaseColors[index]}"></span>`).join("");
         document.querySelector("#lifecycle-legend").innerHTML = indicator.values.map((value, index) => `<span style="--phase-color:${phaseColors[index]}">${phases[index]}<strong>${value.toLocaleString("fr-FR", { maximumFractionDigits: bike ? 3 : 2 })}</strong></span>`).join("");
         document.querySelector("#impact-body").innerHTML = productIndicators.map((item) => `<tr class="${item.id === selected ? "active-indicator" : ""}"><td>${item.name}<span class="impact-caption">(${item.unit})</span></td>${item.values.map((value) => `<td>${value.toFixed(3)}</td>`).join("")}<td>${item.total.toFixed(3)}</td></tr>`).join("");
         document.querySelector("#impact-table-details").hidden = !impactExpanded;
