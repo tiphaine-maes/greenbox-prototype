@@ -686,7 +686,7 @@
     .levers-table { min-width: 1160px; table-layout: fixed; font-size: 14px; }
     .levers-table th { background: #f5f4f5; font-size: 12px; border-top: 1px solid #E1E0DF; padding: 16px 10px; }
     .levers-table td { background: white; padding: 16px 10px; }
-    .levers-table .design-lever-incomplete td { background: #FFF5EF; }
+    .design-lever-not-activated { display: inline-block; padding: 2px 6px; background: #f5f4f5; color: #101010; }
     .design-levers-warning { display: flex; align-items: center; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #d64b00; border-radius: 20px; background: #ffe6d8; }
     .design-levers-warning[hidden], body:not(.levers-view):not(.circularity-view) .design-levers-warning { display: none; }
     .design-levers-section-heading { display: none; margin: 32px 0 24px; font-size: 24px; font-weight: 600 !important; }
@@ -2027,7 +2027,7 @@
         const year = Number(currentYear());
         renderCircularity(year);
         updateCircularityValidity(year);
-        document.querySelector("#design-levers-body").innerHTML = designLeverResults(detailModel, year).map((lever) => `<tr${lever.value === "" ? ' class="design-lever-incomplete"' : ""}><td><span class="design-lever-name">${lever.value === "" ? document.querySelector("#design-levers-warning svg").outerHTML : ""}${lever.name}</span></td><td class="lever-percent">${lever.value}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${lever.modified}</span>` : ""}</td><td>${lever.value !== "" ? `<span class="circularity-validity${year > lever.validYear ? " stale" : ""}">Valid from ${lever.validYear}</span>` : ""}</td></tr>`).join("");
+        document.querySelector("#design-levers-body").innerHTML = designLeverResults(detailModel, year).map((lever) => `<tr><td><span class="design-lever-name">${lever.name}</span></td><td class="lever-percent">${lever.value !== "" ? lever.value : '<span class="design-lever-not-activated">Not activated</span>'}</td><td>${lever.value !== "" ? `<span class="communication-tag${lever.communicated ? "" : " neutral"}">${lever.communicated ? "Communicated" : "Not communicated"}</span>` : "--"}</td><td>${lever.value !== "" ? `<span class="impact-caption">TMAES26<br>${lever.modified}</span>` : "--"}</td><td>${lever.value !== "" ? `<span class="circularity-validity${year > lever.validYear ? " stale" : ""}">Valid from ${lever.validYear}</span>` : "--"}</td></tr>`).join("");
         const bom = detailModel.bomByYear.get(year);
         const preferred = preferredResults(detailModel, year);
         document.querySelectorAll(".synthesis-cards > .synthesis-card").forEach((card, index) => {
