@@ -1234,7 +1234,7 @@
 
   <footer class="footer">
     <span class="footer-message" id="footer-message">Complete the highlighted fields before saving.</span>
-    <button class="action">Cancel</button>
+    <button class="action" id="cancel-settings">Cancel</button>
     <button class="action primary" id="save-button">Save Changes</button>
   </footer>
   <footer class="favorites-footer" id="favorites-footer" hidden>
@@ -1600,7 +1600,7 @@
         designLeversByYear: new Map([[2026, { minimalWaste: false, efficiency: 4, modified: "06/11/26", minimalWasteCommunicated: false }]]),
       }));
       models[0].circularityByYear = new Map([
-        ["Repairability", new Map([[2026, { grade: "B", color: "#008665" }]])],
+        ["Repairability", new Map([[2026, { grade: "B", color: "#70b900" }]])],
       ]);
       models.push({
         id: 18, productCode: "342976", status: "Not evaluated", code: "8766974", name: "GRVL AF APEX MONO",
@@ -2656,6 +2656,7 @@
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       let previousViewHash = null;
       let settingsReturnHash = null;
+      let settingsSnapshot = null;
       let pageAnimations = [];
       reducedMotion.addEventListener("change", () => {
         if (reducedMotion.matches) {
@@ -2702,6 +2703,8 @@
         }
         if (location.hash === "#settings" && previousViewHash !== "#settings") {
           settingsReturnHash = previousViewHash;
+          saveCurrentSharing();
+          settingsSnapshot = structuredClone(productSettings.get(settingsProductCode));
         }
         document.querySelector("#model-detail-view").hidden = !detailVisible;
         document.querySelector("#home-view").hidden = !homeVisible;
@@ -2843,6 +2846,17 @@
       renderImpact();
       navigateView();
       updateValidation();
+    document.querySelector("#cancel-settings").addEventListener("click", () => {
+      if (settingsSnapshot) {
+        const settings = structuredClone(settingsSnapshot);
+        productSettings.set(settingsProductCode, settings);
+        functionalUnit.value = settings.unit;
+        reference.value = settings.reference;
+        shares.forEach((input, index) => input.value = settings.sharing[currentYear()]?.[index] || "");
+        updateValidation();
+      }
+      if (settingsReturnHash) location.hash = settingsReturnHash;
+    });
     saveButton.addEventListener("click", () => {
       if (saveButton.disabled) {
         document.querySelector("#functional-card").scrollIntoView({ behavior: "smooth" });
