@@ -824,6 +824,7 @@
     }
     .models-table th:first-child, .models-table td:first-child { width: 36px; padding: 10px; }
     .models-table input[type="checkbox"] { width: 18px; height: 18px; margin: 0; padding: 0; accent-color: #3944c4; }
+    .models-table .model-code { font-size: var(--vp-core-font-size-150, 0.875rem); font-style: normal; font-weight: 500 !important; line-height: 142.86%; }
     .model-name { display: block; color: #616161; font-size: 12px; margin-top: 3px; }
     .model-selected { display: block; margin-top: 7px; color: #616161; }
     .model-selected::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #008665; margin-right: 7px; }
@@ -2149,7 +2150,7 @@
           }).join("");
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="--model-color:${model.productCode === "342976" ? "#deccb7" : modelColors[model.id]}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
-            <td>${model.code}<span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
+            <td><span class="model-code">${model.code}</span><span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
             <td><span class="env-impact-value">${model.productCode === "351243" ? "4.65" : "138.875"}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
             <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">2 Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul><li>Minimal Waste Design</li><li>Efficiency</li></ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
