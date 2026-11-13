@@ -1502,7 +1502,7 @@
           process: [],
         },
         preferredMaterialLevers: ["Polyester from recycled bottles"],
-        preferredResults: { material: 45, process: 0 },
+        preferredResults: { material: 45, process: null },
         communicatedMaterialLevers: ["Polyester from recycled bottles"],
         materialLeversValidFrom: 2026,
         materialLeverShares: {
@@ -1775,7 +1775,7 @@
         selected: false,
         bomByYear: new Map(index !== 7 && index !== 8 ? [[2026, { id: "004", method: [0, 3, 4].includes(index) ? "MANUAL" : "AUTO" }]] : []),
         calculatedYears: new Set([2026]),
-        preferredResultsByYear: new Map(index !== 7 && index !== 8 ? [[2026, { material: 73, process: 0 }]] : []),
+        preferredResultsByYear: new Map(index !== 7 && index !== 8 ? [[2026, { material: 73, process: null }]] : []),
         calculationDates: new Map([[2026, "23/10/2026"]]),
         designLeversByYear: new Map([[2026, { minimalWaste: false, efficiency: 4, modified: "06/11/26", minimalWasteCommunicated: false }]]),
       }));
@@ -2433,7 +2433,7 @@
           return `<tr data-row-id="${model.id}" tabindex="0" aria-label="Open model code ${model.code}, row ${model.id + 1}">
             <td style="--model-color:${model.color || (model.productCode === "342976" ? "#deccb7" : modelColors[model.id])}"><input type="checkbox" data-model-id="${model.id}" aria-label="Select model code ${model.code}, row ${model.id + 1}" ${model.selected ? "checked" : ""}></td>
             <td><span class="model-code">${model.code}</span><span class="model-name">${model.name}</span>${model.id < 6 ? '<span class="model-selected">Selected</span>' : ""}</td>
-            <td><span class="env-impact-value">${activeProduct.impactIndicators?.find((item) => item.id === "climate")?.total ?? (activeProduct.demo ? "--" : model.productCode === "351243" ? "4.65" : "138.875")}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred ? `${preferred.process} %` : "--"}</td>
+            <td><span class="env-impact-value">${activeProduct.impactIndicators?.find((item) => item.id === "climate")?.total ?? (activeProduct.demo ? "--" : model.productCode === "351243" ? "4.65" : "138.875")}</span><span class="env-impact-unavailable" aria-label="Complete settings to calculate environmental impact">--</span></td><td>${preferred ? `${preferred.material} %` : "--"}</td><td>${preferred?.process != null ? `${preferred.process} %` : "--"}</td>
             ${circularityCells}
             <td>${hasLevers ? `<span class="model-levers" tabindex="0" aria-describedby="model-levers-tooltip-${model.id}">${activeProduct.demo ? activatedDesignLevers.length : 2} Design Levers<br>activated</span><div class="model-levers-tooltip" id="model-levers-tooltip-${model.id}" role="tooltip" popover="manual"><ul>${(activeProduct.demo ? activatedDesignLevers.map((lever) => lever.name) : ["Minimal Waste Design", "Efficiency"]).map((name) => `<li>${name}</li>`).join("")}</ul></div>` : '<span class="model-levers-empty">--</span>'}</td>
             <td>${bom ? `<span class="model-caption bom-selected-text">${bomLabel(year, bom.id)}</span>${bom.id === referenceBom(year) && bom.method !== "MANUAL" ? '<span class="reference-bom-tag">Reference BOM</span>' : ""}` : '<span class="empty-bom">No BOM selected for the model code</span>'}</td>
@@ -3053,7 +3053,7 @@
         const year = Number(currentYear());
         model.calculatedYears.add(year);
         const preferred = preferredResults(model, year);
-        if (preferred || model.productCode === "351243") model.preferredResultsByYear.set(year, preferred || { material: 73, process: 0 });
+        if (preferred || model.productCode === "351243") model.preferredResultsByYear.set(year, preferred || { material: 73, process: null });
         const now = new Date();
         model.calculationDates.set(year, `${now.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" })} - ${now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`);
         if (!activeProduct.calculationDates) activeProduct.calculationDates = new Map();
