@@ -90,37 +90,7 @@
     .home-welcome-actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .home-welcome-actions .action { padding: 10px 16px; font-size: 12px; }
     .home-welcome details { margin-top: 20px; font-size: 14px; line-height: 1.5; }
-    .home-dashboard { margin-top: 40px; background: #f7f8fa; border: 1px solid #e1e0df; font-size: 11px; }
-    .home-dashboard-title { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; padding: 20px 16px; background: white; }
-    .home-dashboard-title strong { color: #3643BA; font-size: 20px; font-weight: 600 !important; font-style: italic; }
-    .home-dashboard-title h2 { margin: 0; font-size: 24px; font-weight: 600 !important; }
-    .home-dashboard-title small { color: #616161; }
-    .home-dashboard-layout { display: grid; grid-template-columns: 140px minmax(0, 1fr); }
-    .home-dashboard-filters { padding: 16px; background: #eff0fa; }
-    .home-dashboard-filters h3 { margin: 20px 0 10px; font-size: 11px; font-weight: 600 !important; }
-    .home-dashboard-filters p { display: flex; justify-content: space-between; gap: 8px; margin: 10px 0; color: #616161; }
-    .home-dashboard-filters span { padding: 1px 5px; border: 1px solid #c9cbd2; background: #fafafa; }
-    .home-dashboard-content { min-width: 0; padding: 24px; }
-    .home-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-    .home-kpis div { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 8px; border: 1px solid #e0e1e5; background: white; text-align: center; color: #616161; }
-    .home-kpis strong { font-size: 20px; }
-    .home-chart { padding: 16px; margin-top: 24px; border: 1px solid #e0e1e5; background: white; }
-    .home-chart h3 { margin: 0 0 20px; font-size: 16px; }
-    .home-chart svg { display: block; width: 100%; height: auto; }
-    .home-treemap { display: grid; grid-template-columns: 28fr 20fr 17fr 15fr 20fr; min-height: 180px; color: white; background: #eee; }
-    .home-treemap > div { padding: 10px; border: 1px solid white; background: #4045ac; }
-    .home-treemap > div:nth-child(2) { background: #6269bc; }
-    .home-treemap > div:nth-child(3) { background: #7d83c7; }
-    .home-treemap > div:nth-child(4) { background: #b7badc; color: #101010; }
-    .home-treemap > div:nth-child(5) { background: #dddfe9; color: #101010; }
-    .home-treemap small { display: block; margin: 6px 0; }
-    .home-dashboard-note { padding: 10px 16px; margin: 0; color: #616161; }
     .home-footer { margin: 40px -32px 0; }
-    @media (max-width: 1100px) {
-      .home-dashboard-layout { grid-template-columns: 110px minmax(0, 1fr); }
-      .home-dashboard-content { padding: 16px; }
-      .home-kpis { gap: 8px; }
-    }
     @media (max-width: 900px) { .home-welcome-content { grid-template-columns: 1fr; } }
 
     .user { position: relative; margin-left: auto; line-height: 1.35; }
@@ -489,7 +459,8 @@
     .models-table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; }
     .models-table-toolbar h3 { margin: 0; font-size: 16px; color: #272a3b; }
     .model-search { width: 280px; height: 34px; border: 0; border-radius: 24px; background: #f5f4f5; font-size: 13px; }
-    .models-table { min-width: 1284px; font-size: 12px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+    .models-table { width: 100%; min-width: 0; font-size: 12px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+    .sidebar-collapsed .models-table { min-width: 1284px; }
     .models-table th { background: #f5f4f5; font-size: 12px; }
     .models-table th { position: sticky; top: 96px; z-index: 2; border-bottom: 1px solid #E1E0DF; }
     .horizontal-scroll .models-table th { position: relative; top: var(--table-header-offset, 0px); }
@@ -1056,18 +1027,6 @@
           <details id="home-ecodesign" hidden><summary>All about Ecodesign</summary><p>Explore your product's environmental impact and its material, process and circularity levers. Compare results by year to support your ecodesign decisions.</p></details>
           <details id="home-tutorial" hidden><summary>Greenbox tutorial</summary><p>Search for a model or conception code above, select a model, then explore Synthesis, Levers and Design For Circularity. Select a BOM and use Recalculate to refresh the prototype results.</p></details>
         </div>
-        <section class="home-dashboard" aria-labelledby="home-dashboard-title">
-          <header class="home-dashboard-title"><strong>DECATHLON</strong><h2 id="home-dashboard-title">Overview - Products Sold</h2><small>Products sold between: November 2024 - November 2024 (included)</small></header>
-          <div class="home-dashboard-layout">
-            <div class="home-dashboard-filters" aria-label="Example dashboard filters"><h3>SOLD IN:</h3><p><span>November 2024</span></p><h3>SPORT</h3><p>Univers <span>(Tout)</span></p><p>Dept <span>(Tout)</span></p><p>Subdept <span>(Tout)</span></p><p>Family <span>(Tout)</span></p><h3>PROCESS</h3><p>Univers <span>(Tout)</span></p><p>Dept <span>(Tout)</span></p><p>Subdept <span>(Tout)</span></p><p>Family <span>(Tout)</span></p><h3>PRODUCT</h3><p>Nature <span>(Tout)</span></p><p>Brand <span>(Tout)</span></p><p>Is DKT? <span>(Tout)</span></p><p>From BOM <span>(Tout)</span></p><p>AutoCalc? <span>(Tout)</span></p></div>
-            <div class="home-dashboard-content">
-              <div class="home-kpis"><div>% Ecodesign Gross Sales<strong>53.6%</strong></div><div>% CM Ecodesigned<strong>18.6%</strong></div><div>% CM Ecodesigned with Proof<strong>78.5%</strong></div><div>% CM Ecodesigned From BOM<strong>23.1%</strong></div></div>
-              <div class="home-chart"><h3>Sport Unv</h3><svg id="home-sport-chart" viewBox="0 0 780 200" role="img" aria-label="Example comparison of ecodesign sales and model codes by sport"></svg></div>
-              <div class="home-chart"><h3>% of Gross Sales per Action Name</h3><div class="home-treemap"><div>Recycled polyester<small>MATERIAL</small>28%</div><div>Dope dyed<small>PROCESS</small>20%</div><div>Designed to reduce environmental impact<small>ENVIRONMENTAL IMPACT</small>17%</div><div>Repairability<small>LONG LASTING</small>5%<hr>Greige<small>PROCESS</small>4%</div><div>Other ecodesign actions</div></div></div>
-            </div>
-          </div>
-          <p class="home-dashboard-note">Prototype dashboard — illustrative data, filters shown for reference.</p>
-        </section>
         <footer class="favorites-footer home-footer"><div><div class="favorites-brand">◧ GREENBOX</div><p>Ecodesign made simple and empowering</p></div><div><h2>Need help?</h2><p>Report incident</p></div><div><h2>Greenbox</h2><p>Consult Ecodesign chart</p></div><div><h2>Language</h2><div class="favorites-language"><span>🇬🇧 &nbsp; English</span><span aria-hidden="true">⌄</span></div></div></footer>
       </section>
       <section id="favorites-view" hidden aria-labelledby="favorites-title">
@@ -1109,7 +1068,7 @@
           <div class="models-table-toolbar"><h3 id="model-count">11 Model Codes</h3><input type="search" class="model-search" id="model-search" placeholder="Search model code" aria-label="Search model code"></div>
           <div class="table-wrap">
             <table class="models-table">
-              <colgroup><col style="width:36px"><col style="width:230px"><col style="width:82px"><col style="width:82px"><col style="width:82px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:230px"></colgroup>
+              <colgroup><col style="width:4.5%"><col style="width:18%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:11%"><col style="width:18.5%"></colgroup>
               <thead><tr>
                 <th><input type="checkbox" id="select-all-models" aria-label="Select all visible model codes"></th>
                 <th>Model Code</th><th>Env. Impact<br>(kg CO₂ eq.)</th><th>% Preferred<br>Material</th><th>% Preferred<br>Process</th><th>Durability</th><th>Repairability</th><th>Recyclability</th><th>Design Levers</th><th>BOM selected</th>
@@ -3442,19 +3401,6 @@
         details.hidden = !details.open;
         button.setAttribute("aria-expanded", String(details.open));
       }));
-      const homeSports = [
-        ["9072-NATURE HIKING", 82.2, 49.5, 71.2, 34.0],
-        ["9073-SNOW HIKING", 77.1, 45.3, 81.1, 41.3],
-        ["9091-OLYMPICS GAMES PARIS 2024", 67.8, 71.4, 80.0, 0],
-        ["5-MOUNTAIN HIKING", 65.5, 44.7, 78.6, 8.5],
-        ["24-WINTER SPORTS", 66.2, 18.0, 97.0, 40.7],
-        ["4-RUNNING", 62.3, 20.7, 97.5, 53.8],
-        ["6-TRAINING", 60.7, 27.0, 67.9, 24.3],
-        ["10-TEAMSPORTS", 59.8, 19.2, 79.2, 20.8],
-      ];
-      document.querySelector("#home-sport-chart").innerHTML = homeSports.map(([name, ...values], row) =>
-        `<text x="192" y="${row * 20 + 15}" text-anchor="end" fill="#616161" font-size="9">${name}</text>${values.map((value, col) => `<rect x="${200 + col * 145}" y="${row * 20 + 6}" width="${value * 1.05}" height="8" fill="#4045bf"/><text x="${204 + col * 145 + value * 1.05}" y="${row * 20 + 14}" font-size="9" fill="#616161">${value.toFixed(1)}%</text>`).join("")}`
-      ).join("") + ["% Ecodesign Gross Sales", "% CM Ecodesigned", "% CM Eco. with Proof", "% CM Eco. From BOM"].map((label, index) => `<text x="${200 + index * 145}" y="190" font-size="9" fill="#616161">${label}</text>`).join("");
       [bomPicker, document.querySelector("#detail-bom-select"), document.querySelector("#recyclability-bom-select")].forEach(setupBomDropdown);
       renderModels();
       renderImpact();
