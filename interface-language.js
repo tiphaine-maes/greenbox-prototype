@@ -1,7 +1,6 @@
 (() => {
   const translations = {
-    "Apply the reference BOM to all model code": "Appliquer la BOM de référence à tous les codes modèles",
-    "Apply the same BOM to all model code selected": "Appliquer la même BOM à tous les codes modèles sélectionnés",
+    "Apply the BOM to all model code selected": "Appliquer la BOM à tous les codes modèles sélectionnés",
     "Yes": "Oui",
     "No": "Non",
     "activated": "activés",

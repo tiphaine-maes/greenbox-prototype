@@ -450,8 +450,8 @@
     .detail-bom-field { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; color: #616161; font-size: 12px; }
     .bom-label-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
     .bom-dropdown { position: relative; min-width: 0; width: 100%; }
-    .bom-action:has(.bom-dropdown) { flex-wrap: wrap; }
-    .bom-action .bom-dropdown { flex: 1 0 240px; width: 240px; }
+    .bom-action .bom-dropdown { min-width: 0; width: 100%; }
+    .bom-action .bom-dropdown-trigger { height: 46px; }
     .bom-dropdown-trigger { display: flex; align-items: center; gap: 16px; width: 100%; height: 36px; padding: 0 44px 0 12px; border: 1px solid #aaa; border-radius: 2px; background-color: white; color: #101010; font-size: 14px; text-align: left; cursor: pointer; }
     .bom-dropdown-trigger > span:first-child { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .bom-dropdown-trigger:disabled { opacity: .38; cursor: not-allowed; }
@@ -471,9 +471,9 @@
       #model-detail-view > .models-title .calculation { flex-wrap: wrap; }
     }
     .compact { min-height: 34px; padding: 0 16px; font-size: 13px; white-space: nowrap; }
-    .bom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-    .bom-action { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; border: 1px solid #e1dfdf; border-radius: 8px; background: white; color: #616161; font-size: 13px; line-height: 1.5; }
-    .bom-action a { color: #3944c4; text-decoration: none; }
+    .bom-actions { margin-bottom: 20px; }
+    .bom-action { display: grid; grid-template-columns: minmax(0, 30%) minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 18px 22px; border: 1px solid #e1dfdf; border-radius: 8px; background: white; color: #616161; font-size: 13px; line-height: 1.5; }
+    .bom-action .bom-description { color: #101010; }
     .bom-picker { width: 150px; height: 34px; font-size: 13px; }
     .bom-action button:disabled { color: #aaa; border-color: #ddd; cursor: not-allowed; }
     .models-table-card { border: 1px solid #e1dfdf; border-radius: 8px; background: white; overflow: clip; }
@@ -857,8 +857,11 @@
     .model-levers-empty { color: #616161; }
     .models-notice { color: #008665; margin: 0 0 18px; font-size: 14px; }
     @media (max-width: 1100px) {
-      .bom-actions { grid-template-columns: 1fr; }
       .product-meta { gap: 10px; }
+    }
+    @media (max-width: 700px) {
+      .bom-action { grid-template-columns: minmax(0, 1fr) auto; }
+      .bom-action > div:first-child { grid-column: 1 / -1; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -938,7 +941,7 @@
     }
     #recalculate.action, #detail-recalculate.action { background: #3643BA; border-color: #3643BA; color: #FFF; }
     #recalculate.action:disabled, #detail-recalculate.action:disabled { background: #f5f4f5; border-color: #ddd; color: #aaa; cursor: not-allowed; }
-    .year, #recalculate, #apply-all, #apply-selected {
+    .year, #recalculate, #apply-selected {
       border-radius: var(--vp-web-component-button-border-radius-rounded-top-left, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-top-right, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-bottom-right, 62.4375rem) var(--vp-web-component-button-border-radius-rounded-bottom-left, 62.4375rem);
       border: 1px solid var(--vp-web-component-button-color-secondary-regular-border, #949494);
       background: var(--vp-web-component-button-color-secondary-regular-container-default, #FFF);
@@ -1085,11 +1088,7 @@
         <p class="models-notice" id="models-notice" role="status" hidden></p>
         <div class="bom-actions">
           <div class="bom-action">
-            <div><span class="bom-description">Apply the reference BOM to all model code</span><div class="bom-label-row"><a href="#reference-bom" id="reference-bom">SS26 BOM 004 : 351243 - SHORT RUN 500 W DRY</a><span id="no-reference-bom" hidden>No reference BOM</span><span class="reference-bom-tag" id="reference-bom-tag">Reference BOM</span></div></div>
-            <button type="button" class="action compact" id="apply-all">Apply all</button>
-          </div>
-          <div class="bom-action">
-            <div><span class="bom-description">Apply the same BOM to all model code selected</span><br><span id="selected-count">0 model code selected</span></div>
+            <div><span class="bom-description">Apply the BOM to all model code selected</span><br><span id="selected-count">0 model code selected</span></div>
             <select class="bom-picker" id="bom-picker" aria-label="Select BOM" disabled hidden><option value="">Select BOM</option><option value="reference">BOM 004</option></select>
             <button type="button" class="action compact" id="apply-selected" disabled>Apply</button>
           </div>
@@ -2415,12 +2414,6 @@
         const visible = visibleModels();
         updateBomOptions(bomPicker, year);
         document.querySelector(".compact-year").textContent = currentYear();
-        const hasReferenceBom = Boolean(referenceBom(year));
-        document.querySelector("#reference-bom").textContent = hasReferenceBom ? bomLabel(year, referenceBom(year)) : "";
-        document.querySelector("#reference-bom").hidden = !hasReferenceBom;
-        document.querySelector("#no-reference-bom").hidden = hasReferenceBom;
-        document.querySelector("#reference-bom-tag").hidden = !hasReferenceBom;
-        document.querySelector("#apply-all").disabled = !hasReferenceBom;
         modelsBody.innerHTML = visible.map((model) => {
           const bom = model.bomByYear.get(Number(currentYear()));
           const preferred = preferredResults(model, year);
@@ -2443,7 +2436,7 @@
         document.querySelector("#model-count").textContent = `${visible.length} Model Code${visible.length === 1 ? "" : "s"}`;
         const selectedCount = productModels().filter((model) => model.selected).length;
         document.querySelector("#selected-count").textContent = `${selectedCount} model code selected`;
-        bomPicker.disabled = selectedCount === 0;
+        bomPicker.disabled = selectedCount === 0 || bomPicker.options.length <= 1;
         syncBomDropdown(bomPicker);
         applySelected.disabled = selectedCount === 0 || !bomPicker.value;
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
@@ -3176,17 +3169,12 @@
       });
       modelSearch.addEventListener("input", renderModels);
       bomPicker.addEventListener("change", renderModels);
-      function showModelsNotice(message) {
-        const notice = document.querySelector("#models-notice");
-        notice.textContent = message;
-        notice.hidden = false;
-      }
-      function applyBom(selectedOnly) {
+      function applyBom() {
         const year = Number(currentYear());
-        const id = selectedOnly ? bomPicker.value : referenceBom(year);
+        const id = bomPicker.value;
         if (!id) return;
-        productModels().filter((model) => !selectedOnly || model.selected).forEach((model) => {
-          model.bomByYear.set(year, { id, method: selectedOnly ? "MANUAL" : "AUTO" });
+        productModels().filter((model) => model.selected).forEach((model) => {
+          model.bomByYear.set(year, { id, method: "MANUAL" });
           markCalculated(model);
         });
         productModels().forEach((model) => model.selected = false);
@@ -3195,13 +3183,7 @@
         document.querySelector("#models-notice").textContent = "";
         renderModels();
       }
-      document.querySelector("#apply-all").addEventListener("click", () => applyBom(false));
-      applySelected.addEventListener("click", () => applyBom(true));
-      document.querySelector("#reference-bom").addEventListener("click", (event) => {
-        event.preventDefault();
-        const year = Number(currentYear());
-        showModelsNotice(`Reference BOM: ${bomLabel(year, referenceBom(year))}.`);
-      });
+      applySelected.addEventListener("click", applyBom);
       document.querySelector(".favorite").addEventListener("click", (event) => {
         const button = event.currentTarget;
         const selected = button.getAttribute("aria-pressed") !== "true";
