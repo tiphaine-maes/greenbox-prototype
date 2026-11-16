@@ -2400,6 +2400,13 @@
           badge.classList.toggle("stale", !detailModel.calculatedYears.has(year));
         });
       }
+      document.querySelector("#model-detail-view").addEventListener("click", (event) => {
+        const link = event.target.closest(".synthesis-cards .all-levers");
+        if (!link) return;
+        event.preventDefault();
+        location.hash = link.hash;
+        requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "instant" })));
+      });
       function openModel(id) {
         detailModel = models.find((model) => model.id === id);
         modelCodeNav.href = `#model-code/${id}`;
