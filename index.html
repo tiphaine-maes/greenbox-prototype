@@ -137,16 +137,6 @@
       font-weight: 500;
       line-height: 150%;
     }
-    body.sidebar-collapsed { --sidebar-width: 88px; }
-    .sidebar-collapsed .layout { --sidebar-width: 88px; }
-    .sidebar-collapsed .nav-label, .sidebar-collapsed .nav-help { display: none; }
-    .sidebar-collapsed .nav-item { justify-content: center; padding: 14px 0; }
-    .sidebar-toggle { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; align-self: flex-end; margin: -24px -8px 20px 0; border: 0; border-radius: 50%; background: transparent; color: #616161; cursor: pointer; }
-    .sidebar-toggle:hover { background: #f5f4f5; color: #3643BA; }
-    .sidebar-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 2px; }
-    .sidebar-toggle svg { width: 20px; height: 20px; transform: rotate(180deg); transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
-    .sidebar-collapsed .sidebar-toggle { align-self: center; margin-right: 0; }
-    .sidebar-collapsed .sidebar-toggle svg { transform: none; }
     .nav-divider { height: 1px; margin: 16px 12px 24px; background: #e2e0e0; }
     .nav-item[aria-disabled="true"] { color: #c4c4c4; cursor: not-allowed; }
     .nav-item[aria-disabled="true"] path { fill: currentColor; }
@@ -257,7 +247,6 @@
     .settings-nav-warning { display: flex; flex-shrink: 0; margin-left: auto; }
     #settings-nav .settings-nav-warning path { fill: #CD4D04; }
     .settings-nav-warning[hidden], .settings-field-warning[hidden] { display: none; }
-    .sidebar-collapsed .settings-nav-warning { position: absolute; top: 0; right: 0; }
     #settings-view .card-heading h2 { display: flex; align-items: center; gap: 8px; }
     .settings-field-warning { display: inline-flex; }
     .settings-warning { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 16px; border: 1px solid #CD4D04; border-radius: 12px; background: #FFF5EF; }
@@ -461,7 +450,6 @@
     .models-table-toolbar h3 { margin: 0; font-size: 16px; color: #272a3b; }
     .model-search { width: 280px; height: 34px; border: 0; border-radius: 24px; background: #f5f4f5; font-size: 13px; }
     .models-table { width: 100%; min-width: 0; font-size: 12px; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
-    .sidebar-collapsed .models-table { min-width: 1284px; }
     .models-table th { background: #f5f4f5; font-size: 12px; }
     .models-table th { position: sticky; top: 96px; z-index: 2; border-bottom: 1px solid #E1E0DF; }
     .horizontal-scroll .models-table th { position: relative; top: var(--table-header-offset, 0px); }
@@ -799,9 +787,7 @@
     .synthesis-view .model-nav-heading.selected #model-code-nav { color: #3643BA; }
     .model-clear { flex-shrink: 0; border: 0; background: none; color: #3643BA; cursor: pointer; padding: 8px; }
     body:not(.synthesis-view) .model-clear { color: #616161; }
-    .sidebar-collapsed .model-clear { display: none; }
     .model-subnav { padding-left: 16px; }
-    .sidebar-collapsed .model-subnav { padding-left: 0; }
     .model-subnav .nav-item { display: flex; align-items: center; gap: 12px; width: 100%; border: 0; background: none; text-align: left; cursor: pointer; }
     .model-subnav .nav-item.active { background: #f4f4ff; }
     body:not(.synthesis-view) #synthesis-nav { color: #616161; }
@@ -980,9 +966,6 @@
 
   <div class="layout">
     <aside id="sidebar" aria-label="Main navigation">
-      <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14.5303 5.46967L13.4697 6.53033L18.1893 11.25H3V12.75H18.1893L13.4697 17.4697L14.5303 18.5303L21.0607 12L14.5303 5.46967Z" fill="currentColor"/></svg>
-      </button>
       <a href="#all-model-code" class="nav-item" data-page="all-model-code" style="display: flex; align-items: center; gap: 8px;" title="All Model Code">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M3 5.44922H5.5V6.94922H3V5.44922ZM21 6.94922H7.5V5.44922H21V6.94922ZM5.5 12.7492H3V11.2492H5.5V12.7492ZM7.5 11.2492H21V12.7492H7.5V11.2492ZM3 17.0492H5.5V18.5492H3V17.0492ZM21 18.5492H7.5V17.0492H21V18.5492Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
@@ -1431,13 +1414,6 @@
     window.addEventListener("resize", updateSidebarTop);
     updateSidebarTop();
 
-    const sidebar = document.querySelector("#sidebar");
-    const sidebarToggle = document.querySelector("#sidebar-toggle");
-    sidebarToggle.addEventListener("click", () => {
-      const collapsed = document.body.classList.toggle("sidebar-collapsed");
-      sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
-      sidebarToggle.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
-    });
     const years = [...document.querySelectorAll(".year")];
     const reference = document.querySelector("#reference");
     const shares = [...document.querySelectorAll(".share-input")];
