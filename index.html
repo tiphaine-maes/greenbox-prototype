@@ -173,9 +173,9 @@
     .sidebar-toggle { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; align-self: flex-end; margin: -24px -8px 20px 0; border: 0; border-radius: 50%; background: transparent; color: #616161; cursor: pointer; }
     .sidebar-toggle:hover { background: #f5f4f5; color: #3643BA; }
     .sidebar-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 2px; }
-    .sidebar-toggle svg { width: 20px; height: 20px; transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
+    .sidebar-toggle svg { width: 20px; height: 20px; transform: rotate(180deg); transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
     .sidebar-collapsed .sidebar-toggle { align-self: center; margin-right: 0; }
-    .sidebar-collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+    .sidebar-collapsed .sidebar-toggle svg { transform: none; }
     .nav-divider { height: 1px; margin: 16px 12px 24px; background: #e2e0e0; }
     .nav-item[aria-disabled="true"] { color: #c4c4c4; cursor: not-allowed; }
     .nav-item[aria-disabled="true"] path { fill: currentColor; }
