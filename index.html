@@ -80,9 +80,7 @@
     body.home-view #sidebar .nav-item { justify-content: flex-start; padding: 14px 18px; }
     body.home-view #sidebar [data-page="all-model-code"] { opacity: 0.38; }
     body.home-view #sidebar .model-nav-heading,
-    body.home-view #sidebar #model-subnav, body.home-view #sidebar #model-code-help { display: none !important; }
-    body:not(.home-view) .home-nav-help { display: none; }
-    .home-nav-help { margin: 12px 18px; font-size: 12px; color: #616161; }
+    body.home-view #sidebar #model-subnav { display: none !important; }
     .home-welcome { padding: 28px; border-radius: 8px; background: white; }
     .home-welcome h1 { margin: 0 0 20px; color: #3643BA; font-size: 22px; font-weight: 600 !important; }
     .home-welcome-content { display: grid; grid-template-columns: minmax(220px, 1fr) auto; align-items: center; gap: 20px; }
@@ -780,6 +778,7 @@
     #impact-more[aria-expanded="true"] svg { transform: rotate(180deg); }
     .synthesis-subnav { margin: 8px 0; display: flex; color: #3643BA; text-decoration: none; }
     .model-nav-heading { display: flex; align-items: center; gap: 8px; }
+    .model-nav-heading:not(.selected) { display: none; }
     .model-nav-heading #model-code-nav { flex: 1; min-width: 0; }
     .model-nav-heading .nav-label { white-space: normal; }
     .model-nav-heading.selected #model-code-nav { color: #616161; background: none; }
@@ -971,7 +970,6 @@
         </svg>
         <span class="nav-label">All CC Model Codes</span>
       </a>
-      <p class="home-nav-help">Select a conception code to view details.</p>
       <div class="nav-divider" role="separator"></div>
       <div class="model-nav-heading">
       <a id="model-code-nav" class="nav-item" aria-disabled="true" aria-describedby="model-code-help" data-page="model-code" style="display: flex; align-items: center; gap: 8px;" title="Model Code">
@@ -1389,9 +1387,7 @@
       updateTableHeader();
     }
     const sidebar = document.querySelector("#sidebar");
-    const homeNavHelp = document.querySelector(".home-nav-help");
-    sidebar.insertBefore(document.querySelector("#settings-nav"), homeNavHelp);
-    sidebar.insertBefore(document.querySelector(".nav-divider"), homeNavHelp);
+    sidebar.insertBefore(document.querySelector("#settings-nav"), document.querySelector(".nav-divider"));
     function updateTableHeader() {
       const table = document.querySelector(".models-table");
       if (document.querySelector("#models-view").hidden) {
