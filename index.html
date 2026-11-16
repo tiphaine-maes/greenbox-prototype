@@ -73,8 +73,8 @@
     body.home-view { --sidebar-width: 240px; }
     body.home-view .layout { --sidebar-width: 240px; }
     body.home-view .topbar { position: fixed; }
-    body.home-view #sidebar { top: 84px; }
-    body.home-view main { display: flex; flex-direction: column; min-height: calc(100vh - 84px); padding: 32px 32px 0; background: #F5F4F5; }
+    body.home-view #sidebar { display: none; }
+    body.home-view main { display: flex; flex-direction: column; min-height: calc(100vh - 84px); margin-left: 0; padding: 32px 32px 0; background: #F5F4F5; }
     body.home-view #home-view:not([hidden]) { display: flex; flex: 1; flex-direction: column; }
     body.home-view #sidebar .nav-label, body.home-view #sidebar .nav-help { display: block; }
     body.home-view #sidebar .nav-item { justify-content: flex-start; padding: 14px 18px; }
@@ -3350,13 +3350,24 @@
         pageAnimations.forEach((animation) => animation.cancel());
         pageAnimations = [];
         if (previousViewHash !== null && previousViewHash !== location.hash && !reducedMotion.matches) {
-          const view = document.querySelector(homeVisible ? "#home-view" : detailVisible ? "#model-detail-view" : favoritesVisible ? "#favorites-view" : modelsVisible ? "#models-view" : "#settings-view");
-          pageAnimations = [...view.children]
-            .filter((element) => !element.hidden && element !== productHeading && element.id !== "detail-heading-slot")
-            .map((element) => element.animate(
-              [{ opacity: 0.2 }, { opacity: 1 }],
-              { duration: 240, easing: "cubic-bezier(.22, 1, .36, 1)" }
-            ));
+          const previousDetailRoute = previousViewHash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
+          const currentDetailRoute = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
+          const changingDetailSection = previousDetailRoute && currentDetailRoute &&
+            previousDetailRoute[1] === currentDetailRoute[1] && previousDetailRoute[2] !== currentDetailRoute[2];
+          if (changingDetailSection) {
+            pageAnimations = [document.querySelector("#model-detail-view").animate(
+              [{ opacity: 0.65, transform: "translateY(10px)" }, { opacity: 1, transform: "translateY(0)" }],
+              { duration: 280, easing: "cubic-bezier(.22, 1, .36, 1)" }
+            )];
+          } else {
+            const view = document.querySelector(homeVisible ? "#home-view" : detailVisible ? "#model-detail-view" : favoritesVisible ? "#favorites-view" : modelsVisible ? "#models-view" : "#settings-view");
+            pageAnimations = [...view.children]
+              .filter((element) => !element.hidden && element !== productHeading && element.id !== "detail-heading-slot")
+              .map((element) => element.animate(
+                [{ opacity: 0.2 }, { opacity: 1 }],
+                { duration: 240, easing: "cubic-bezier(.22, 1, .36, 1)" }
+              ));
+          }
         }
         previousViewHash = location.hash;
         if (focusSettingsRequested && location.hash === "#settings") {
