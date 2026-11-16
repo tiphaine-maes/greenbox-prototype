@@ -170,6 +170,12 @@
     .sidebar-collapsed .layout { --sidebar-width: 88px; }
     .sidebar-collapsed .nav-label, .sidebar-collapsed .nav-help { display: none; }
     .sidebar-collapsed .nav-item { justify-content: center; padding: 14px 0; }
+    .sidebar-toggle { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; align-self: flex-end; margin: -24px -8px 20px 0; border: 0; border-radius: 50%; background: transparent; color: #616161; cursor: pointer; }
+    .sidebar-toggle:hover { background: #f5f4f5; color: #3643BA; }
+    .sidebar-toggle:focus-visible { outline: 2px solid #3643BA; outline-offset: 2px; }
+    .sidebar-toggle svg { width: 20px; height: 20px; transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
+    .sidebar-collapsed .sidebar-toggle { align-self: center; margin-right: 0; }
+    .sidebar-collapsed .sidebar-toggle svg { transform: rotate(180deg); }
     .nav-divider { height: 1px; margin: 16px 12px 24px; background: #e2e0e0; }
     .nav-item[aria-disabled="true"] { color: #c4c4c4; cursor: not-allowed; }
     .nav-item[aria-disabled="true"] path { fill: currentColor; }
@@ -967,7 +973,7 @@
     #bom-picker:disabled { opacity: 0.38; }
   </style>
 </head>
-<body class="sidebar-collapsed">
+<body>
   <header class="topbar">
     <div class="brand">
       <svg width="202" height="29" viewBox="0 0 202 29" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Greenbox" style="display: block;">
@@ -999,6 +1005,9 @@
 
   <div class="layout">
     <aside id="sidebar" aria-label="Main navigation">
+      <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14.5303 5.46967L13.4697 6.53033L18.1893 11.25H3V12.75H18.1893L13.4697 17.4697L14.5303 18.5303L21.0607 12L14.5303 5.46967Z" fill="currentColor"/></svg>
+      </button>
       <a href="#all-model-code" class="nav-item" data-page="all-model-code" style="display: flex; align-items: center; gap: 8px;" title="All Model Code">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M3 5.44922H5.5V6.94922H3V5.44922ZM21 6.94922H7.5V5.44922H21V6.94922ZM5.5 12.7492H3V11.2492H5.5V12.7492ZM7.5 11.2492H21V12.7492H7.5V11.2492ZM3 17.0492H5.5V18.5492H3V17.0492ZM21 18.5492H7.5V17.0492H21V18.5492Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
@@ -1460,13 +1469,11 @@
     updateSidebarTop();
 
     const sidebar = document.querySelector("#sidebar");
-    sidebar.addEventListener("pointerenter", () => document.body.classList.remove("sidebar-collapsed"));
-    sidebar.addEventListener("pointerleave", () => {
-      document.body.classList.add("sidebar-collapsed");
-    });
-    sidebar.addEventListener("focusin", () => document.body.classList.remove("sidebar-collapsed"));
-    sidebar.addEventListener("focusout", (event) => {
-      if (!sidebar.contains(event.relatedTarget) && !sidebar.matches(":hover")) document.body.classList.add("sidebar-collapsed");
+    const sidebarToggle = document.querySelector("#sidebar-toggle");
+    sidebarToggle.addEventListener("click", () => {
+      const collapsed = document.body.classList.toggle("sidebar-collapsed");
+      sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+      sidebarToggle.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
     });
     const years = [...document.querySelectorAll(".year")];
     const reference = document.querySelector("#reference");
