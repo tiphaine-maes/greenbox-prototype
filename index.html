@@ -764,6 +764,8 @@
     .all-levers { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 6px 16px; border: 1px solid #aaa; border-radius: 24px; color: #101010; background: white; font-size: 13px; text-decoration: none; }
     .all-levers:hover { background: #f5f4f5; }
     .levers-view .all-levers { display: none; }
+    .synthesis-view .synthesis-link { display: none; }
+    .levers-view .synthesis-link { display: inline-flex; }
     .synthesis-impact { margin-bottom: 20px; }
     .synthesis-results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 12px; margin-bottom: 20px; }
     .synthesis-results > .synthesis-impact { grid-column: span 2; }
@@ -1132,8 +1134,8 @@
         <p class="models-notice" id="detail-notice" role="status" hidden></p>
         <div class="circularity-cards" id="circularity-content" hidden aria-label="Design For Circularity results"></div>
         <div class="synthesis-cards">
-          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a></div></article>
-          <article class="synthesis-card preferred-process-wip" aria-label="Preferred Process: methodology in progress, coming soon"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><span class="preferred-process-placeholder" aria-hidden="true">%</span><div class="preferred-process-track" aria-hidden="true"></div></div><span class="preferred-process-coming-soon">Coming Soon</span></article>
+          <article class="synthesis-card"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Material</span><strong>73%</strong></div><progress value="73" max="100" aria-label="Preferred material: 73 percent"></progress><div class="metric-card-footer"><span class="valid-from">Valid from 2026</span><a class="all-levers" href="#model-code/0/levers"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>All Levers</a><a class="all-levers synthesis-link" href="#model-code/0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>Synthesis</a></div></article>
+          <article class="synthesis-card preferred-process-wip" aria-label="Preferred Process: methodology in progress, coming soon"><div class="synthesis-metric"><span class="synthesis-icon" aria-hidden="true">&#9752;</span><span>% Preferred Process</span><span class="preferred-process-placeholder" aria-hidden="true">%</span><div class="preferred-process-track" aria-hidden="true"></div></div><div class="metric-card-footer"><span class="preferred-process-coming-soon">Coming Soon</span><a class="all-levers synthesis-link" href="#model-code/0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 12h9m-4-4 4 4-4 4"/></svg>Synthesis</a></div></article>
         </div>
         <div class="synthesis-circularity" id="synthesis-circularity" hidden aria-label="Circularity summary"></div>
         <div id="levers-content" hidden>
@@ -2364,6 +2366,7 @@
         if (!detailModel) return;
         renderProductLevers();
         document.querySelectorAll(".synthesis-cards .all-levers").forEach((link) => link.href = `#model-code/${detailModel.id}/levers`);
+        document.querySelectorAll(".synthesis-cards .synthesis-link").forEach((link) => link.href = `#model-code/${detailModel.id}`);
         document.querySelector("#go-to-circularity").href = `#model-code/${detailModel.id}/circularity`;
         const year = Number(currentYear());
         renderCircularity(year);
@@ -2401,7 +2404,7 @@
         });
       }
       document.querySelector("#model-detail-view").addEventListener("click", (event) => {
-        const link = event.target.closest(".synthesis-cards .all-levers");
+        const link = event.target.closest(".synthesis-cards .all-levers, .synthesis-cards .synthesis-link");
         if (!link) return;
         event.preventDefault();
         const scrollPosition = window.scrollY;
