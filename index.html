@@ -79,9 +79,8 @@
     body.home-view #sidebar .nav-label, body.home-view #sidebar .nav-help { display: block; }
     body.home-view #sidebar .nav-item { justify-content: flex-start; padding: 14px 18px; }
     body.home-view #sidebar [data-page="all-model-code"] { opacity: 0.38; }
-    body.home-view #sidebar .model-nav-heading, body.home-view #sidebar .nav-divider,
-    body.home-view #sidebar #model-subnav, body.home-view #sidebar #model-code-help,
-    body.home-view #sidebar #settings-nav { display: none !important; }
+    body.home-view #sidebar .model-nav-heading,
+    body.home-view #sidebar #model-subnav, body.home-view #sidebar #model-code-help { display: none !important; }
     body:not(.home-view) .home-nav-help { display: none; }
     .home-nav-help { margin: 12px 18px; font-size: 12px; color: #616161; }
     .home-welcome { padding: 28px; border-radius: 8px; background: white; }
@@ -966,11 +965,11 @@
 
   <div class="layout">
     <aside id="sidebar" aria-label="Main navigation">
-      <a href="#all-model-code" class="nav-item" data-page="all-model-code" style="display: flex; align-items: center; gap: 8px;" title="All Model Code">
+      <a href="#all-model-code" class="nav-item" data-page="all-model-code" style="display: flex; align-items: center; gap: 8px;" title="All CC Model Codes">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M3 5.44922H5.5V6.94922H3V5.44922ZM21 6.94922H7.5V5.44922H21V6.94922ZM5.5 12.7492H3V11.2492H5.5V12.7492ZM7.5 11.2492H21V12.7492H7.5V11.2492ZM3 17.0492H5.5V18.5492H3V17.0492ZM21 18.5492H7.5V17.0492H21V18.5492Z" fill-rule="evenodd" clip-rule="evenodd" fill="#616161"/>
         </svg>
-        <span class="nav-label">All Model Code</span>
+        <span class="nav-label">All CC Model Codes</span>
       </a>
       <p class="home-nav-help">Select a conception code to view details.</p>
       <div class="nav-divider" role="separator"></div>
@@ -1037,7 +1036,7 @@
           </button>
         </div>
         <div class="models-title">
-          <h2>All Model Code</h2>
+          <h2>All CC Model Codes</h2>
           <div class="calculation"><span id="last-calculation">Last calculation: 23/10/2026</span><button type="button" class="action primary compact" id="recalculate">Recalculate</button></div>
         </div>
         <p class="models-notice" id="models-notice" role="status" hidden></p>
@@ -1389,6 +1388,10 @@
       if (yearBar) yearBar.inert = document.body.classList.contains("models-view") && progress > 0;
       updateTableHeader();
     }
+    const sidebar = document.querySelector("#sidebar");
+    const homeNavHelp = document.querySelector(".home-nav-help");
+    sidebar.insertBefore(document.querySelector("#settings-nav"), homeNavHelp);
+    sidebar.insertBefore(document.querySelector(".nav-divider"), homeNavHelp);
     function updateTableHeader() {
       const table = document.querySelector(".models-table");
       if (document.querySelector("#models-view").hidden) {
