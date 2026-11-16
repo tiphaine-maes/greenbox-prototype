@@ -1674,8 +1674,6 @@
       document.body.classList.toggle("settings-incomplete", saveButton.disabled);
       renderImpact();
       renderSettingsSummary();
-      document.querySelector("#recalculate").disabled = saveButton.disabled || !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
-      document.querySelector("#detail-recalculate").disabled = saveButton.disabled || !detailModel?.bomByYear.has(Number(currentYear()));
       document.querySelector("#footer-message").hidden = !saveButton.disabled;
       document.querySelector("#functional-warning-icon").hidden = !missingReference;
       document.querySelector("#sharing-warning-icon").hidden = sharingComplete;
@@ -2413,7 +2411,6 @@
         applySelected.disabled = selectedCount === 0 || !bomPicker.value;
         selectAllModels.checked = visible.length > 0 && visible.every((model) => model.selected);
         selectAllModels.indeterminate = visible.some((model) => model.selected) && !selectAllModels.checked;
-        document.querySelector("#recalculate").disabled = saveButton.disabled || !productModels().some((model) => model.bomByYear.has(Number(currentYear())));
         const calculationDates = productModels().map((model) => model.calculationDates.get(year)).filter(Boolean);
         const lastCalculation = activeProduct.calculationDates?.get(year) || calculationDates[calculationDates.length - 1];
         document.querySelector("#last-calculation").textContent = lastCalculation ? `Last calculation: ${lastCalculation}` : "Not calculated for this year";
@@ -3054,6 +3051,10 @@
       }
       document.querySelector("#detail-recalculate").addEventListener("click", () => {
         if (!detailModel) return;
+        if (saveButton.disabled) {
+          showDetailNotice("Complete data sharing in the settings to calculate the environmental impact.");
+          return;
+        }
         if (!detailModel.bomByYear.has(Number(currentYear()))) {
           showDetailNotice("Select a BOM to recalculate.");
           document.querySelector("#detail-bom-select-trigger").focus();
@@ -3065,7 +3066,17 @@
         renderDetail();
       });
       document.querySelector("#recalculate").addEventListener("click", () => {
-        productModels().filter((model) => model.bomByYear.has(Number(currentYear()))).forEach(markCalculated);
+        const notice = document.querySelector("#models-notice");
+        const modelsWithBom = productModels().filter((model) => model.bomByYear.has(Number(currentYear())));
+        if (saveButton.disabled || !modelsWithBom.length) {
+          notice.textContent = saveButton.disabled
+            ? "Complete data sharing in the settings to calculate the environmental impact."
+            : "Select a BOM for at least one model code to recalculate.";
+          notice.hidden = false;
+          return;
+        }
+        notice.hidden = true;
+        modelsWithBom.forEach(markCalculated);
         renderModels();
         renderDetail();
       });
@@ -3354,12 +3365,7 @@
           const currentDetailRoute = location.hash.match(/^#model-code\/(\d+)(?:\/(levers|circularity|communication|documentation))?$/);
           const changingDetailSection = previousDetailRoute && currentDetailRoute &&
             previousDetailRoute[1] === currentDetailRoute[1] && previousDetailRoute[2] !== currentDetailRoute[2];
-          if (changingDetailSection) {
-            pageAnimations = [document.querySelector("#model-detail-view").animate(
-              [{ opacity: 0.65, transform: "translateY(10px)" }, { opacity: 1, transform: "translateY(0)" }],
-              { duration: 280, easing: "cubic-bezier(.22, 1, .36, 1)" }
-            )];
-          } else {
+          if (!changingDetailSection) {
             const view = document.querySelector(homeVisible ? "#home-view" : detailVisible ? "#model-detail-view" : favoritesVisible ? "#favorites-view" : modelsVisible ? "#models-view" : "#settings-view");
             pageAnimations = [...view.children]
               .filter((element) => !element.hidden && element !== productHeading && element.id !== "detail-heading-slot")
